@@ -46,16 +46,16 @@ const seedDatabase = async () => {
     // Create portfolio data
     const portfolio = await Portfolio.create({
       owner: {
-        name: 'John Doe',
-        title: 'Full Stack Developer',
+        name: 'Jade Sieb',
+        title: 'Software Engineering Graduate',
         bio: 'Passionate developer with expertise in modern web technologies. I specialize in creating responsive, user-friendly web applications using React, Node.js, and other cutting-edge technologies. With a strong foundation in both frontend and backend development, I deliver complete solutions that meet business needs and provide exceptional user experiences.',
-        email: 'john@example.com',
-        location: 'San Francisco, CA',
+        email: 'trenton@sieb.net',
+        location: 'Vancouver, BC',
         avatar: 'https://via.placeholder.com/150',
         social: {
-          github: 'https://github.com/johndoe',
-          linkedin: 'https://linkedin.com/in/johndoe',
-          twitter: 'https://twitter.com/johndoe',
+          github: 'https://github.com/tsieb',
+          linkedin: 'https://linkedin.com/in/trenton-sieb',
+          twitter: 'https://twitter.com/not_a_real_account_just_placeholder_12345135',
         },
       },
       skills: [
