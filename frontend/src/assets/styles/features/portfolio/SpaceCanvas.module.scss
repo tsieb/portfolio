@@ -1,0 +1,110 @@
+// /frontend/src/assets/styles/features/portfolio/SpaceCanvas.module.scss
+
+.spaceCanvas {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    margin: var(--space-md) 0;
+  }
+  
+  .starsCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--z-negative);
+  }
+  
+  .sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    
+    .sunCore {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 1) 0%,
+        rgba(255, 236, 184, 1) 20%,
+        rgba(255, 174, 0, 1) 40%,
+        rgba(255, 102, 0, 1) 60%,
+        rgba(255, 0, 0, 0.5) 80%,
+        rgba(255, 0, 0, 0) 100%
+      );
+      border-radius: 50%;
+      box-shadow: 0 0 60px rgba(255, 102, 0, 0.8), 0 0 120px rgba(255, 102, 0, 0.5);
+      animation: pulse 4s infinite ease-in-out;
+    }
+    
+    .sunRays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 236, 184, 0.3) 30%,
+        rgba(255, 174, 0, 0.2) 50%,
+        rgba(255, 102, 0, 0.1) 70%,
+        rgba(255, 0, 0, 0) 100%
+      );
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: pulse 4s infinite ease-in-out alternate;
+    }
+  }
+  
+  .planetsContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  // Animations
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+  }
+  
+  // Responsive styles
+  @media (max-width: 768px) {
+    .spaceCanvas {
+      height: 450px;
+    }
+    
+    .sun {
+      .sunCore {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .sunRays {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  }

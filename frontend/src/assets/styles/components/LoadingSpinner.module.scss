@@ -1,0 +1,127 @@
+// /frontend/src/assets/styles/components/LoadingSpinner.module.scss
+
+.spinner {
+    position: relative;
+    display: inline-block;
+    
+    &.small {
+      width: 30px;
+      height: 30px;
+      
+      .ring {
+        width: 30px;
+        height: 30px;
+        border-width: 2px;
+      }
+      
+      .planet {
+        width: 10px;
+        height: 10px;
+      }
+    }
+    
+    &.medium {
+      width: 60px;
+      height: 60px;
+      
+      .ring {
+        width: 60px;
+        height: 60px;
+        border-width: 3px;
+      }
+      
+      .planet {
+        width: 18px;
+        height: 18px;
+      }
+    }
+    
+    &.large {
+      width: 120px;
+      height: 120px;
+      
+      .ring {
+        width: 120px;
+        height: 120px;
+        border-width: 4px;
+      }
+      
+      .planet {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  
+  .ring {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  
+    body.dark-mode & {
+      border-top-color: var(--color-accent-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      border-top-color: var(--color-accent-light);
+    }
+    
+    &:nth-child(1) {
+      animation-delay: -0.45s;
+    }
+    
+    &:nth-child(2) {
+      animation-delay: -0.3s;
+    }
+    
+    &:nth-child(3) {
+      animation-delay: -0.15s;
+    }
+  }
+  
+  .planet {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    
+    body.dark-mode & {
+      background-color: var(--color-accent-dark);
+      box-shadow: 0 0 10px rgba(93, 142, 255, 0.5);
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: var(--color-accent-light);
+      box-shadow: 0 0 10px rgba(74, 123, 252, 0.5);
+    }
+    
+    animation: pulse 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(0.8);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }

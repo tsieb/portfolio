@@ -1,0 +1,116 @@
+// /frontend/src/assets/styles/pages/AdminProjectEditPage.module.scss
+
+.adminProjectEditPage {
+    padding: var(--space-md);
+  }
+  
+  .header {
+    margin-bottom: var(--space-md);
+  }
+  
+  .title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-xs);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .subtitle {
+    font-size: var(--text-base);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .formContainer {
+    max-width: 900px;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .errorMessage {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    margin-bottom: var(--space-md);
+    
+    svg {
+      flex-shrink: 0;
+    }
+  }
+  
+  .loadingContainer, .errorContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+    padding: var(--space-xl) var(--space-md);
+  }
+  
+  .errorTitle {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-sm);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .errorMessage {
+    margin-bottom: var(--space-md);
+    max-width: 600px;
+    font-size: var(--text-lg);
+  }
+  
+  .backButton {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-fast) var(--transition-ease);
+    
+    body.dark-mode & {
+      background: var(--color-accent-dark);
+      color: white;
+      
+      &:hover {
+        background: darken(#5d8eff, 5%);
+        transform: translateY(-2px);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background: var(--color-accent-light);
+      color: white;
+      
+      &:hover {
+        background: darken(#4a7bfc, 5%);
+        transform: translateY(-2px);
+      }
+    }
+  }

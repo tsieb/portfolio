@@ -1,0 +1,43 @@
+// /frontend/src/assets/styles/components/ThemeToggle.module.scss
+
+.themeToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast) var(--transition-ease);
+    background: none;
+    border: none;
+    cursor: pointer;
+    
+    &:focus-visible {
+      outline: 2px solid var(--color-accent-dark);
+      outline-offset: 2px;
+    }
+    
+    svg {
+      transition: transform var(--transition-fast) var(--transition-ease);
+    }
+    
+    &:hover svg {
+      transform: scale(1.1);
+    }
+    
+    &.dark {
+      color: var(--color-text-primary-dark);
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    &.light {
+      color: var(--color-text-primary-light);
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }

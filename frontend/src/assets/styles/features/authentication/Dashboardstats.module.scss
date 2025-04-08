@@ -1,0 +1,152 @@
+// /frontend/src/assets/styles/features/authentication/DashboardStats.module.scss
+
+.dashboardStats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+  }
+  
+  .statCard {
+    display: flex;
+    align-items: center;
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    transition: transform var(--transition-fast) var(--transition-ease);
+    
+    &:hover {
+      transform: translateY(-4px);
+    }
+    
+    &.dark {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:not(.dark) {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    // Color variations
+    &.blue {
+      background: linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      
+      .statIcon {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+      }
+    }
+    
+    &.green {
+      background: linear-gradient(45deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      
+      .statIcon {
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+      }
+    }
+    
+    &.purple {
+      background: linear-gradient(45deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      
+      .statIcon {
+        background-color: rgba(139, 92, 246, 0.2);
+        color: #8b5cf6;
+      }
+    }
+    
+    &.orange {
+      background: linear-gradient(45deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.1) 100%);
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      
+      .statIcon {
+        background-color: rgba(249, 115, 22, 0.2);
+        color: #f97316;
+      }
+    }
+    
+    &.red {
+      background: linear-gradient(45deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      
+      .statIcon {
+        background-color: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+      }
+    }
+    
+    body.dark-mode & {
+      &.blue, &.green, &.purple, &.orange, &.red {
+        background-color: var(--color-bg-secondary-dark);
+        backdrop-filter: blur(5px);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      &.blue, &.green, &.purple, &.orange, &.red {
+        background-color: var(--color-bg-secondary-light);
+        backdrop-filter: blur(5px);
+      }
+    }
+  }
+  
+  .statIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-md);
+    margin-right: var(--space-md);
+    
+    svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  .statContent {
+    flex: 1;
+  }
+  
+  .statTitle {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    margin-bottom: 4px;
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .statValue {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    font-family: var(--font-mono);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  // Responsive styles
+  @media (max-width: 1200px) {
+    .dashboardStats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .dashboardStats {
+      grid-template-columns: 1fr;
+    }
+  }

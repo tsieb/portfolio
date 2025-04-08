@@ -1,0 +1,375 @@
+// /frontend/src/assets/styles/features/authentication/ProjectsTable.module.scss
+
+.projectsTable {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    
+    &.dark {
+      background-color: var(--color-bg-secondary-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    &:not(.dark) {
+      background-color: var(--color-bg-secondary-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  .tableHeader {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    padding: var(--space-sm) var(--space-md);
+    gap: var(--space-sm);
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+    
+    body.dark-mode & {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(0, 0, 0, 0.02);
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .headerProject, .headerStatus, .headerDate, .headerActions {
+    padding: var(--space-xs);
+  }
+  
+  .tableBody {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .tableRow {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    padding: var(--space-md);
+    gap: var(--space-sm);
+    align-items: center;
+    
+    &:not(:last-child) {
+      body.dark-mode & {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      body:not(.dark-mode) & {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+    }
+    
+    &:hover {
+      body.dark-mode & {
+        background-color: rgba(255, 255, 255, 0.03);
+      }
+      
+      body:not(.dark-mode) & {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+    }
+  }
+  
+  .cellProject {
+    display: flex;
+    gap: var(--space-sm);
+  }
+  
+  .projectImageWrapper {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  
+  .projectImage {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .projectInitial {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: white;
+  }
+  
+  .projectInfo {
+    min-width: 0; // For text truncation
+  }
+  
+  .projectTitle {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin: 0 0 var(--space-xs) 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .projectDescription {
+    font-size: var(--text-sm);
+    margin: 0 0 var(--space-xs) 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .projectTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+  
+  .tag {
+    display: inline-flex;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    
+    body.dark-mode & {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .moreTag {
+    font-size: var(--text-xs);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .cellStatus {
+    display: flex;
+    align-items: center;
+  }
+  
+  .statusBadge {
+    display: inline-flex;
+    padding: 4px 8px;
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    
+    &.featured {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    
+    &.standard {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+    }
+  }
+  
+  .cellDate {
+    font-size: var(--text-sm);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .cellActions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .actionButtons {
+    display: flex;
+    gap: var(--space-xs);
+  }
+  
+  .editButton, .viewButton, .deleteButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-fast) var(--transition-ease);
+    white-space: nowrap;
+    
+    svg {
+      flex-shrink: 0;
+    }
+  }
+  
+  .editButton {
+    body.dark-mode & {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      
+      &:hover {
+        background-color: rgba(59, 130, 246, 0.3);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+      
+      &:hover {
+        background-color: rgba(59, 130, 246, 0.2);
+      }
+    }
+  }
+  
+  .viewButton {
+    body.dark-mode & {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      
+      &:hover {
+        background-color: rgba(16, 185, 129, 0.3);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #059669;
+      
+      &:hover {
+        background-color: rgba(16, 185, 129, 0.2);
+      }
+    }
+  }
+  
+  .deleteButton {
+    body.dark-mode & {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      
+      &:hover {
+        background-color: rgba(239, 68, 68, 0.3);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      
+      &:hover {
+        background-color: rgba(239, 68, 68, 0.2);
+      }
+    }
+  }
+  
+  // Responsive styles
+  @media (max-width: 992px) {
+    .tableHeader, .tableRow {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+    
+    .headerActions, .cellActions {
+      display: none;
+    }
+    
+    .tableRow {
+      position: relative;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        top: var(--space-md);
+        right: var(--space-md);
+        width: 6px;
+        height: 6px;
+        border-top: 2px solid;
+        border-right: 2px solid;
+        transform: rotate(45deg);
+        
+        body.dark-mode & {
+          border-color: var(--color-text-secondary-dark);
+        }
+        
+        body:not(.dark-mode) & {
+          border-color: var(--color-text-secondary-light);
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .tableHeader, .tableRow {
+      grid-template-columns: 1fr;
+      gap: var(--space-xs);
+    }
+    
+    .tableHeader {
+      display: none;
+    }
+    
+    .cellProject {
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+      padding-bottom: var(--space-xs);
+      margin-bottom: var(--space-xs);
+    }
+    
+    .cellStatus, .cellDate {
+      display: inline-flex;
+      margin-right: var(--space-md);
+      
+      &::before {
+        content: attr(data-label);
+        font-weight: var(--font-medium);
+        margin-right: var(--space-xs);
+        
+        body.dark-mode & {
+          color: var(--color-text-secondary-dark);
+        }
+        
+        body:not(.dark-mode) & {
+          color: var(--color-text-secondary-light);
+        }
+      }
+    }
+    
+    .actionButtons {
+      margin-top: var(--space-sm);
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }

@@ -1,0 +1,95 @@
+// /frontend/src/assets/styles/pages/AdminDashboardPage.module.scss
+
+.adminDashboardPage {
+    padding: var(--space-md);
+  }
+  
+  .header {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-xs);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .subtitle {
+    font-size: var(--text-base);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .statsContainer {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .contentGrid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: var(--space-lg);
+  }
+  
+  .sectionTitle {
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-md);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl) 0;
+    gap: var(--space-md);
+    
+    p {
+      font-size: var(--text-base);
+      
+      body.dark-mode & {
+        color: var(--color-text-secondary-dark);
+      }
+      
+      body:not(.dark-mode) & {
+        color: var(--color-text-secondary-light);
+      }
+    }
+  }
+  
+  // Responsive styles
+  @media (max-width: 992px) {
+    .contentGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .recentProjectsSection {
+      order: 2;
+    }
+    
+    .recentMessagesSection {
+      order: 1;
+    }
+  }

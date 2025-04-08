@@ -1,0 +1,290 @@
+// /frontend/src/assets/styles/features/authentication/RecentMessages.module.scss
+
+.recentMessages {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    
+    &.dark {
+      background-color: var(--color-bg-secondary-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    &:not(.dark) {
+      background-color: var(--color-bg-secondary-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  .messagesList {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .messageItem {
+    padding: var(--space-md);
+    
+    &:not(:last-child) {
+      body.dark-mode & {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      body:not(.dark-mode) & {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+    }
+    
+    &:hover {
+      body.dark-mode & {
+        background-color: rgba(255, 255, 255, 0.03);
+      }
+      
+      body:not(.dark-mode) & {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+    }
+  }
+  
+  .messageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-xs);
+  }
+  
+  .messageInfo {
+    margin-right: var(--space-sm);
+  }
+  
+  .messageSender {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin: 0 0 2px 0;
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .messageEmail {
+    font-size: var(--text-xs);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .statusBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    
+    &.statusNew {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    
+    &.statusRead {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+    }
+    
+    &.statusReplied {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+    
+    &.statusArchived {
+      background-color: rgba(107, 114, 128, 0.2);
+      color: #6b7280;
+    }
+  }
+  
+  .messageSubject {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    margin: 0 0 var(--space-xs) 0;
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .messageContent {
+    font-size: var(--text-sm);
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.5;
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .messageFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .messageDate {
+    font-size: var(--text-xs);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .messageActions {
+    display: flex;
+    gap: var(--space-xs);
+  }
+  
+  .messageAction {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast) var(--transition-ease);
+    
+    body.dark-mode & {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--color-text-secondary-dark);
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--color-text-primary-dark);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(0, 0, 0, 0.03);
+      color: var(--color-text-secondary-light);
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: var(--color-text-primary-light);
+      }
+    }
+    
+    svg {
+      flex-shrink: 0;
+    }
+  }
+  
+  .viewAllContainer {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-md);
+    
+    body.dark-mode & {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    body:not(.dark-mode) & {
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  .viewAllButton {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast) var(--transition-ease);
+    
+    body.dark-mode & {
+      background-color: rgba(255, 255, 255, 0.05);
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(0, 0, 0, 0.03);
+      
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+  
+  .loadingContainer, .errorContainer, .emptyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    text-align: center;
+  }
+  
+  .errorMessage, .emptyMessage {
+    margin-bottom: var(--space-sm);
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .retryButton {
+    display: inline-block;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    transition: all var(--transition-fast) var(--transition-ease);
+    
+    body.dark-mode & {
+      background-color: var(--color-accent-dark);
+      color: white;
+      
+      &:hover {
+        background-color: darken(#5d8eff, 5%);
+      }
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: var(--color-accent-light);
+      color: white;
+      
+      &:hover {
+        background-color: darken(#4a7bfc, 5%);
+      }
+    }
+  }

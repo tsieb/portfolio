@@ -1,0 +1,284 @@
+// /frontend/src/assets/styles/main.scss
+
+// Import Google Font
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+// CSS Variables
+:root {
+  // Theme Colors - Light Mode
+  --color-bg-primary-light: #f0f8ff;
+  --color-bg-secondary-light: #e1eeff;
+  --color-text-primary-light: #123566;
+  --color-text-secondary-light: #334b6d;
+  --color-accent-light: #4a7bfc;
+  --color-accent-secondary-light: #6f42c1;
+  
+  // Theme Colors - Dark Mode
+  --color-bg-primary-dark: #050818;
+  --color-bg-secondary-dark: #0d1530;
+  --color-text-primary-dark: #e0e7ff;
+  --color-text-secondary-dark: #a1b0de;
+  --color-accent-dark: #5d8eff;
+  --color-accent-secondary-dark: #9f7aea;
+  
+  // Common Colors
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #3b82f6;
+  
+  // Spacing
+  --space-unit: 0.25rem;
+  --space-xs: calc(2 * var(--space-unit));  // 0.5rem
+  --space-sm: calc(4 * var(--space-unit));  // 1rem
+  --space-md: calc(8 * var(--space-unit));  // 2rem
+  --space-lg: calc(16 * var(--space-unit)); // 4rem
+  --space-xl: calc(32 * var(--space-unit)); // 8rem
+  
+  // Fonts
+  --font-primary: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  
+  // Font Sizes
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
+  
+  // Font Weights
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  // Border Radius
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 9999px;
+  
+  // Shadows
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  // Z-Index
+  --z-negative: -1;
+  --z-elevate: 1;
+  --z-dropdown: 10;
+  --z-sticky: 100;
+  --z-fixed: 1000;
+  --z-modal: 2000;
+  --z-popover: 5000;
+  --z-tooltip: 9000;
+  
+  // Transitions
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 500ms;
+  --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Base Styles
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-primary);
+  line-height: 1.5;
+  font-weight: var(--font-normal);
+  letter-spacing: 0.01em;
+  min-height: 100vh;
+}
+
+// Theme application
+body.dark-mode {
+  background-color: var(--color-bg-primary-dark);
+  color: var(--color-text-primary-dark);
+}
+
+body.light-mode {
+  background-color: var(--color-bg-primary-light);
+  color: var(--color-text-primary-light);
+}
+
+// App Container
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  .main-content {
+    flex: 1;
+  }
+}
+
+// Admin Container
+.admin-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  .admin-content-wrapper {
+    flex: 1;
+    display: flex;
+  }
+  
+  .admin-content {
+    flex: 1;
+    padding: var(--space-md);
+    overflow-y: auto;
+  }
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-bold);
+  line-height: 1.2;
+  margin-bottom: var(--space-sm);
+}
+
+h1 {
+  font-size: var(--text-4xl);
+}
+
+h2 {
+  font-size: var(--text-3xl);
+}
+
+h3 {
+  font-size: var(--text-2xl);
+}
+
+h4 {
+  font-size: var(--text-xl);
+}
+
+h5 {
+  font-size: var(--text-lg);
+}
+
+h6 {
+  font-size: var(--text-base);
+}
+
+p {
+  margin-bottom: var(--space-sm);
+}
+
+a {
+  color: var(--color-accent-dark);
+  text-decoration: none;
+  transition: color var(--transition-fast) var(--transition-ease);
+  
+  &:hover {
+    color: var(--color-accent-secondary-dark);
+  }
+  
+  .light-theme & {
+    color: var(--color-accent-light);
+    
+    &:hover {
+      color: var(--color-accent-secondary-light);
+    }
+  }
+}
+
+// Buttons
+button, .button {
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  border: none;
+  outline: none;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast) var(--transition-ease);
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+// Forms
+input, textarea, select {
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all var(--transition-fast) var(--transition-ease);
+  
+  .dark-theme & {
+    background-color: var(--color-bg-secondary-dark);
+    color: var(--color-text-primary-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    &:focus {
+      border-color: var(--color-accent-dark);
+      box-shadow: 0 0 0 2px rgba(93, 142, 255, 0.25);
+    }
+  }
+  
+  .light-theme & {
+    background-color: var(--color-bg-secondary-light);
+    color: var(--color-text-primary-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    
+    &:focus {
+      border-color: var(--color-accent-light);
+      box-shadow: 0 0 0 2px rgba(74, 123, 252, 0.25);
+    }
+  }
+}
+
+// Utils
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+// Animations
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .admin-content-wrapper {
+    flex-direction: column;
+  }
+}

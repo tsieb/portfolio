@@ -1,0 +1,214 @@
+// /frontend/src/assets/styles/features/project/ProjectDetails.module.scss
+
+.projectDetails {
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    
+    &.dark {
+      background-color: var(--color-bg-secondary-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    &:not(.dark) {
+      background-color: var(--color-bg-secondary-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+  
+  .sectionTitle {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    margin-bottom: var(--space-md);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .descriptionContent {
+    margin-bottom: var(--space-lg);
+  }
+  
+  .paragraph {
+    font-size: var(--text-base);
+    line-height: 1.7;
+    margin-bottom: var(--space-md);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .featuresSection, .challengesSection {
+    margin-top: var(--space-lg);
+  }
+  
+  .featuresTitle, .challengesTitle {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-md);
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .featuresList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .featureItem {
+    display: flex;
+    gap: var(--space-sm);
+  }
+  
+  .featureIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    margin-top: 2px;
+    
+    body.dark-mode & {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--color-accent-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--color-accent-light);
+    }
+  }
+  
+  .featureContent {
+    flex: 1;
+  }
+  
+  .featureTitle {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin: 0 0 var(--space-xs) 0;
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .featureDescription {
+    font-size: var(--text-sm);
+    margin: 0;
+    line-height: 1.6;
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .challengeItem {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-md);
+    
+    body.dark-mode & {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    body:not(.dark-mode) & {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+  
+  .challengeTitle {
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    margin: 0 0 var(--space-xs) 0;
+    
+    body.dark-mode & {
+      color: var(--color-text-primary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-primary-light);
+    }
+  }
+  
+  .challengeDescription {
+    font-size: var(--text-sm);
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.6;
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
+  
+  .solutionTitle {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    margin: 0 0 var(--space-xs) 0;
+    
+    body.dark-mode & {
+      color: var(--color-accent-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-accent-light);
+    }
+  }
+  
+  .solutionDescription {
+    font-size: var(--text-sm);
+    margin: 0;
+    line-height: 1.6;
+    
+    body.dark-mode & {
+      color: var(--color-text-secondary-dark);
+    }
+    
+    body:not(.dark-mode) & {
+      color: var(--color-text-secondary-light);
+    }
+  }
