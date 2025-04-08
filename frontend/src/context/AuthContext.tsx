@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import api from '../lib/axios';
+import { authService, IUser, ILoginData } from '../services/authService';
 
 /**
  * Authentication context interface
@@ -13,16 +13,6 @@ interface IAuthContext {
   error: string | null;
 }
 
-/**
- * User interface
- */
-interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-}
-
 // Create context with undefined default value
 const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
@@ -34,25 +24,27 @@ interface AuthProviderProps {
  * Authentication provider component
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<IUser | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
+  const [user, setUser] = useState<IUser | null>(authService.getUser());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if user is already authenticated
+  // Check for token expiration or changes
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    
-    if (token && userData) {
-      setIsAuthenticated(true);
-      try {
-        setUser(JSON.parse(userData));
-      } catch (err) {
-        // If user data is invalid, log them out
-        logout();
+    const validateAuth = async () => {
+      // Only try to validate if we have a token
+      if (authService.getToken()) {
+        try {
+          // Get current user from API to validate token
+          await authService.getCurrentUser();
+        } catch (err) {
+          // If we get an error, the token might be invalid or expired
+          logout();
+        }
       }
-    }
+    };
+
+    validateAuth();
   }, []);
 
   /**
@@ -63,23 +55,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(true);
       setError(null);
       
-      // In a real app, this would make an API call to authenticate
-      // Simulated API call for development
-      try {
-        const response = await api.post('/auth/login', { email, password });
-        const { token, user } = response.data.data;
-        
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        
-        setIsAuthenticated(true);
-        setUser(user);
-      } catch (apiError: any) {
-        setError(apiError.response?.data?.message || 'Login failed');
-        throw apiError;
-      }
+      const loginData: ILoginData = { email, password };
+      const authData = await authService.login(loginData);
+      
+      authService.setAuth(authData);
+      setIsAuthenticated(true);
+      setUser(authData.user);
     } catch (err) {
-      console.error('Login error:', err);
+      setError(err instanceof Error ? err.message : 'Login failed');
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -89,10 +73,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
    * Logout function
    */
   const logout = () => {
+    authService.clearAuth();
     setIsAuthenticated(false);
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
   };
 
   // Context value

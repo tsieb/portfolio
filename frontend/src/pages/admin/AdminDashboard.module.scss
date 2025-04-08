@@ -1,0 +1,253 @@
+.adminDashboard {
+    padding: 2rem 0;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    
+    @media (max-width: 768px) {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  .tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+  }
+  
+  .tabButton {
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:hover {
+      color: var(--accent-color);
+    }
+    
+    &.active {
+      color: var(--accent-color);
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--accent-color);
+      }
+    }
+  }
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  
+  .tabContent {
+    margin-top: 1rem;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    
+    h2 {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      margin: 0;
+    }
+  }
+  
+  .addButton {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+    &:hover {
+      background-color: darken(#0070f3, 10%);
+    }
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    th {
+      font-weight: 600;
+      color: var(--text-primary);
+      background-color: var(--bg-secondary);
+    }
+    
+    tbody tr:hover {
+      background-color: var(--bg-secondary);
+    }
+  }
+  
+  .techTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .techTag {
+    background-color: rgba(0, 112, 243, 0.1);
+    color: var(--accent-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+  }
+  
+  .featured {
+    color: #28a745;
+    font-weight: 500;
+  }
+  
+  .notFeatured {
+    color: var(--text-secondary);
+  }
+  
+  .actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .editButton, .deleteButton, .markReadButton {
+    border: none;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .editButton {
+    background-color: #f0f0f0;
+    color: var(--text-primary);
+    
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+  
+  .deleteButton {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    
+    &:hover {
+      background-color: rgba(220, 53, 69, 0.2);
+    }
+  }
+  
+  .markReadButton {
+    background-color: rgba(0, 112, 243, 0.1);
+    color: var(--accent-color);
+    
+    &:hover {
+      background-color: rgba(0, 112, 243, 0.2);
+    }
+  }
+  
+  .noData {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+  }
+  
+  .messagesList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .messageCard {
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    
+    &.unread {
+      border-left: 4px solid var(--accent-color);
+    }
+  }
+  
+  .messageHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+  
+  .messageSender {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--text-primary);
+  }
+  
+  .messageDate {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+  }
+  
+  .messageInfo {
+    margin-bottom: 1rem;
+  }
+  
+  .messageEmail {
+    color: var(--text-secondary);
+    margin: 0 0 0.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .messageSubject {
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 0.875rem;
+  }
+  
+  .messageContent {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    margin-bottom: 1rem;
+  }
+  
+  .messageActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }

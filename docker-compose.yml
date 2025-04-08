@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:6
+    container_name: portfolio-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=portfolio
+    networks:
+      - portfolio-network
+
+  # Backend service
+  backend:
+    build:
+      context: ./backend
+      target: build
+    container_name: portfolio-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/portfolio
+      - JWT_SECRET=development_secret
+      - JWT_EXPIRES_IN=1h
+      - CORS_ORIGIN=http://localhost:5173
+    depends_on:
+      - mongodb
+    command: npm run dev
+    networks:
+      - portfolio-network
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      target: build
+    container_name: portfolio-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+    command: npm run dev -- --host
+    depends_on:
+      - backend
+    networks:
+      - portfolio-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  portfolio-network:
+    driver: bridge

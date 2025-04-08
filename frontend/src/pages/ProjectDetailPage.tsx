@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { projectService, IProject } from '../services/projectService';
+import { projectService } from '../services/projectService';
+import { useQuery } from '../hooks/useQuery';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import ErrorMessage from '../components/ui/ErrorMessage';
 import styles from './ProjectDetailPage.module.scss';
 
 /**
@@ -10,44 +12,31 @@ import styles from './ProjectDetailPage.module.scss';
 const ProjectDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [project, setProject] = useState<IProject | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+  const { data: project, isLoading, error, refetch } = useQuery(
+    `project-${id}`,
+    () => projectService.getById(id as string),
+    [id]
+  );
 
-  useEffect(() => {
-    const fetchProject = async () => {
-      if (!id) return;
-      
-      try {
-        setLoading(true);
-        const data = await projectService.getProjectById(id);
-        setProject(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching project:', err);
-        setError('Failed to load project. It may not exist or has been removed.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Go back to projects list
+  const handleBackClick = () => {
+    navigate('/projects');
+  };
 
-    fetchProject();
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className={styles.loading}>
-        <p>Loading project details...</p>
-      </div>
-    );
+  if (isLoading) {
+    return <LoadingSpinner fullPage />;
   }
 
   if (error || !project) {
     return (
       <div className={styles.error}>
-        <p>{error || 'Project not found'}</p>
+        <ErrorMessage 
+          message={error || 'Project not found'} 
+          retryFn={refetch} 
+        />
         <button 
-          onClick={() => navigate('/projects')}
+          onClick={handleBackClick}
           className={styles.backButton}
         >
           Back to Projects
@@ -70,6 +59,7 @@ const ProjectDetailPage = () => {
           <div 
             className={styles.projectImage}
             style={{ backgroundImage: `url(${project.image})` }}
+            aria-hidden="true"
           ></div>
           
           <div className={styles.description}>
@@ -80,19 +70,20 @@ const ProjectDetailPage = () => {
           <div className={styles.technicalDetails}>
             <h2 className={styles.sectionTitle}>Technical Details</h2>
             <p>
-              This section would include more detailed information about the project, 
-              including architecture decisions, challenges overcome, and specific 
-              technical implementations.
+              This project was built using {project.technologies.join(', ')}.
+            </p>
+            <p>
+              The project required careful planning and implementation to ensure optimal performance and user experience.
             </p>
           </div>
           
           <div className={styles.features}>
             <h2 className={styles.sectionTitle}>Key Features</h2>
             <ul className={styles.featureList}>
-              <li>Feature 1: Description of the feature and its implementation</li>
-              <li>Feature 2: Description of the feature and its implementation</li>
-              <li>Feature 3: Description of the feature and its implementation</li>
-              <li>Feature 4: Description of the feature and its implementation</li>
+              <li>Responsive design that works on all devices</li>
+              <li>Optimized performance for fast loading</li>
+              <li>Accessible interfaces following WCAG guidelines</li>
+              <li>Comprehensive testing for reliability</li>
             </ul>
           </div>
         </div>
@@ -132,9 +123,13 @@ const ProjectDetailPage = () => {
           </div>
           
           <div className={styles.sidebarSection}>
-            <h3 className={styles.sidebarTitle}>Timeline</h3>
+            <h3 className={styles.sidebarTitle}>Created</h3>
             <p className={styles.timeline}>
-              January 2023 - March 2023
+              {new Date(project.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
             </p>
           </div>
         </div>

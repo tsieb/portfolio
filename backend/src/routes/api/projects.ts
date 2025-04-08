@@ -1,40 +1,34 @@
-import { Router } from 'express';
-import { authenticate } from '../../middleware/auth';
+import { Router, Request, Response, NextFunction } from 'express';
+import { Project } from '../../db/models';
+import { authenticate, authorize } from '../../middleware/auth';
+import { validateProjectCreate, validateProjectUpdate } from '../../middleware/validators';
+import { logger } from '../../utils/logger';
 
 const router = Router();
-
-// Mock data for now (will be replaced with database)
-const projects = [
-  {
-    id: '1',
-    title: 'E-commerce Platform',
-    description: 'A full-stack e-commerce platform built with MERN stack',
-    technologies: ['React', 'Node.js', 'Express', 'MongoDB'],
-    image: 'https://via.placeholder.com/300',
-    githubUrl: 'https://github.com/username/project',
-    liveUrl: 'https://project.example.com',
-  },
-  {
-    id: '2',
-    title: 'Task Management App',
-    description: 'A task management application with drag-and-drop interface',
-    technologies: ['React', 'Redux', 'Node.js', 'PostgreSQL'],
-    image: 'https://via.placeholder.com/300',
-    githubUrl: 'https://github.com/username/task-app',
-    liveUrl: 'https://task-app.example.com',
-  },
-];
 
 /**
  * @route   GET /api/projects
  * @desc    Get all projects
  * @access  Public
  */
-router.get('/', (req, res) => {
-  res.json({
-    status: 'success',
-    data: projects,
-  });
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const featured = req.query.featured === 'true';
+    
+    // Build query
+    const query = featured ? { featured: true } : {};
+    
+    // Execute query
+    const projects = await Project.find(query).sort({ createdAt: -1 });
+    
+    res.json({
+      status: 'success',
+      data: projects,
+    });
+  } catch (error) {
+    logger.error(`Error fetching projects: ${error}`);
+    next(error);
+  }
 });
 
 /**
@@ -42,86 +36,141 @@ router.get('/', (req, res) => {
  * @desc    Get project by ID
  * @access  Public
  */
-router.get('/:id', (req, res) => {
-  const project = projects.find(p => p.id === req.params.id);
-  
-  if (!project) {
-    return res.status(404).json({
-      status: 'error',
-      code: 'NOT_FOUND',
-      message: 'Project not found',
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const project = await Project.findById(req.params.id);
+    
+    if (!project) {
+      return res.status(404).json({
+        status: 'error',
+        code: 'NOT_FOUND',
+        message: 'Project not found',
+      });
+    }
+    
+    res.json({
+      status: 'success',
+      data: project,
     });
+  } catch (error) {
+    logger.error(`Error fetching project: ${error}`);
+    next(error);
   }
-  
-  res.json({
-    status: 'success',
-    data: project,
-  });
 });
 
 /**
  * @route   POST /api/projects
  * @desc    Create a new project
- * @access  Private
+ * @access  Private (Admin only)
  */
-router.post('/', authenticate, (req, res) => {
-  // In a real app, this would create a new project in the database
-  res.status(201).json({
-    status: 'success',
-    message: 'Project created successfully',
-    data: {
-      id: '3',
-      ...req.body,
-    },
-  });
-});
+router.post(
+  '/',
+  authenticate,
+  authorize(['admin']),
+  validateProjectCreate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { title, description, technologies, image, githubUrl, liveUrl, featured } = req.body;
+      
+      // Create new project
+      const project = await Project.create({
+        title,
+        description,
+        technologies,
+        image,
+        githubUrl,
+        liveUrl,
+        featured: featured || false,
+      });
+      
+      res.status(201).json({
+        status: 'success',
+        message: 'Project created successfully',
+        data: project,
+      });
+    } catch (error) {
+      logger.error(`Error creating project: ${error}`);
+      next(error);
+    }
+  }
+);
 
 /**
  * @route   PUT /api/projects/:id
  * @desc    Update a project
- * @access  Private
+ * @access  Private (Admin only)
  */
-router.put('/:id', authenticate, (req, res) => {
-  const project = projects.find(p => p.id === req.params.id);
-  
-  if (!project) {
-    return res.status(404).json({
-      status: 'error',
-      code: 'NOT_FOUND',
-      message: 'Project not found',
-    });
+router.put(
+  '/:id',
+  authenticate,
+  authorize(['admin']),
+  validateProjectUpdate,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Find project by ID
+      const project = await Project.findById(req.params.id);
+      
+      if (!project) {
+        return res.status(404).json({
+          status: 'error',
+          code: 'NOT_FOUND',
+          message: 'Project not found',
+        });
+      }
+      
+      // Update project
+      const updatedProject = await Project.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
+      );
+      
+      res.json({
+        status: 'success',
+        message: 'Project updated successfully',
+        data: updatedProject,
+      });
+    } catch (error) {
+      logger.error(`Error updating project: ${error}`);
+      next(error);
+    }
   }
-  
-  res.json({
-    status: 'success',
-    message: 'Project updated successfully',
-    data: {
-      ...project,
-      ...req.body,
-    },
-  });
-});
+);
 
 /**
  * @route   DELETE /api/projects/:id
  * @desc    Delete a project
- * @access  Private
+ * @access  Private (Admin only)
  */
-router.delete('/:id', authenticate, (req, res) => {
-  const project = projects.find(p => p.id === req.params.id);
-  
-  if (!project) {
-    return res.status(404).json({
-      status: 'error',
-      code: 'NOT_FOUND',
-      message: 'Project not found',
-    });
+router.delete(
+  '/:id',
+  authenticate,
+  authorize(['admin']),
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Find project by ID
+      const project = await Project.findById(req.params.id);
+      
+      if (!project) {
+        return res.status(404).json({
+          status: 'error',
+          code: 'NOT_FOUND',
+          message: 'Project not found',
+        });
+      }
+      
+      // Delete project
+      await project.deleteOne();
+      
+      res.json({
+        status: 'success',
+        message: 'Project deleted successfully',
+      });
+    } catch (error) {
+      logger.error(`Error deleting project: ${error}`);
+      next(error);
+    }
   }
-  
-  res.json({
-    status: 'success',
-    message: 'Project deleted successfully',
-  });
-});
+);
 
 export default router;

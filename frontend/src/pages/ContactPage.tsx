@@ -1,13 +1,9 @@
 import { useState, FormEvent } from 'react';
-import api from '../lib/axios';
+import { contactService, IContactFormData } from '../services/contactService';
+import { portfolioService } from '../services/portfolioService';
+import { useQuery } from '../hooks/useQuery';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 import styles from './ContactPage.module.scss';
-
-interface IFormData {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-}
 
 interface IFormErrors {
   name?: string;
@@ -20,7 +16,7 @@ interface IFormErrors {
  * Provides a form for users to send messages
  */
 const ContactPage = () => {
-  const [formData, setFormData] = useState<IFormData>({
+  const [formData, setFormData] = useState<IContactFormData>({
     name: '',
     email: '',
     subject: '',
@@ -31,6 +27,12 @@ const ContactPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Get portfolio data for contact information
+  const { data: portfolio, isLoading: portfolioLoading, error: portfolioError } = useQuery(
+    'portfolio',
+    portfolioService.getPortfolio
+  );
 
   const validate = (): boolean => {
     const newErrors: IFormErrors = {};
@@ -47,6 +49,8 @@ const ContactPage = () => {
     
     if (!formData.message.trim()) {
       newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
     }
     
     setErrors(newErrors);
@@ -67,7 +71,7 @@ const ContactPage = () => {
       setLoading(true);
       setError(null);
       
-      await api.post('/contact', formData);
+      await contactService.sendMessage(formData);
       
       setSuccess(true);
       setFormData({
@@ -76,13 +80,17 @@ const ContactPage = () => {
         subject: '',
         message: ''
       });
-    } catch (err: any) {
-      console.error('Error sending message:', err);
-      setError(err.response?.data?.message || 'Failed to send message. Please try again later.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to send message. Please try again later.');
     } finally {
       setLoading(false);
     }
   };
+
+  // Show loading spinner while portfolio data is loading
+  if (portfolioLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className={styles.contactPage}>
@@ -93,45 +101,57 @@ const ContactPage = () => {
 
       <div className={styles.contactContainer}>
         <div className={styles.contactInfo}>
-          <div className={styles.infoBlock}>
-            <h3 className={styles.infoTitle}>Email</h3>
-            <p className={styles.infoText}>john@example.com</p>
-          </div>
-          
-          <div className={styles.infoBlock}>
-            <h3 className={styles.infoTitle}>Location</h3>
-            <p className={styles.infoText}>San Francisco, CA</p>
-          </div>
-          
-          <div className={styles.infoBlock}>
-            <h3 className={styles.infoTitle}>Social</h3>
-            <div className={styles.socialLinks}>
-              <a 
-                href="https://github.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-              >
-                GitHub
-              </a>
-              <a 
-                href="https://linkedin.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-              >
-                LinkedIn
-              </a>
-              <a 
-                href="https://twitter.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-              >
-                Twitter
-              </a>
-            </div>
-          </div>
+          {portfolioError ? (
+            <p className={styles.errorText}>Could not load contact information. Please try again later.</p>
+          ) : (
+            <>
+              <div className={styles.infoBlock}>
+                <h3 className={styles.infoTitle}>Email</h3>
+                <p className={styles.infoText}>{portfolio?.owner.email || 'contact@example.com'}</p>
+              </div>
+              
+              <div className={styles.infoBlock}>
+                <h3 className={styles.infoTitle}>Location</h3>
+                <p className={styles.infoText}>{portfolio?.owner.location || 'San Francisco, CA'}</p>
+              </div>
+              
+              <div className={styles.infoBlock}>
+                <h3 className={styles.infoTitle}>Social</h3>
+                <div className={styles.socialLinks}>
+                  {portfolio?.owner.social.github && (
+                    <a 
+                      href={portfolio.owner.social.github} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={styles.socialLink}
+                    >
+                      GitHub
+                    </a>
+                  )}
+                  {portfolio?.owner.social.linkedin && (
+                    <a 
+                      href={portfolio.owner.social.linkedin} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={styles.socialLink}
+                    >
+                      LinkedIn
+                    </a>
+                  )}
+                  {portfolio?.owner.social.twitter && (
+                    <a 
+                      href={portfolio.owner.social.twitter} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className={styles.socialLink}
+                    >
+                      Twitter
+                    </a>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div className={styles.contactForm}>
@@ -142,13 +162,14 @@ const ContactPage = () => {
               <button 
                 onClick={() => setSuccess(false)}
                 className={styles.button}
+                aria-label="Send another message"
               >
                 Send Another Message
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              {error && <div className={styles.errorMessage}>{error}</div>}
+              {error && <div className={styles.errorMessage} role="alert">{error}</div>}
               
               <div className={styles.formGroup}>
                 <label htmlFor="name" className={styles.label}>
@@ -162,8 +183,13 @@ const ContactPage = () => {
                   onChange={handleChange}
                   className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
                   placeholder="Your name"
+                  aria-required="true"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "name-error" : undefined}
                 />
-                {errors.name && <p className={styles.errorText}>{errors.name}</p>}
+                {errors.name && (
+                  <p className={styles.errorText} id="name-error">{errors.name}</p>
+                )}
               </div>
               
               <div className={styles.formGroup}>
@@ -178,8 +204,13 @@ const ContactPage = () => {
                   onChange={handleChange}
                   className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                   placeholder="Your email address"
+                  aria-required="true"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
-                {errors.email && <p className={styles.errorText}>{errors.email}</p>}
+                {errors.email && (
+                  <p className={styles.errorText} id="email-error">{errors.email}</p>
+                )}
               </div>
               
               <div className={styles.formGroup}>
@@ -209,14 +240,20 @@ const ContactPage = () => {
                   className={`${styles.textarea} ${errors.message ? styles.inputError : ''}`}
                   placeholder="Your message"
                   rows={6}
+                  aria-required="true"
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? "message-error" : undefined}
                 />
-                {errors.message && <p className={styles.errorText}>{errors.message}</p>}
+                {errors.message && (
+                  <p className={styles.errorText} id="message-error">{errors.message}</p>
+                )}
               </div>
               
               <button 
                 type="submit" 
                 className={styles.button}
                 disabled={loading}
+                aria-busy={loading}
               >
                 {loading ? 'Sending...' : 'Send Message'}
               </button>

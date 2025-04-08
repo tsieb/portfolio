@@ -1,6 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { projectService, IProject } from '../services/projectService';
+import { projectService } from '../services/projectService';
+import { useQuery } from '../hooks/useQuery';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import ErrorMessage from '../components/ui/ErrorMessage';
 import styles from './ProjectsPage.module.scss';
 
 /**
@@ -8,27 +11,26 @@ import styles from './ProjectsPage.module.scss';
  * Displays a grid of all portfolio projects
  */
 const ProjectsPage = () => {
-  const [projects, setProjects] = useState<IProject[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<string>('all');
+  
+  const { data: projects, isLoading, error, refetch } = useQuery(
+    'projects',
+    projectService.getAll.bind(projectService)
+  );
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        const data = await projectService.getProjects();
-        setProjects(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching projects:', err);
-        setError('Failed to load projects. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Filter projects by technology
+  const filteredProjects = filter === 'all'
+    ? projects
+    : projects?.filter(project => 
+        project.technologies.some(tech => 
+          tech.toLowerCase() === filter.toLowerCase()
+        )
+      );
 
-    fetchProjects();
-  }, []);
+  // Get unique technologies from all projects
+  const technologies = projects
+    ? [...new Set(projects.flatMap(project => project.technologies))]
+    : [];
 
   return (
     <div className={styles.projectsPage}>
@@ -37,67 +39,91 @@ const ProjectsPage = () => {
         Explore my portfolio of projects, showcasing my skills and experience in web development.
       </p>
 
-      {loading && (
-        <div className={styles.loading}>
-          <p>Loading projects...</p>
-        </div>
-      )}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : error ? (
+        <ErrorMessage 
+          message={error} 
+          retryFn={refetch} 
+        />
+      ) : (
+        <>
+          <div className={styles.filters}>
+            <button 
+              className={`${styles.filterButton} ${filter === 'all' ? styles.active : ''}`}
+              onClick={() => setFilter('all')}
+            >
+              All
+            </button>
+            {technologies.map(tech => (
+              <button 
+                key={tech}
+                className={`${styles.filterButton} ${filter === tech ? styles.active : ''}`}
+                onClick={() => setFilter(tech)}
+              >
+                {tech}
+              </button>
+            ))}
+          </div>
 
-      {error && (
-        <div className={styles.error}>
-          <p>{error}</p>
-        </div>
-      )}
-
-      {!loading && !error && (
-        <div className={styles.projectsGrid}>
-          {projects.map((project) => (
-            <div key={project.id} className={styles.projectCard}>
-              <div 
-                className={styles.projectImage}
-                style={{ backgroundImage: `url(${project.image})` }}
-              ></div>
-              <div className={styles.projectContent}>
-                <h2 className={styles.projectTitle}>{project.title}</h2>
-                <p className={styles.projectDescription}>{project.description}</p>
-                <div className={styles.projectTech}>
-                  {project.technologies.map((tech, index) => (
-                    <span key={index} className={styles.techTag}>
-                      {tech}
-                    </span>
-                  ))}
+          {filteredProjects?.length ? (
+            <div className={styles.projectsGrid}>
+              {filteredProjects.map((project) => (
+                <div key={project._id} className={styles.projectCard}>
+                  <div 
+                    className={styles.projectImage}
+                    style={{ backgroundImage: `url(${project.image})` }}
+                    aria-hidden="true"
+                  />
+                  <div className={styles.projectContent}>
+                    <h2 className={styles.projectTitle}>{project.title}</h2>
+                    <p className={styles.projectDescription}>{project.description}</p>
+                    <div className={styles.projectTech}>
+                      {project.technologies.map((tech, index) => (
+                        <span key={`${project._id}-${tech}-${index}`} className={styles.techTag}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    <div className={styles.projectLinks}>
+                      <Link to={`/projects/${project._id}`} className={styles.detailsLink}>
+                        View Details
+                      </Link>
+                      <a 
+                        href={project.githubUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={styles.externalLink}
+                      >
+                        GitHub
+                      </a>
+                      <a 
+                        href={project.liveUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className={styles.externalLink}
+                      >
+                        Live Demo
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <div className={styles.projectLinks}>
-                  <Link to={`/projects/${project.id}`} className={styles.detailsLink}>
-                    View Details
-                  </Link>
-                  <a 
-                    href={project.githubUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className={styles.externalLink}
-                  >
-                    GitHub
-                  </a>
-                  <a 
-                    href={project.liveUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className={styles.externalLink}
-                  >
-                    Live Demo
-                  </a>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
-
-      {!loading && !error && projects.length === 0 && (
-        <div className={styles.noProjects}>
-          <p>No projects found. Check back later!</p>
-        </div>
+          ) : (
+            <div className={styles.noProjects}>
+              <p>No projects found with the selected filter. Try another category or check back later!</p>
+              {filter !== 'all' && (
+                <button 
+                  onClick={() => setFilter('all')}
+                  className={styles.clearFilterButton}
+                >
+                  Clear Filter
+                </button>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,226 +1,254 @@
 .homepage {
-    display: flex;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.hero {
+  text-align: center;
+  padding: 4rem 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 2rem 1rem;
+  }
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  
+  @media (max-width: 768px) {
     flex-direction: column;
-    gap: 4rem;
+    align-items: center;
   }
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.primaryButton {
+  background-color: var(--accent-color);
+  color: white;
   
-  .hero {
-    text-align: center;
-    padding: 4rem 2rem;
-    
-    @media (max-width: 768px) {
-      padding: 2rem 1rem;
-    }
+  &:hover {
+    background-color: darken(#0070f3, 10%);
   }
+}
+
+.secondaryButton {
+  background-color: transparent;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
   
-  .title {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-    
-    @media (max-width: 768px) {
-      font-size: 2.5rem;
-    }
+  &:hover {
+    background-color: rgba(0, 112, 243, 0.05);
   }
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+  text-align: center;
   
-  .subtitle {
-    font-size: 1.5rem;
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.about {
+  padding: 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.aboutContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.aboutText {
+  p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
     color: var(--text-secondary);
-    margin-bottom: 2rem;
-    
-    @media (max-width: 768px) {
-      font-size: 1.25rem;
-    }
   }
+}
+
+.skills {
+  background-color: var(--bg-secondary);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.skillsTitle {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.skillsList {
+  list-style: none;
+  padding: 0;
+}
+
+.skillItem {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
   
-  .actions {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    
-    @media (max-width: 768px) {
-      flex-direction: column;
-      align-items: center;
-    }
+  &:last-child {
+    border-bottom: none;
   }
+}
+
+.skillName {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.skillBarContainer {
+  height: 8px;
+  background-color: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skillBar {
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: 4px;
+}
+
+.featuredProjects {
+  padding: 2rem;
   
-  .primaryButton,
-  .secondaryButton {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s;
+  @media (max-width: 768px) {
+    padding: 1rem;
   }
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
   
-  .primaryButton {
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.projectCard {
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid var(--border-color);
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.projectImage {
+  height: 200px;
+  background-color: #f0f0f0;
+  background-size: cover;
+  background-position: center;
+}
+
+.projectTitle {
+  padding: 1.5rem 1.5rem 0.5rem;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.projectDescription {
+  padding: 0 1.5rem 1.5rem;
+  color: var(--text-secondary);
+}
+
+.projectLink {
+  display: block;
+  padding: 1rem 1.5rem;
+  text-align: right;
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.viewAll {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.viewAllLink {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  transition: all 0.3s;
+  
+  &:hover {
     background-color: var(--accent-color);
     color: white;
-    
-    &:hover {
-      background-color: darken(#0070f3, 10%);
-    }
   }
-  
-  .secondaryButton {
-    background-color: transparent;
-    color: var(--accent-color);
-    border: 1px solid var(--accent-color);
-    
-    &:hover {
-      background-color: rgba(0, 112, 243, 0.05);
-    }
-  }
-  
-  .sectionTitle {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: var(--text-primary);
-    text-align: center;
-    
-    @media (max-width: 768px) {
-      font-size: 1.75rem;
-      margin-bottom: 1.5rem;
-    }
-  }
-  
-  .about {
-    padding: 2rem;
-    
-    @media (max-width: 768px) {
-      padding: 1rem;
-    }
-  }
-  
-  .aboutContent {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2rem;
-    
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-    }
-  }
-  
-  .aboutText {
-    p {
-      margin-bottom: 1.5rem;
-      line-height: 1.6;
-      color: var(--text-secondary);
-    }
-  }
-  
-  .skills {
-    background-color: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-  }
-  
-  .skillsTitle {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-  }
-  
-  .skillsList {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .skillItem {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border-color);
-    color: var(--text-secondary);
-    
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-  
-  .featuredProjects {
-    padding: 2rem;
-    
-    @media (max-width: 768px) {
-      padding: 1rem;
-    }
-  }
-  
-  .projectsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-    
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-  }
-  
-  .projectCard {
-    background-color: var(--bg-secondary);
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid var(--border-color);
-    
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-  }
-  
-  .projectImage {
-    height: 200px;
-    background-color: #f0f0f0;
-    background-image: url('https://via.placeholder.com/300');
-    background-size: cover;
-    background-position: center;
-  }
-  
-  .projectTitle {
-    padding: 1.5rem 1.5rem 0.5rem;
-    font-size: 1.25rem;
-    color: var(--text-primary);
-  }
-  
-  .projectDescription {
-    padding: 0 1.5rem 1.5rem;
-    color: var(--text-secondary);
-  }
-  
-  .projectLink {
-    display: block;
-    padding: 1rem 1.5rem;
-    text-align: right;
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: 500;
-    
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-  
-  .viewAll {
-    margin-top: 2rem;
-    text-align: center;
-  }
-  
-  .viewAllLink {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    font-weight: 500;
-    text-decoration: none;
-    color: var(--accent-color);
-    border: 1px solid var(--accent-color);
-    transition: all 0.3s;
-    
-    &:hover {
-      background-color: var(--accent-color);
-      color: white;
-    }
-  }
+}
+
+.noProjects {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}

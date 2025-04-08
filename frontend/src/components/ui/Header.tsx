@@ -7,8 +7,10 @@ import styles from './Header.module.scss';
  * Header component with navigation
  */
 const Header = () => {
-  const { isAuthenticated, logout } = useAuthContext();
+  const { isAuthenticated, user, logout } = useAuthContext();
   const { theme, toggleTheme } = useThemeContext();
+  
+  const isAdmin = user?.role === 'admin';
 
   return (
     <header className={styles.header}>
@@ -27,15 +29,30 @@ const Header = () => {
             <li className={styles.navItem}>
               <Link to="/contact" className={styles.navLink}>Contact</Link>
             </li>
+            
+            {/* Show Admin link if user is admin */}
+            {isAdmin && (
+              <li className={styles.navItem}>
+                <Link to="/admin" className={styles.navLink}>Admin</Link>
+              </li>
+            )}
+            
             {isAuthenticated ? (
               <li className={styles.navItem}>
-                <button onClick={logout} className={styles.navButton}>Logout</button>
+                <button 
+                  onClick={logout} 
+                  className={styles.navButton}
+                  aria-label="Logout"
+                >
+                  Logout
+                </button>
               </li>
             ) : (
               <li className={styles.navItem}>
                 <Link to="/login" className={styles.navLink}>Login</Link>
               </li>
             )}
+            
             <li className={styles.navItem}>
               <button 
                 onClick={toggleTheme} 
