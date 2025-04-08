@@ -1,0 +1,37 @@
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  
+    // Add theme-specific variables
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent-color: #0070f3;
+    --border-color: #e0e0e0;
+  
+    :global(.dark-theme) & {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2d2d2d;
+      --text-primary: #f0f0f0;
+      --text-secondary: #bbbbbb;
+      --accent-color: #3694ff;
+      --border-color: #444444;
+    }
+  
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  
+  .main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    
+    @media (max-width: 768px) {
+      padding: 1rem;
+    }
+  }
