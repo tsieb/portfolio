@@ -96,32 +96,21 @@ const exchangeSpotifyCode = async (req, res, next) => {
       return next(new AppError('Authorization code is required', 400));
     }
 
-    // Log the incoming code for debugging (first 10 chars only for security)
     console.log('Received authorization code:', code.substring(0, 10) + '...');
-
-    // Get the proper redirect URI from environment variables
+    
+    // Get credentials and redirect URI
     const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
-    if (!redirectUri) {
-      console.error('Missing SPOTIFY_REDIRECT_URI in environment variables');
-      return next(new AppError('Server configuration error', 500));
-    }
-
-    console.log('Using redirect URI:', redirectUri);
-
-    // Ensure client credentials are properly set
     const clientId = process.env.SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
     
-    if (!clientId || !clientSecret) {
-      console.error('Missing Spotify API credentials in environment variables');
+    if (!redirectUri || !clientId || !clientSecret) {
+      console.error('Missing Spotify configuration');
       return next(new AppError('Server configuration error', 500));
     }
 
     // Exchange code for tokens
     const tokenEndpoint = 'https://accounts.spotify.com/api/token';
-    const authString = Buffer.from(
-      `${clientId}:${clientSecret}`
-    ).toString('base64');
+    const authString = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
     const formData = new URLSearchParams({
       grant_type: 'authorization_code',
@@ -141,29 +130,29 @@ const exchangeSpotifyCode = async (req, res, next) => {
       data: formData
     });
 
-    console.log('Token exchange successful');
+    // Log successful exchange with sanitized output
+    console.log('Token exchange successful, received tokens:', {
+      access_token: response.data.access_token ? '[REDACTED]' : undefined,
+      refresh_token: response.data.refresh_token ? '[REDACTED]' : undefined,
+      expires_in: response.data.expires_in,
+      token_type: response.data.token_type
+    });
     
     // Validate token response
     if (!response.data.access_token || !response.data.refresh_token) {
-      console.error('Missing tokens in Spotify response', response.data);
+      console.error('Missing tokens in Spotify response', 
+                   { has_access_token: !!response.data.access_token, 
+                     has_refresh_token: !!response.data.refresh_token });
       return next(new AppError('Invalid token response from Spotify', 500));
     }
     
     res.status(200).json({
       status: 'success',
-      data: response.data
+      data: response.data // Send the raw Spotify token response
     });
   } catch (error) {
-    console.error('Spotify token exchange error details:', error.response?.data || error.message);
-    console.error('Error stack:', error.stack);
-    
-    // Return more detailed error for debugging
-    const errorMessage = error.response?.data?.error_description || 
-                        error.response?.data?.error || 
-                        error.message || 
-                        'Failed to exchange authorization code';
-    
-    next(new AppError(`Spotify authentication failed: ${errorMessage}`, 500));
+    console.error('Spotify token exchange error:', error.response?.data || error.message);
+    next(new AppError(`Spotify authentication failed: ${error.message || 'Unknown error'}`, 500));
   }
 };
 
@@ -177,8 +166,13 @@ const spotifyCallback = async (req, res, next) => {
   try {
     const { access_token, refresh_token, expires_in } = req.body;
 
-    if (!access_token || !refresh_token) {
-      return next(new AppError('Access token and refresh token are required', 400));
+    // Validate required token data
+    if (!access_token) {
+      return next(new AppError('Access token is required', 400));
+    }
+    
+    if (!refresh_token) {
+      return next(new AppError('Refresh token is required', 400));
     }
 
     // Get Spotify user profile with the access token

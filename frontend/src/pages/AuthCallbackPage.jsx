@@ -1,5 +1,6 @@
 // File: /frontend/src/pages/AuthCallbackPage.jsx
-// Enhanced universal auth callback with improved token handling
+// Enhanced Spotify OAuth callback handler with proper token exchange
+
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -17,12 +18,12 @@ const AuthCallbackPage = () => {
   useEffect(() => {
     const processAuth = async () => {
       try {
-        // Get params from URL
+        // Get query parameters from the URL
         const urlParams = new URLSearchParams(window.location.search);
         const success = urlParams.get('success') === 'true';
         const error = urlParams.get('error');
-        const token = urlParams.get('token');
         const details = urlParams.get('details');
+        const token = urlParams.get('token');
         
         if (error) {
           console.error('Auth error:', error, details);
@@ -36,18 +37,15 @@ const AuthCallbackPage = () => {
         }
         
         if (success && token) {
-          console.log('Received token from server, storing...');
-          // Store token in localStorage
+          // Store the token provided by the server
           localStorage.setItem('token', token);
           
-          // Verify authentication
+          // Check authentication status to update auth context
           await checkAuth();
           
           setStatus('success');
           setMessage('Successfully authenticated!');
-          
-          // Show success toast
-          showToast.success('Successfully logged in!');
+          showToast.success('Successfully connected to music service!');
           
           // Redirect after success
           setTimeout(() => {
@@ -56,16 +54,17 @@ const AuthCallbackPage = () => {
           return;
         }
         
-        // If we get here, something unexpected happened
+        // If we don't have success or error, something unexpected happened
         setStatus('error');
         setMessage('Unexpected authentication response. Please try again.');
-        console.error('Unexpected auth response', { success, token, error });
+        showToast.error('Authentication failed with an unexpected response.');
         
       } catch (err) {
-        console.error('Auth callback error:', err);
+        console.error('Auth callback processing error:', err);
         setStatus('error');
-        setMessage(err.message || 'Failed to authenticate');
-        setErrorDetails(JSON.stringify(err, null, 2));
+        setMessage('Failed to process authentication response');
+        setErrorDetails(err.message || 'Unknown error');
+        showToast.error('Authentication failed. Please try again.');
       }
     };
     

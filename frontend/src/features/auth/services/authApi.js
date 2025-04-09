@@ -31,23 +31,34 @@ const adminLogin = async (email, password) => {
  */
 const loginWithSpotify = async (tokenData) => {
   try {
-    // Validate the token data before proceeding
-    if (!tokenData || !tokenData.access_token || !tokenData.refresh_token) {
-      console.error('Invalid token data:', tokenData);
-      throw new Error('Invalid Spotify token data provided');
+    console.log('Processing login with Spotify tokens...');
+    
+    // Validate token data structure
+    if (!tokenData) {
+      throw new Error('No token data provided');
+    }
+    
+    if (!tokenData.access_token) {
+      throw new Error('Missing access_token in Spotify token data');
+    }
+    
+    if (!tokenData.refresh_token) {
+      throw new Error('Missing refresh_token in Spotify token data');
     }
 
+    // Send tokens to backend for authentication
     const response = await api.post('/auth/spotify/callback', {
       access_token: tokenData.access_token,
       refresh_token: tokenData.refresh_token,
       expires_in: tokenData.expires_in || 3600
     });
     
+    // Store token and return user data
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
-      console.log('JWT token stored successfully');
+      console.log('Authentication successful: JWT token stored');
     } else {
-      console.warn('No token received from server');
+      console.warn('Warning: No JWT token received from server');
     }
     
     return response.data;
@@ -60,7 +71,7 @@ const loginWithSpotify = async (tokenData) => {
 /**
  * Exchange Spotify authorization code for tokens
  * @param {string} code - Authorization code from Spotify OAuth
- * @returns {Promise<Object>} Token response from Spotify
+ * @returns {Promise<Object>} Token response with consistent structure
  */
 const exchangeSpotifyCode = async (code) => {
   try {
@@ -69,7 +80,17 @@ const exchangeSpotifyCode = async (code) => {
     }
     
     const response = await api.post('/auth/spotify/exchange', { code });
-    return response.data;
+    
+    // Make sure we're returning a consistent structure
+    // The backend returns { status: 'success', data: { tokens } }
+    if (!response.data || !response.data.data) {
+      console.error('Unexpected response structure:', response);
+      throw new Error('Unexpected response structure from server');
+    }
+    
+    return {
+      data: response.data.data // Extract the actual token data
+    };
   } catch (error) {
     console.error('Code exchange error:', error.response?.data || error);
     throw error;
