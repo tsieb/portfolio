@@ -1,22 +1,24 @@
 // File: /frontend/src/pages/AdminLoginPage.jsx
-// Admin login page with email/password authentication
+// Enhanced admin login page with improved error handling
 
 import { useState, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import { showToast } from '../config/toast';
-import { FaLock, FaEnvelope, FaUserShield } from 'react-icons/fa';
+import { FaLock, FaEnvelope, FaUserShield, FaArrowLeft } from 'react-icons/fa';
 import '../assets/styles/pages/AdminLoginPage.scss';
 
 const AdminLoginPage = () => {
   const { adminLogin, isAuthenticated, isAdmin, isLoading, error, resetError } = useAuth();
   const navigate = useNavigate();
   
+  // Form state
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   
+  // UI state
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -31,7 +33,7 @@ const AdminLoginPage = () => {
     return <Navigate to="/" replace />;
   }
   
-  // Animation on mount
+  // Handle animation on mount
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -40,19 +42,22 @@ const AdminLoginPage = () => {
     return () => clearTimeout(timer);
   }, []);
   
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    
+    // Update form data
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
+    }));
     
     // Clear field error when typing
     if (formErrors[name]) {
-      setFormErrors({
-        ...formErrors,
+      setFormErrors(prev => ({
+        ...prev,
         [name]: ''
-      });
+      }));
     }
     
     // Clear global error when typing
@@ -61,13 +66,18 @@ const AdminLoginPage = () => {
     }
   };
   
+  // Form validation
   const validateForm = () => {
     const errors = {};
     
+    // Validate email
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email is invalid';
     }
     
+    // Validate password
     if (!formData.password) {
       errors.password = 'Password is required';
     }
@@ -76,25 +86,29 @@ const AdminLoginPage = () => {
     return Object.keys(errors).length === 0;
   };
   
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate form
     if (!validateForm()) return;
     
     setIsSubmitting(true);
     
     try {
       await adminLogin(formData.email, formData.password);
+      
       showToast.success('Login successful!');
       navigate('/admin');
     } catch (err) {
-      // Error is handled by the auth context and displayed below
+      // Error will be handled by AuthContext and displayed at bottom of form
       showToast.error('Login failed. Please check your credentials.');
     } finally {
       setIsSubmitting(false);
     }
   };
   
+  // Show loading state
   if (isLoading) {
     return (
       <div className="admin-login-page">
@@ -125,7 +139,7 @@ const AdminLoginPage = () => {
             </div>
           )}
           
-          <form className="admin-login-form" onSubmit={handleSubmit}>
+          <form className="admin-login-form" onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label htmlFor="email" className="form-label">Email</label>
               <div className="form-input-group">
@@ -142,6 +156,7 @@ const AdminLoginPage = () => {
                   placeholder="Enter your admin email"
                   disabled={isSubmitting}
                   autoComplete="email"
+                  required
                 />
               </div>
               {formErrors.email && (
@@ -165,6 +180,7 @@ const AdminLoginPage = () => {
                   placeholder="Enter your password"
                   disabled={isSubmitting}
                   autoComplete="current-password"
+                  required
                 />
               </div>
               {formErrors.password && (
@@ -187,6 +203,11 @@ const AdminLoginPage = () => {
               )}
             </button>
           </form>
+          
+          <Link to="/login" className="admin-login-back-link">
+            <FaArrowLeft className="mr-sm" />
+            Back to main login
+          </Link>
         </div>
       </div>
     </div>

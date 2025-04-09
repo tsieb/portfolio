@@ -210,7 +210,7 @@ const UserSettingsPage = () => {
             {user.spotifyConnected ? (
               <div className="settings-spotify settings-spotify--connected">
                 <div className="settings-spotify__status">
-                  <FaCheckCircle className="settings-spotify__status-icon" />
+                  {/* <FaCheckCircle className="settings-spotify__status-icon" /> */}
                   <div className="settings-spotify__status-text">
                     <h3>Connected to Spotify</h3>
                     <p>Your music activity is being tracked</p>

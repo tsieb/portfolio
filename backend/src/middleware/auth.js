@@ -1,167 +1,180 @@
 // File: /backend/src/middleware/auth.js
-// Enhanced authentication middleware with ownership checks
+// Authentication middleware with improved error handling and token management
 
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 const { User } = require('../db/models');
 const { AppError } = require('./error');
+const logger = require('../utils/logger');
 
 /**
- * Middleware to protect routes by requiring authentication
+ * Protect routes that require authentication
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next function
  */
 exports.protect = async (req, res, next) => {
   try {
-    // 1) Get token from authorization header or cookies
+    // 1) Get the token
     let token;
     
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
+    // Check Authorization header first
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
-    } else if (req.cookies.jwt) {
+    }
+    // Then check cookie
+    else if (req.cookies.jwt) {
       token = req.cookies.jwt;
     }
-
+    
+    // If no token, return error
     if (!token) {
       return next(new AppError('You are not logged in. Please log in to get access.', 401));
     }
-
-    // 2) Verify token
+    
+    // 2) Verify the token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
+    
     // 3) Check if user still exists
     const currentUser = await User.findById(decoded.id);
+    
     if (!currentUser) {
       return next(new AppError('The user belonging to this token no longer exists.', 401));
     }
-
-    // 4) Check if user changed password after the token was issued
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
+    
+    // 4) Check if user changed password after token was issued
+    if (currentUser.passwordChangedAt && currentUser.changedPasswordAfter(decoded.iat)) {
       return next(new AppError('User recently changed password. Please log in again.', 401));
     }
-
+    
     // Update last active timestamp
     currentUser.lastActive = Date.now();
     await currentUser.save({ validateBeforeSave: false });
-
-    // Grant access to protected route
+    
+    // Grant access to protected route - set user on request
     req.user = currentUser;
     next();
   } catch (error) {
-    next(new AppError('Not authorized', 401));
+    if (error.name === 'JsonWebTokenError') {
+      return next(new AppError('Invalid token. Please log in again.', 401));
+    }
+    if (error.name === 'TokenExpiredError') {
+      return next(new AppError('Your token has expired. Please log in again.', 401));
+    }
+    
+    logger.error('Authentication error:', error);
+    return next(new AppError('Authentication failed. Please log in again.', 401));
   }
 };
 
 /**
- * Middleware to restrict access to specific roles
- * @param {...string} roles - Roles allowed to access the route
- * @returns {Function} Express middleware function
+ * Restrict access to specific roles
+ * @param  {...string} roles - Array of roles that are allowed
+ * @returns {Function} Middleware function
  */
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
-    // Check if user role is included in the roles array
     if (!roles.includes(req.user.role)) {
       return next(new AppError('You do not have permission to perform this action', 403));
     }
-    
     next();
   };
 };
 
 /**
- * Middleware to check if user can access a protected profile
- * @param {string} paramField - The request parameter field containing the username or userId
- * @param {boolean} allowSameUser - Whether to allow the same user to access the route
- * @returns {Function} Express middleware function
+ * Check if user can access a protected profile
+ * @param {string} paramField - Request parameter field containing username or ID
+ * @param {boolean} allowSameUser - Whether to allow users to access their own profile
+ * @returns {Function} Middleware function
  */
 exports.checkProfileAccess = (paramField = 'username', allowSameUser = true) => {
   return async (req, res, next) => {
     try {
-      // Skip if user is admin - admins can access all profiles
-      if (req.user.role === 'admin') {
+      // Skip for admin users
+      if (req.user && req.user.role === 'admin') {
         return next();
       }
-
-      let targetUser;
+      
+      // Get target user based on parameter
       const param = req.params[paramField];
-
+      let targetUser;
+      
       if (paramField === 'username') {
         targetUser = await User.findOne({ username: param });
-      } else if (paramField === 'userId') {
-        targetUser = await User.findById(param);
       } else {
         targetUser = await User.findById(param);
       }
-
+      
+      // If user not found
       if (!targetUser) {
         return next(new AppError('User not found', 404));
       }
-
-      // Allow users to access their own profile
-      if (allowSameUser && req.user._id.equals(targetUser._id)) {
+      
+      // Allow access to own profile
+      if (allowSameUser && req.user && req.user._id.equals(targetUser._id)) {
         req.targetUser = targetUser;
         return next();
       }
-
-      // Check if the target user's profile is public
+      
+      // Allow access to public profiles
       if (targetUser.isPublic) {
         req.targetUser = targetUser;
         return next();
       }
-
-      // Check if the current user is in the target user's allowed viewers
-      if (targetUser.allowedViewers && targetUser.allowedViewers.some(viewer => 
-        viewer.equals(req.user._id)
-      )) {
+      
+      // Check if current user is in allowed viewers
+      if (req.user && 
+          targetUser.allowedViewers && 
+          targetUser.allowedViewers.some(id => id.equals(req.user._id))) {
         req.targetUser = targetUser;
         return next();
       }
-
+      
+      // If we get here, access is denied
       return next(new AppError('You do not have permission to view this profile', 403));
     } catch (error) {
+      logger.error('Profile access check error:', error);
       return next(new AppError('Error checking profile access', 500));
     }
   };
 };
 
 /**
- * Middleware to check if user is the owner of a resource
- * @param {Function} getResourceOwner - Function to get the owner of the resource
- * @returns {Function} Express middleware function
+ * Check if user is the owner of a resource
+ * @param {Function} getResourceOwner - Function to get resource owner ID
+ * @returns {Function} Middleware function
  */
 exports.checkOwnership = (getResourceOwner) => {
   return async (req, res, next) => {
     try {
-      // Skip if user is admin - admins can access all resources
+      // Skip for admin users
       if (req.user.role === 'admin') {
         return next();
       }
-
+      
+      // Get owner ID using provided function
       const ownerId = await getResourceOwner(req);
-
+      
       if (!ownerId) {
         return next(new AppError('Resource not found', 404));
       }
-
-      // Check if the user is the owner
+      
+      // Check if user is owner
       if (req.user._id.equals(ownerId)) {
         return next();
       }
-
-      return next(new AppError('You are not authorized to access this resource', 403));
+      
+      return next(new AppError('You do not have permission to perform this action', 403));
     } catch (error) {
+      logger.error('Ownership check error:', error);
       return next(new AppError('Error checking resource ownership', 500));
     }
   };
 };
 
 /**
- * Middleware to check if user is logged in (for UI state)
- * Does not block the request if not authenticated
+ * Optional auth middleware - populates req.user if authenticated
+ * but doesn't block access if not
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next function
@@ -169,29 +182,17 @@ exports.checkOwnership = (getResourceOwner) => {
 exports.isLoggedIn = async (req, res, next) => {
   try {
     if (req.cookies.jwt) {
-      // Verify token
-      const decoded = await promisify(jwt.verify)(
-        req.cookies.jwt,
-        process.env.JWT_SECRET
-      );
-
-      // Check if user still exists
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
       const currentUser = await User.findById(decoded.id);
-      if (!currentUser) {
-        return next();
+      
+      if (currentUser && !currentUser.changedPasswordAfter(decoded.iat)) {
+        req.user = currentUser;
       }
-
-      // Check if user changed password after the token was issued
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-        return next();
-      }
-
-      // There is a logged in user
-      req.user = currentUser;
-      return next();
     }
-  } catch (err) {
-    // No logged in user
+    
+    next();
+  } catch (error) {
+    // Silently handle token errors and continue
+    next();
   }
-  next();
 };

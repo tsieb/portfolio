@@ -1,22 +1,24 @@
 // File: /frontend/src/pages/LoginPage.jsx
-// Updated login page with music icons instead of Spotify ones
+// Enhanced login page with cleaner Spotify OAuth flow
 
 import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
-import { FaHeadphones, FaMusic } from 'react-icons/fa';
+import { showToast } from '../config/toast';
+import { FaHeadphones, FaMusic, FaSpotify } from 'react-icons/fa';
 import '../assets/styles/pages/LoginPage.scss';
 
 const LoginPage = () => {
   const { isAuthenticated, isLoading } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
   
   // If already authenticated, redirect to home
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
   
-  // Animation on mount
+  // Animation effect on mount
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
@@ -25,11 +27,13 @@ const LoginPage = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  const handleMusicLogin = () => {
+  // Handle Spotify login
+  const handleSpotifyLogin = () => {
     // Redirect to backend OAuth endpoint
-    window.location.href = `${import.meta.env.VITE_API_URL || '/api'}/auth/spotify`;
+    window.location.href = `${apiUrl}/auth/spotify`;
   };
   
+  // Show loading state
   if (isLoading) {
     return (
       <div className="login-page">
@@ -54,12 +58,21 @@ const LoginPage = () => {
         
         <div className="login-card__content">
           <button 
-            onClick={handleMusicLogin}
+            onClick={handleSpotifyLogin}
             className="btn btn-spotify login-form__spotify"
+            aria-label="Continue with Spotify"
           >
-            <FaMusic className="btn-spotify__icon" />
-            Continue with Music Service
+            <FaSpotify className="btn-spotify__icon" />
+            Continue with Spotify
           </button>
+          
+          <div className="login-form__divider">
+            <span>or</span>
+          </div>
+          
+          <Link to="/admin/login" className="btn btn-outline login-form__admin">
+            Administrator Login
+          </Link>
           
           <div className="login-form__info">
             <p>By continuing, you agree to our <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.</p>

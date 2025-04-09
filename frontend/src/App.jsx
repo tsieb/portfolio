@@ -1,5 +1,5 @@
 // File: /frontend/src/App.jsx
-// Main App component with updated routing for music activity sharing platform
+// Main application component with updated routes for authentication flow
 
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -31,7 +31,12 @@ const AdminRoute = ({ children }) => {
   const { isAuthenticated, isAdmin, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="loading-container">Loading...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   if (!isAuthenticated || !isAdmin) {
@@ -42,11 +47,16 @@ const AdminRoute = ({ children }) => {
 };
 
 // Protected route wrapper for user routes
-const UserRoute = ({ children }) => {
+const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="loading-container">Loading...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -59,8 +69,8 @@ const UserRoute = ({ children }) => {
 const App = () => {
   const { checkAuth } = useAuth();
 
+  // Check authentication status when app loads
   useEffect(() => {
-    // Check authentication status on initial load
     checkAuth();
   }, [checkAuth]);
 
@@ -73,16 +83,16 @@ const App = () => {
         <Route path="auth/callback" element={<AuthCallbackPage />} />
       </Route>
 
-      {/* User profile routes - publicly accessible */}
+      {/* User profile routes - publicly accessible but with privacy controls */}
       <Route path="/user/:username" element={<UserLayout />}>
         <Route index element={<UserProfilePage />} />
       </Route>
 
-      {/* User settings routes - protected */}
+      {/* User settings - protected route */}
       <Route path="/settings" element={
-        <UserRoute>
+        <ProtectedRoute>
           <MainLayout />
-        </UserRoute>
+        </ProtectedRoute>
       }>
         <Route index element={<UserSettingsPage />} />
       </Route>
@@ -90,7 +100,7 @@ const App = () => {
       {/* Admin login - public */}
       <Route path="/admin/login" element={<AdminLoginPage />} />
 
-      {/* Admin routes - protected */}
+      {/* Admin routes - protected and require admin role */}
       <Route path="/admin" element={
         <AdminRoute>
           <AdminLayout />
@@ -101,7 +111,7 @@ const App = () => {
         <Route path="users" element={<AdminUsersPage />} />
       </Route>
 
-      {/* Catch all route */}
+      {/* Catch-all route for 404 errors */}
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

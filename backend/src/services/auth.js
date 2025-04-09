@@ -1,12 +1,13 @@
 // File: /backend/src/services/auth.js
-// Enhanced auth service with Spotify OAuth support
+// Authentication service with improved error handling and separation of concerns
 
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const axios = require('axios');
 const { User } = require('../db/models');
 const spotifyService = require('./spotify');
 const { AppError } = require('../middleware/error');
-const axios = require('axios');
+const logger = require('../utils/logger');
 
 /**
  * Signs a JWT token for a user
@@ -17,7 +18,7 @@ const signToken = (id) => {
   return jwt.sign(
     { id },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN }
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 };
 
@@ -32,18 +33,20 @@ const createSendToken = (user, statusCode, res) => {
   
   const cookieOptions = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN || 7) * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax'
   };
 
+  // Set JWT cookie
   res.cookie('jwt', token, cookieOptions);
 
   // Remove password from output
   user.password = undefined;
-
+  
+  // Send response with token and user data
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -51,6 +54,111 @@ const createSendToken = (user, statusCode, res) => {
       user
     }
   });
+};
+
+/**
+ * Initiate Spotify OAuth flow
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const initiateSpotifyAuth = (req, res) => {
+  const scopes = [
+    'user-read-currently-playing',
+    'user-read-recently-played',
+    'user-top-read',
+    'user-read-email',
+    'user-read-private'
+  ];
+  
+  const redirectUri = encodeURIComponent(process.env.SPOTIFY_REDIRECT_URI);
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  
+  if (!clientId || !redirectUri) {
+    logger.error('Missing Spotify credentials in environment');
+    return res.redirect(
+      `/auth/callback?error=server_error&details=${encodeURIComponent('Server configuration error')}`
+    );
+  }
+  
+  const spotifyAuthUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${encodeURIComponent(scopes.join(' '))}&show_dialog=true`;
+  
+  res.redirect(spotifyAuthUrl);
+};
+
+/**
+ * Handle Spotify OAuth callback - redirects to frontend with token or error
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const handleSpotifyCallback = async (req, res) => {
+  const { code, error } = req.query;
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+  
+  // If Spotify returns an error, redirect to frontend with error
+  if (error) {
+    logger.error(`Spotify auth error: ${error}`);
+    return res.redirect(
+      `${frontendUrl}/auth/callback?error=${error}`
+    );
+  }
+  
+  // If no code is present, redirect with error
+  if (!code) {
+    logger.error('No authorization code provided by Spotify');
+    return res.redirect(
+      `${frontendUrl}/auth/callback?error=missing_code`
+    );
+  }
+  
+  try {
+    // Exchange code for tokens
+    const tokens = await exchangeCodeForTokens(code);
+    
+    // Get user profile from Spotify
+    const spotifyUser = await spotifyService.getUserProfile(tokens.access_token);
+    
+    // Create or update user
+    const user = await findOrCreateUser(spotifyUser, tokens);
+    
+    // Generate JWT token
+    const token = signToken(user._id);
+    
+    // Redirect to frontend with success and token
+    res.redirect(
+      `${frontendUrl}/auth/callback?success=true&token=${token}`
+    );
+  } catch (error) {
+    logger.error('Spotify callback error:', error);
+    
+    // Redirect to frontend with error details
+    res.redirect(
+      `${frontendUrl}/auth/callback?error=authentication_failed&details=${encodeURIComponent(error.message)}`
+    );
+  }
+};
+
+/**
+ * Exchange Spotify authorization code for tokens (API endpoint)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const exchangeSpotifyToken = async (req, res, next) => {
+  try {
+    const { code } = req.body;
+    
+    // Exchange code for tokens
+    const tokenData = await exchangeCodeForTokens(code);
+    
+    // Return tokens to frontend
+    res.status(200).json({
+      status: 'success',
+      data: tokenData
+    });
+  } catch (error) {
+    logger.error('Token exchange error:', error);
+    next(new AppError(`Failed to exchange token: ${error.message}`, 500));
+  }
 };
 
 /**
@@ -62,278 +170,61 @@ const createSendToken = (user, statusCode, res) => {
 const adminLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    // 1) Check if email and password exist
-    if (!email || !password) {
-      return next(new AppError('Please provide email and password', 400));
-    }
-
-    // 2) Check if user exists && password is correct
+    
+    // Find user
     const user = await User.findOne({ email }).select('+password');
-
-    if (!user || user.role !== 'admin' || !(await user.correctPassword(password))) {
-      return next(new AppError('Incorrect email or password', 401));
+    
+    // Check if user exists and is admin
+    if (!user || user.role !== 'admin') {
+      return next(new AppError('Invalid credentials', 401));
     }
-
-    // 3) If everything ok, send token to client
+    
+    // Check password
+    const isPasswordCorrect = await user.correctPassword(password);
+    if (!isPasswordCorrect) {
+      return next(new AppError('Invalid credentials', 401));
+    }
+    
+    // Send token
     createSendToken(user, 200, res);
   } catch (error) {
-    next(error);
+    logger.error('Admin login error:', error);
+    next(new AppError('Authentication failed', 500));
   }
 };
 
 /**
- * Exchange Spotify authorization code for tokens
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next function
- */
-const exchangeSpotifyCode = async (req, res, next) => {
-  try {
-    const { code } = req.body;
-
-    if (!code) {
-      return next(new AppError('Authorization code is required', 400));
-    }
-
-    console.log('Received authorization code:', code.substring(0, 10) + '...');
-    
-    // Get credentials and redirect URI
-    const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
-    const clientId = process.env.SPOTIFY_CLIENT_ID;
-    const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-    
-    if (!redirectUri || !clientId || !clientSecret) {
-      console.error('Missing Spotify configuration');
-      return next(new AppError('Server configuration error', 500));
-    }
-
-    // Exchange code for tokens
-    const tokenEndpoint = 'https://accounts.spotify.com/api/token';
-    const authString = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-
-    const formData = new URLSearchParams({
-      grant_type: 'authorization_code',
-      code: code,
-      redirect_uri: redirectUri
-    });
-
-    console.log('Sending token exchange request...');
-    
-    const response = await axios({
-      method: 'post',
-      url: tokenEndpoint,
-      headers: {
-        'Authorization': `Basic ${authString}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      data: formData
-    });
-
-    // Log successful exchange with sanitized output
-    console.log('Token exchange successful, received tokens:', {
-      access_token: response.data.access_token ? '[REDACTED]' : undefined,
-      refresh_token: response.data.refresh_token ? '[REDACTED]' : undefined,
-      expires_in: response.data.expires_in,
-      token_type: response.data.token_type
-    });
-    
-    // Validate token response
-    if (!response.data.access_token || !response.data.refresh_token) {
-      console.error('Missing tokens in Spotify response', 
-                   { has_access_token: !!response.data.access_token, 
-                     has_refresh_token: !!response.data.refresh_token });
-      return next(new AppError('Invalid token response from Spotify', 500));
-    }
-    
-    res.status(200).json({
-      status: 'success',
-      data: response.data // Send the raw Spotify token response
-    });
-  } catch (error) {
-    console.error('Spotify token exchange error:', error.response?.data || error.message);
-    next(new AppError(`Spotify authentication failed: ${error.message || 'Unknown error'}`, 500));
-  }
-};
-
-/**
- * Handle Spotify OAuth callback and user creation/login
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next function
- */
-const spotifyCallback = async (req, res, next) => {
-  try {
-    const { access_token, refresh_token, expires_in } = req.body;
-
-    // Validate required token data
-    if (!access_token) {
-      return next(new AppError('Access token is required', 400));
-    }
-    
-    if (!refresh_token) {
-      return next(new AppError('Refresh token is required', 400));
-    }
-
-    // Get Spotify user profile with the access token
-    const spotifyUser = await spotifyService.getUserProfile(access_token);
-
-    if (!spotifyUser || !spotifyUser.id) {
-      return next(new AppError('Failed to get Spotify user profile', 500));
-    }
-
-    console.log(`Retrieved Spotify profile for user ID: ${spotifyUser.id}`);
-
-    // Check if user exists with this Spotify ID
-    let user = await User.findOne({ spotifyId: spotifyUser.id });
-    
-    // If no user exists, create a new one
-    if (!user) {
-      console.log('Creating new user from Spotify profile');
-      
-      // Generate a unique username based on Spotify display name
-      let username = spotifyUser.display_name
-        ? spotifyUser.display_name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '')
-        : `user_${crypto.randomBytes(4).toString('hex')}`;
-      
-      // Check if username exists, if so, add a random suffix
-      const usernameExists = await User.findOne({ username });
-      if (usernameExists) {
-        username = `${username}_${crypto.randomBytes(4).toString('hex')}`;
-      }
-      
-      // Create new user
-      user = await User.create({
-        email: spotifyUser.email || `${username}@spotifyuser.com`,
-        username,
-        password: crypto.randomBytes(16).toString('hex'), // Random secure password
-        displayName: spotifyUser.display_name,
-        avatar: spotifyUser.images && spotifyUser.images.length > 0 ? spotifyUser.images[0].url : null,
-        spotifyId: spotifyUser.id,
-        spotifyToken: {
-          accessToken: access_token,
-          refreshToken: refresh_token,
-          expiresAt: new Date(Date.now() + expires_in * 1000)
-        },
-        spotifyConnected: true,
-        onboardingCompleted: false
-      });
-      
-      console.log(`New user created with ID: ${user._id}, username: ${username}`);
-    } else {
-      console.log(`Updating existing user with ID: ${user._id}`);
-      
-      // Update existing user's Spotify token
-      user.spotifyToken = {
-        accessToken: access_token,
-        refreshToken: refresh_token,
-        expiresAt: new Date(Date.now() + expires_in * 1000)
-      };
-      user.spotifyConnected = true;
-      
-      // Update profile if needed
-      if (spotifyUser.display_name && !user.displayName) {
-        user.displayName = spotifyUser.display_name;
-      }
-      
-      if (spotifyUser.images && spotifyUser.images.length > 0 && !user.avatar) {
-        user.avatar = spotifyUser.images[0].url;
-      }
-      
-      await user.save();
-      console.log('User updated successfully');
-    }
-
-    // Create and send JWT
-    createSendToken(user, 200, res);
-  } catch (error) {
-    console.error('Spotify callback error:', error);
-    next(new AppError('Authentication with Spotify failed', 500));
-  }
-};
-
-/**
- * Logs out a user by clearing the JWT cookie
+ * Logout user by clearing JWT cookie
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
 const logout = (req, res) => {
-  res.cookie('jwt', 'loggedout', {
+  res.cookie('jwt', 'logged-out', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax'
   });
   
-  res.status(200).json({ status: 'success' });
+  res.status(200).json({
+    status: 'success',
+    message: 'Logged out successfully'
+  });
 };
 
 /**
  * Get current authenticated user
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
- * @param {Function} next - Express next function
  */
-const getCurrentUser = async (req, res, next) => {
-  try {
-    // User is already available in req from the protect middleware
-    if (!req.user) {
-      return next(new AppError('You are not logged in', 401));
+const getCurrentUser = (req, res) => {
+  // User is already available from protect middleware
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: req.user
     }
-    
-    res.status(200).json({
-      status: 'success',
-      data: {
-        user: req.user
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * Creates an admin user if one doesn't exist
- * Used during application startup
- * @returns {Promise<void>}
- */
-const createAdminUser = async () => {
-  try {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    
-    if (!adminEmail || !adminPassword) {
-      console.error('Missing ADMIN_EMAIL or ADMIN_PASSWORD in environment');
-      return;
-    }
-    
-    // Check if admin user already exists
-    const adminExists = await User.findOne({ 
-      email: adminEmail,
-      role: 'admin'
-    });
-    
-    if (!adminExists) {
-      console.log('Creating admin user...');
-      
-      // Ensure a valid username for admin
-      const username = 'admin';
-      
-      await User.create({
-        email: adminEmail,
-        username,
-        password: adminPassword,
-        role: 'admin',
-        displayName: 'Admin User',
-        isPublic: true, // Make admin user public to showcase music data
-        onboardingCompleted: true
-      });
-      
-      console.log('Admin user created successfully');
-    }
-  } catch (error) {
-    console.error('Error creating admin user:', error);
-  }
+  });
 };
 
 /**
@@ -345,37 +236,33 @@ const createAdminUser = async () => {
 const validateUsername = async (req, res, next) => {
   try {
     const { username } = req.body;
-
-    if (!username) {
-      return next(new AppError('Username is required', 400));
-    }
-
-    // Validate username format
+    
+    // Check username format
     if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
-      return next(new AppError('Username must be 3-20 characters and can only contain letters, numbers, underscores and hyphens', 400));
+      return next(new AppError('Username must be 3-20 characters and contain only letters, numbers, underscores, and hyphens', 400));
     }
-
+    
     // Check if username exists
-    const existingUser = await User.findOne({ username: username.toLowerCase() });
-
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return next(new AppError('Username is already taken', 400));
+      return res.status(200).json({
+        status: 'success',
+        data: { available: false, message: 'Username is already taken' }
+      });
     }
-
+    
     res.status(200).json({
       status: 'success',
-      message: 'Username is available',
-      data: {
-        available: true
-      }
+      data: { available: true, message: 'Username is available' }
     });
   } catch (error) {
-    next(error);
+    logger.error('Username validation error:', error);
+    next(new AppError('Failed to validate username', 500));
   }
 };
 
 /**
- * Complete user onboarding
+ * Complete user onboarding after OAuth login
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next function
@@ -383,33 +270,38 @@ const validateUsername = async (req, res, next) => {
 const completeOnboarding = async (req, res, next) => {
   try {
     const { username, displayName, bio, isPublic } = req.body;
-
-    // Validate username if provided
+    const updates = {};
+    
+    // If username is being updated, check availability
     if (username && username !== req.user.username) {
-      if (!/^[a-zA-Z0-9_-]{3,20}$/.test(username)) {
-        return next(new AppError('Username must be 3-20 characters and can only contain letters, numbers, underscores and hyphens', 400));
-      }
-
-      const existingUser = await User.findOne({ username: username.toLowerCase() });
-      if (existingUser && !existingUser._id.equals(req.user._id)) {
+      const existingUser = await User.findOne({ 
+        username, 
+        _id: { $ne: req.user._id } 
+      });
+      
+      if (existingUser) {
         return next(new AppError('Username is already taken', 400));
       }
+      
+      updates.username = username;
     }
-
-    // Update user profile
-    const updates = {};
-    if (username) updates.username = username;
+    
+    // Update other fields if provided
     if (displayName) updates.displayName = displayName;
     if (bio !== undefined) updates.bio = bio;
     if (isPublic !== undefined) updates.isPublic = isPublic;
+    
+    // Mark onboarding as completed
     updates.onboardingCompleted = true;
-
+    
+    // Update user
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       updates,
       { new: true, runValidators: true }
     );
-
+    
+    // Return updated user
     res.status(200).json({
       status: 'success',
       data: {
@@ -417,19 +309,162 @@ const completeOnboarding = async (req, res, next) => {
       }
     });
   } catch (error) {
-    next(error);
+    logger.error('Onboarding completion error:', error);
+    next(new AppError('Failed to complete onboarding', 500));
+  }
+};
+
+/**
+ * Create admin user on application startup if not exists
+ */
+const createAdminUser = async () => {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    
+    if (!adminEmail || !adminPassword) {
+      logger.warn('Missing ADMIN_EMAIL or ADMIN_PASSWORD in environment variables');
+      return;
+    }
+    
+    const adminExists = await User.findOne({ email: adminEmail, role: 'admin' });
+    
+    if (!adminExists) {
+      logger.info('Creating admin user...');
+      
+      await User.create({
+        email: adminEmail,
+        username: 'admin',
+        password: adminPassword,
+        role: 'admin',
+        displayName: 'Administrator',
+        isPublic: true,
+        onboardingCompleted: true
+      });
+      
+      logger.info('Admin user created successfully');
+    }
+  } catch (error) {
+    logger.error('Error creating admin user:', error);
+  }
+};
+
+// ===== Helper Functions =====
+
+/**
+ * Exchange Spotify authorization code for tokens
+ * @param {string} code - Authorization code from Spotify
+ * @returns {Promise<Object>} Tokens from Spotify
+ */
+const exchangeCodeForTokens = async (code) => {
+  try {
+    const clientId = process.env.SPOTIFY_CLIENT_ID;
+    const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+    const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
+    
+    if (!clientId || !clientSecret || !redirectUri) {
+      throw new Error('Missing Spotify credentials in environment');
+    }
+    
+    const authString = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+    
+    const response = await axios({
+      method: 'post',
+      url: 'https://accounts.spotify.com/api/token',
+      headers: {
+        'Authorization': `Basic ${authString}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      data: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: redirectUri
+      })
+    });
+    
+    return response.data;
+  } catch (error) {
+    logger.error('Error exchanging code for tokens:', error.response?.data || error);
+    throw new Error(error.response?.data?.error_description || 'Failed to exchange authorization code');
+  }
+};
+
+/**
+ * Find or create user from Spotify profile
+ * @param {Object} spotifyUser - User profile from Spotify
+ * @param {Object} tokens - Access and refresh tokens
+ * @returns {Promise<Object>} User document
+ */
+const findOrCreateUser = async (spotifyUser, tokens) => {
+  if (!spotifyUser || !spotifyUser.id) {
+    throw new Error('Invalid Spotify user data');
+  }
+  
+  // Check if user exists
+  let user = await User.findOne({ spotifyId: spotifyUser.id });
+  
+  if (user) {
+    // Update existing user
+    user.spotifyToken = {
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      expiresAt: new Date(Date.now() + tokens.expires_in * 1000)
+    };
+    user.spotifyConnected = true;
+    
+    // Update profile data if missing
+    if (spotifyUser.display_name && !user.displayName) {
+      user.displayName = spotifyUser.display_name;
+    }
+    
+    if (spotifyUser.images && spotifyUser.images.length > 0 && !user.avatar) {
+      user.avatar = spotifyUser.images[0].url;
+    }
+    
+    await user.save();
+    return user;
+  } else {
+    // Create new user
+    // Generate username based on Spotify display name or random string
+    let username = spotifyUser.display_name
+      ? spotifyUser.display_name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '')
+      : `user_${crypto.randomBytes(4).toString('hex')}`;
+      
+    // Check if username exists
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) {
+      username = `${username}_${crypto.randomBytes(4).toString('hex')}`;
+    }
+    
+    // Create user
+    return await User.create({
+      email: spotifyUser.email || `${username}@spotifyuser.com`,
+      username,
+      password: crypto.randomBytes(16).toString('hex'), // Random secure password
+      displayName: spotifyUser.display_name,
+      avatar: spotifyUser.images && spotifyUser.images.length > 0 ? spotifyUser.images[0].url : null,
+      spotifyId: spotifyUser.id,
+      spotifyToken: {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        expiresAt: new Date(Date.now() + tokens.expires_in * 1000)
+      },
+      spotifyConnected: true,
+      onboardingCompleted: false
+    });
   }
 };
 
 module.exports = {
   signToken,
   createSendToken,
+  initiateSpotifyAuth,
+  handleSpotifyCallback,
+  exchangeSpotifyToken,
   adminLogin,
-  exchangeSpotifyCode,
-  spotifyCallback,
   logout,
   getCurrentUser,
-  createAdminUser,
   validateUsername,
-  completeOnboarding
+  completeOnboarding,
+  createAdminUser
 };
