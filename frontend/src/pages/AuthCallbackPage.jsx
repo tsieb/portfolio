@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import { showToast } from '../config/toast';
-import { FaHeadphones, FaSpotify, FaCheckCircle, FaExclamationTriangle, FaHome } from 'react-icons/fa';
+import { FaHeadphones, FaMusic, FaCheckCircle, FaExclamationTriangle, FaHome } from 'react-icons/fa';
 import '../assets/styles/pages/AuthCallbackPage.scss';
 
 const AuthCallbackPage = () => {
@@ -101,7 +101,7 @@ const AuthCallbackPage = () => {
       <div className="auth-callback__card">
         <div className="auth-callback__header">
           <div className="auth-callback__logo">
-            <FaSpotify className="auth-callback__logo-icon" />
+            <FaMusic className="auth-callback__logo-icon" />
           </div>
           <h1 className="auth-callback__title">Music Activity</h1>
           <h2 className="auth-callback__subtitle">Authentication</h2>

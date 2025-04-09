@@ -1,11 +1,11 @@
 // File: /frontend/src/pages/LoginPage.jsx
-// Enhanced login page with cleaner Spotify OAuth flow
+// Updated login page without admin login link
 
 import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import { showToast } from '../config/toast';
-import { FaHeadphones, FaMusic, FaSpotify } from 'react-icons/fa';
+import { FaHeadphones, FaMusic } from 'react-icons/fa';
 import '../assets/styles/pages/LoginPage.scss';
 
 const LoginPage = () => {
@@ -27,8 +27,8 @@ const LoginPage = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Handle Spotify login
-  const handleSpotifyLogin = () => {
+  // Handle music service login
+  const handleMusicLogin = () => {
     // Redirect to backend OAuth endpoint
     window.location.href = `${apiUrl}/auth/spotify`;
   };
@@ -58,21 +58,13 @@ const LoginPage = () => {
         
         <div className="login-card__content">
           <button 
-            onClick={handleSpotifyLogin}
+            onClick={handleMusicLogin}
             className="btn btn-spotify login-form__spotify"
-            aria-label="Continue with Spotify"
+            aria-label="Continue with Music Service"
           >
-            <FaSpotify className="btn-spotify__icon" />
-            Continue with Spotify
+            <FaMusic className="btn-spotify__icon" />
+            Continue with Music Service
           </button>
-          
-          <div className="login-form__divider">
-            <span>or</span>
-          </div>
-          
-          <Link to="/admin/login" className="btn btn-outline login-form__admin">
-            Administrator Login
-          </Link>
           
           <div className="login-form__info">
             <p>By continuing, you agree to our <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.</p>

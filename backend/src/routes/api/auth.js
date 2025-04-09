@@ -13,7 +13,7 @@ const router = express.Router();
 // Rate limiting for auth endpoints - prevent brute force attacks
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 requests per window
+  max: 100, // 10 requests per window
   message: {
     status: 'error',
     message: 'Too many authentication attempts, please try again later.'

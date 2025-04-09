@@ -9,7 +9,7 @@ import {
   FaUser, 
   FaEnvelope, 
   FaLock, 
-  FaSpotify, 
+  FaMusic, 
   FaUserPlus, 
   FaSignInAlt 
 } from 'react-icons/fa';
@@ -128,7 +128,7 @@ const RegisterPage = () => {
       <div className="register-card">
         <div className="register-card__header">
           <div className="register-card__logo">
-            <FaSpotify className="register-card__logo-icon" />
+            <FaMusic className="register-card__logo-icon" />
           </div>
           <h1 className="register-card__title">Create Account</h1>
           <p className="register-card__subtitle">Join and share your music activity</p>
@@ -147,7 +147,7 @@ const RegisterPage = () => {
             className="btn btn-spotify register-form__spotify"
             disabled={isSubmitting}
           >
-            <FaSpotify className="btn-spotify__icon" />
+            <FaMusic className="btn-spotify__icon" />
             Sign up with Spotify
           </button>
           

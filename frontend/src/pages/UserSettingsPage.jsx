@@ -2,7 +2,7 @@
 // User settings page to manage profile and privacy settings
 
 import { useState, useEffect } from 'react';
-import { FaSpotify, FaUser, FaLock, FaEdit, FaSave, FaGlobe, FaUserFriends } from 'react-icons/fa';
+import { FaMusic, FaUser, FaLock, FaEdit, FaSave, FaGlobe, FaUserFriends } from 'react-icons/fa';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import userService from '../features/user/services/userApi';
 import { showToast } from '../config/toast';
@@ -202,7 +202,7 @@ const UserSettingsPage = () => {
         
         <div className="settings-card">
           <div className="settings-card__header">
-            <FaSpotify className="settings-card__icon" />
+            <FaMusic className="settings-card__icon" />
             <h2 className="settings-card__title">Spotify Connection</h2>
           </div>
           
@@ -228,7 +228,7 @@ const UserSettingsPage = () => {
                 </p>
                 
                 <a href="/api/auth/spotify" className="btn btn-spotify">
-                  <FaSpotify className="btn-spotify__icon" />
+                  <FaMusic className="btn-spotify__icon" />
                   Connect with Spotify
                 </a>
               </div>

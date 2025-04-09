@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { FaSpotify, FaUser, FaLock, FaExclamationCircle } from 'react-icons/fa';
+import { FaMusic, FaUser, FaLock, FaExclamationCircle } from 'react-icons/fa';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import userService from '../features/user/services/userApi';
 import CurrentlyPlaying from '../features/spotify/components/CurrentlyPlaying';
@@ -134,7 +134,7 @@ const UserProfilePage = () => {
             </h1>
             
             <div className="user-profile__spotify">
-              <FaSpotify className="user-profile__spotify-icon" />
+              <FaMusic className="user-profile__spotify-icon" />
               <span>Connected to Spotify</span>
             </div>
             

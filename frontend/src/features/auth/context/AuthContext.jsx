@@ -1,5 +1,5 @@
 // File: /frontend/src/features/auth/context/AuthContext.jsx
-// Improved authentication context with cleaner state management and error handling
+// Modified authentication context to avoid unnecessary auth checks
 
 import { createContext, useReducer, useCallback, useEffect } from 'react';
 import authService from '../services/authApi';
@@ -12,7 +12,8 @@ const AUTH_ACTIONS = {
   AUTH_FAIL: 'AUTH_FAIL',
   AUTH_LOGOUT: 'AUTH_LOGOUT',
   AUTH_RESET_ERROR: 'AUTH_RESET_ERROR',
-  AUTH_UPDATE_USER: 'AUTH_UPDATE_USER'
+  AUTH_UPDATE_USER: 'AUTH_UPDATE_USER',
+  AUTH_CHECK_LOCAL: 'AUTH_CHECK_LOCAL'
 };
 
 // Initial state
@@ -20,7 +21,7 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   isAdmin: false,
-  isLoading: true,
+  isLoading: false, // Changed from true to false to avoid initial loading state
   error: null
 };
 
@@ -78,6 +79,13 @@ const authReducer = (state, action) => {
           ...action.payload
         }
       };
+    
+    case AUTH_ACTIONS.AUTH_CHECK_LOCAL:
+      return {
+        ...state,
+        isAuthenticated: action.payload.isAuthenticated,
+        isLoading: false
+      };
       
     default:
       return state;
@@ -91,9 +99,20 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   
-  // Check authentication status on mount
+  // Check local storage for token on mount - much lighter than a full API call
   useEffect(() => {
-    checkAuth();
+    const token = localStorage.getItem('token');
+    const isAuthenticated = !!token;
+    
+    dispatch({ 
+      type: AUTH_ACTIONS.AUTH_CHECK_LOCAL, 
+      payload: { isAuthenticated } 
+    });
+    
+    // Only make the API call if we have a token
+    if (isAuthenticated) {
+      checkAuth();
+    }
   }, []);
   
   /**
@@ -154,7 +173,7 @@ export const AuthProvider = ({ children }) => {
       return response.data.user;
     } catch (error) {
       const errorMessage = error.response?.data?.message || 
-                          'Authentication with Spotify failed. Please try again.';
+                          'Authentication with music service failed. Please try again.';
       
       dispatch({ 
         type: AUTH_ACTIONS.AUTH_FAIL, 

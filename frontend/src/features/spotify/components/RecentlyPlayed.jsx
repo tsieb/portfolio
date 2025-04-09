@@ -1,7 +1,7 @@
 // File: /frontend/src/features/spotify/components/RecentlyPlayed.jsx
-// Enhanced recently played component with animations
+// Enhanced recently played component with animations - Fixed infinite update loop
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSpotify } from '../hooks/useSpotify';
 import { FaMusic, FaHistory, FaClock } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
@@ -22,11 +22,17 @@ const RecentlyPlayed = () => {
   const [newTracks, setNewTracks] = useState([]);
   const [prevTrackIds, setPrevTrackIds] = useState([]);
   
-  useEffect(() => {
+  // Use useCallback to prevent the function from being recreated on every render
+  const fetchTracks = useCallback(() => {
     fetchRecentlyPlayed(5);
   }, [fetchRecentlyPlayed]);
   
-  // Track changes for animations
+  // Fetch tracks on initial mount only
+  useEffect(() => {
+    fetchTracks();
+  }, [fetchTracks]);
+  
+  // Track changes for animations - separate from the fetch effect
   useEffect(() => {
     if (recentlyPlayed && recentlyPlayed.length > 0) {
       const currentIds = recentlyPlayed.map(track => track._id);
@@ -41,14 +47,19 @@ const RecentlyPlayed = () => {
           setNewTracks(newItems.map(track => track._id));
           
           // Clear animation flags after animation completes
-          setTimeout(() => {
+          const animationTimeout = setTimeout(() => {
             setNewTracks([]);
           }, 2000);
+          
+          // Clean up timeout to prevent memory leaks
+          return () => clearTimeout(animationTimeout);
         }
       }
       
-      // Update previous track IDs
-      setPrevTrackIds(currentIds);
+      // Only update previous track IDs if they've changed
+      if (JSON.stringify(currentIds) !== JSON.stringify(prevTrackIds)) {
+        setPrevTrackIds(currentIds);
+      }
     }
   }, [recentlyPlayed, prevTrackIds]);
   
@@ -156,7 +167,7 @@ const RecentlyPlayed = () => {
       <div className="recently-played__footer">
         <button 
           className="recently-played__refresh" 
-          onClick={() => fetchRecentlyPlayed(5)}
+          onClick={fetchTracks}
           aria-label="Refresh recently played tracks"
         >
           Refresh

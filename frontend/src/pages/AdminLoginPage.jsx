@@ -1,5 +1,5 @@
 // File: /frontend/src/pages/AdminLoginPage.jsx
-// Enhanced admin login page with improved error handling
+// Admin login page with link back to main login
 
 import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';

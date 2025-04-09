@@ -35,7 +35,7 @@ app.use(helmet());
 // Global rate limiter
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per window
+  max: 1000, // 100 requests per window
   message: {
     status: 'error',
     message: 'Too many requests, please try again later.'

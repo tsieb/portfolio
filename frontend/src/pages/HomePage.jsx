@@ -7,7 +7,7 @@ import { useSpotify } from '../features/spotify/hooks/useSpotify';
 import CurrentlyPlaying from '../features/spotify/components/CurrentlyPlaying';
 import RecentlyPlayed from '../features/spotify/components/RecentlyPlayed';
 import SpotifyStats from '../features/spotify/components/SpotifyStats';
-import { FaSpotify, FaUserCircle, FaChevronDown } from 'react-icons/fa';
+import { FaMusic, FaUserCircle, FaChevronDown } from 'react-icons/fa';
 import '../assets/styles/pages/HomePage.scss';
 
 const HomePage = () => {
@@ -70,7 +70,7 @@ const HomePage = () => {
       >
         <div className="hero__container">
           <div className="hero__logo">
-            <FaSpotify />
+            <FaMusic />
             <span>Music Activity</span>
           </div>
           
