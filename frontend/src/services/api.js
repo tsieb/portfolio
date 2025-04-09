@@ -1,5 +1,5 @@
 // File: /frontend/src/services/api.js
-// Enhanced API service with better error handling and retry mechanism
+// Enhanced API service with improved error handling for auth errors
 
 import axios from 'axios';
 import { showToast } from '../config/toast';
@@ -78,7 +78,12 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       
       // Only show toast for actual auth errors, not initial page load checks
-      if (originalRequest.url !== '/auth/me') {
+      // Added check for auth endpoints and initial loading checks
+      const isAuthCheck = originalRequest.url === '/auth/me' || 
+                         originalRequest.url.includes('/auth/spotify') ||
+                         originalRequest.url === '/auth/logout';
+                         
+      if (!isAuthCheck) {
         showToast.error('Your session has expired. Please log in again.');
       }
     }

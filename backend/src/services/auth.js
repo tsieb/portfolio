@@ -101,7 +101,7 @@ const exchangeSpotifyCode = async (req, res, next) => {
 
     // Get the proper redirect URI from environment variables
     const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
-    if (!redirectToken) {
+    if (!redirectUri) {
       console.error('Missing SPOTIFY_REDIRECT_URI in environment variables');
       return next(new AppError('Server configuration error', 500));
     }
