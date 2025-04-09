@@ -2,7 +2,7 @@
 // Database connection configuration
 
 const mongoose = require('mongoose');
-const authService = require('../services/auth');
+const { createAdminUser } = require('../services/auth');
 
 /**
  * Connects to MongoDB using configuration from environment variables
@@ -19,10 +19,10 @@ const connectDB = async () => {
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    
+
     // Create admin user if it doesn't exist
     await createAdminUser();
-    
+
     return conn;
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
