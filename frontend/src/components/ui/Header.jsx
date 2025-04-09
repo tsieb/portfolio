@@ -1,5 +1,5 @@
 // File: /frontend/src/components/ui/Header.jsx
-// Updated header with authentication elements
+// Header component with user authentication and navigation
 
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
@@ -130,7 +130,7 @@ const Header = () => {
                 <>
                   <li className="header__nav-item header__nav-item--mobile">
                     <NavLink 
-                      to={`/${user?.username || ''}`} 
+                      to={`/user/${user?.username || ''}`} 
                       className={({ isActive }) => 
                         isActive ? 'header__nav-link active' : 'header__nav-link'
                       }
@@ -180,7 +180,7 @@ const Header = () => {
                             <div>{user?.email}</div>
                           </div>
                           
-                          <Link to={`/${user?.username || ''}`} className="header__user-menu-item">
+                          <Link to={`/user/${user?.username || ''}`} className="header__user-menu-item">
                             <FaUserCircle className="header__user-menu-icon" />
                             <span>My Profile</span>
                           </Link>
@@ -215,21 +215,7 @@ const Header = () => {
                           : 'header__nav-link header__nav-link--login'
                       }
                     >
-                      <FaUserCircle className="header__nav-icon" />
                       <span>Login</span>
-                    </NavLink>
-                  </li>
-                  
-                  <li className="header__nav-item">
-                    <NavLink 
-                      to="/register" 
-                      className={({ isActive }) => 
-                        isActive 
-                          ? 'header__nav-link header__nav-link--register active' 
-                          : 'header__nav-link header__nav-link--register'
-                      }
-                    >
-                      <span>Sign Up</span>
                     </NavLink>
                   </li>
                 </>

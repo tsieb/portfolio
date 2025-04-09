@@ -1,5 +1,5 @@
 // File: /frontend/src/features/user/services/userApi.js
-// User service for user profile management
+// User service for profile management
 
 import api from '../../../services/api';
 

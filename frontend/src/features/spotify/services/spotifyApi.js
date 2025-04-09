@@ -1,5 +1,5 @@
 // File: /frontend/src/features/spotify/services/spotifyApi.js
-// Updated Spotify service with user-specific endpoints
+// Spotify service with user-specific endpoints
 
 import api from '../../../services/api';
 

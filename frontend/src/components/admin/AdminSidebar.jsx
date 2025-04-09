@@ -1,9 +1,17 @@
 // File: /frontend/src/components/admin/AdminSidebar.jsx
-// Admin sidebar component
+// Admin sidebar component with navigation links
 
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import { FaTimes, FaHome, FaMusic, FaChartBar, FaCog } from 'react-icons/fa';
+import { 
+  FaTimes, 
+  FaHome, 
+  FaMusic, 
+  FaChartBar, 
+  FaUsers, 
+  FaCog, 
+  FaEye 
+} from 'react-icons/fa';
 
 /**
  * Admin sidebar component with navigation links
@@ -15,7 +23,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
   return (
     <aside className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
       <div className="admin-sidebar__header">
-        <div className="admin-sidebar__logo">Portfolio Admin</div>
+        <div className="admin-sidebar__logo">Music Admin</div>
         <button 
           className="admin-sidebar__close"
           onClick={onClose}
@@ -49,7 +57,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
             }
           >
             <FaMusic className="admin-sidebar__nav-icon" />
-            Tracks History
+            Track History
           </NavLink>
           <NavLink 
             to="/admin/stats" 
@@ -59,6 +67,28 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           >
             <FaChartBar className="admin-sidebar__nav-icon" />
             Analytics
+          </NavLink>
+        </div>
+        
+        <div className="admin-sidebar__nav-group">
+          <div className="admin-sidebar__nav-title">Users</div>
+          <NavLink 
+            to="/admin/users" 
+            className={({ isActive }) => 
+              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
+            }
+          >
+            <FaUsers className="admin-sidebar__nav-icon" />
+            Manage Users
+          </NavLink>
+          <NavLink 
+            to="/admin/user-activity" 
+            className={({ isActive }) => 
+              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
+            }
+          >
+            <FaEye className="admin-sidebar__nav-icon" />
+            User Activity
           </NavLink>
         </div>
         

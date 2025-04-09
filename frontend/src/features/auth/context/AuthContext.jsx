@@ -1,5 +1,5 @@
 // File: /frontend/src/features/auth/context/AuthContext.jsx
-// Enhanced authentication context with Spotify OAuth support
+// Authentication context with Spotify OAuth support
 
 import { createContext, useReducer, useCallback, useEffect } from 'react';
 import authService from '../services/authApi';
@@ -77,12 +77,12 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
   
-  // Traditional login with email and password
-  const login = useCallback(async (email, password) => {
+  // Admin login with email and password
+  const adminLogin = useCallback(async (email, password) => {
     dispatch({ type: AUTH_START });
     
     try {
-      const data = await authService.login(email, password);
+      const data = await authService.adminLogin(email, password);
       dispatch({ type: AUTH_SUCCESS, payload: data.user });
       return data.user;
     } catch (error) {
@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
   
-  // Login or register with Spotify OAuth tokens
+  // Login with Spotify OAuth
   const loginWithSpotify = useCallback(async (tokenData) => {
     dispatch({ type: AUTH_START });
     
@@ -152,33 +152,15 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_SUCCESS, payload: userData });
   }, []);
   
-  // Register new user
-  const register = useCallback(async (userData) => {
-    dispatch({ type: AUTH_START });
-    
-    try {
-      const data = await authService.register(userData);
-      dispatch({ type: AUTH_SUCCESS, payload: data.user });
-      return data.user;
-    } catch (error) {
-      dispatch({ 
-        type: AUTH_FAIL, 
-        payload: error.response?.data?.message || 'Registration failed' 
-      });
-      throw error;
-    }
-  }, []);
-  
   // Context value
   const value = {
     ...state,
-    login,
+    adminLogin,
     loginWithSpotify,
     logout,
     checkAuth,
     resetError,
-    updateUser,
-    register
+    updateUser
   };
   
   return (

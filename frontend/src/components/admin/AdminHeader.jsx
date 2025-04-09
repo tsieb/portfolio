@@ -1,8 +1,8 @@
 // File: /frontend/src/components/admin/AdminHeader.jsx
-// Admin header component
+// Admin header component with user info and logout button
 
 import PropTypes from 'prop-types';
-import { FaBars, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaSignOutAlt, FaUserShield } from 'react-icons/fa';
 
 /**
  * Admin header component with user info and logout button
@@ -13,7 +13,7 @@ import { FaBars, FaSignOutAlt } from 'react-icons/fa';
  */
 const AdminHeader = ({ user, onLogout, onMenuClick }) => {
   const getInitials = (name) => {
-    if (!name) return 'U';
+    if (!name) return 'A';
     
     const parts = name.split(' ');
     if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
@@ -31,23 +31,37 @@ const AdminHeader = ({ user, onLogout, onMenuClick }) => {
         >
           <FaBars size={18} />
         </button>
-        <h1 className="admin-header__title">Admin Dashboard</h1>
+        <h1 className="admin-header__title">Music Activity Admin</h1>
       </div>
       
       <div className="admin-header__actions">
         {user && (
           <div className="admin-header__user">
             <div className="admin-header__avatar">
-              {getInitials(user.firstName)}
+              {user.avatar ? (
+                <img 
+                  src={user.avatar} 
+                  alt={user.firstName || user.email} 
+                  className="admin-header__avatar-img" 
+                />
+              ) : (
+                <span>{getInitials(user.firstName)}</span>
+              )}
             </div>
-            <span className="admin-header__username">
-              {user.firstName || user.email}
-            </span>
+            <div className="admin-header__user-info">
+              <span className="admin-header__username">
+                {user.firstName || user.email}
+              </span>
+              <span className="admin-header__role">
+                <FaUserShield className="admin-header__role-icon" />
+                Administrator
+              </span>
+            </div>
           </div>
         )}
         
         <button 
-          className="btn btn-outline"
+          className="btn btn-outline admin-header__logout"
           onClick={onLogout}
           aria-label="Logout"
         >

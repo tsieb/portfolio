@@ -1,5 +1,5 @@
 // File: /frontend/src/App.jsx
-// Main App component with updated routing for music sharing platform
+// Main App component with updated routing for music activity sharing platform
 
 import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -74,7 +74,7 @@ const App = () => {
       </Route>
       
       {/* User profile routes - publicly accessible */}
-      <Route path="/:username" element={<UserLayout />}>
+      <Route path="/user/:username" element={<UserLayout />}>
         <Route index element={<UserProfilePage />} />
       </Route>
       

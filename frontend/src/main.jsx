@@ -1,15 +1,15 @@
 // File: /frontend/src/main.jsx
-// Main entry point for the React application with theme enhancements
+// Main entry point for the React application
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { AuthProvider } from './context/AuthContext';
-import { SpotifyProvider } from './context/SpotifyContext';
+import { AuthProvider } from './features/auth/context/AuthContext';
+import { SpotifyProvider } from './features/spotify/context/SpotifyContext';
 import { ToastContainer } from 'react-toastify';
 
-// Import global styles - using modern SCSS approach
+// Import global styles
 import './assets/styles/main.scss';
 import 'react-toastify/dist/ReactToastify.css';
 

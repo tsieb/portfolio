@@ -1,8 +1,8 @@
-// File: /frontend/src/context/SpotifyContext.jsx
-// Updated Spotify context with more frequent polling and improved state management
+// File: /frontend/src/features/spotify/context/SpotifyContext.jsx
+// Spotify context with user-specific data
 
 import { createContext, useReducer, useEffect, useCallback, useRef } from 'react';
-import spotifyService from '../services/spotify';
+import spotifyService from '../services/spotifyApi';
 
 // Initial state
 const initialState = {
@@ -13,7 +13,8 @@ const initialState = {
   stats: null,
   isLoading: true,
   error: null,
-  lastUpdated: null
+  lastUpdated: null,
+  userId: null
 };
 
 // Action types
@@ -23,6 +24,7 @@ const SET_CURRENT_TRACK = 'SET_CURRENT_TRACK';
 const SET_RECENTLY_PLAYED = 'SET_RECENTLY_PLAYED';
 const SET_STATS = 'SET_STATS';
 const RESET_ERROR = 'RESET_ERROR';
+const SET_USER_ID = 'SET_USER_ID';
 
 // Reducer function
 const spotifyReducer = (state, action) => {
@@ -74,6 +76,11 @@ const spotifyReducer = (state, action) => {
         ...state,
         error: null
       };
+    case SET_USER_ID:
+      return {
+        ...state,
+        userId: action.payload
+      };
     default:
       return state;
   }
@@ -88,13 +95,13 @@ export const SpotifyProvider = ({ children }) => {
   const pollingIntervalRef = useRef(null);
   
   // Fetch current track with optional silent loading
-  const fetchCurrentTrack = useCallback(async (silent = false) => {
+  const fetchCurrentTrack = useCallback(async (silent = false, userId = null) => {
     if (!silent) {
       dispatch({ type: SPOTIFY_LOADING });
     }
     
     try {
-      const data = await spotifyService.getCurrentlyPlaying();
+      const data = await spotifyService.getCurrentlyPlaying(userId || state.userId);
       dispatch({ type: SET_CURRENT_TRACK, payload: data });
       return data;
     } catch (error) {
@@ -107,14 +114,14 @@ export const SpotifyProvider = ({ children }) => {
       }
       return null;
     }
-  }, []);
+  }, [state.userId]);
   
   // Fetch recently played tracks
-  const fetchRecentlyPlayed = useCallback(async (limit = 10, skip = 0) => {
+  const fetchRecentlyPlayed = useCallback(async (limit = 10, skip = 0, userId = null) => {
     dispatch({ type: SPOTIFY_LOADING });
     
     try {
-      const data = await spotifyService.getRecentlyPlayed(limit, skip);
+      const data = await spotifyService.getRecentlyPlayed(limit, skip, userId || state.userId);
       dispatch({ type: SET_RECENTLY_PLAYED, payload: data.tracks });
       return data.tracks;
     } catch (error) {
@@ -124,14 +131,14 @@ export const SpotifyProvider = ({ children }) => {
       });
       return [];
     }
-  }, []);
+  }, [state.userId]);
   
   // Fetch listening statistics
-  const fetchStats = useCallback(async () => {
+  const fetchStats = useCallback(async (userId = null) => {
     dispatch({ type: SPOTIFY_LOADING });
     
     try {
-      const data = await spotifyService.getStats();
+      const data = await spotifyService.getStats(userId || state.userId);
       dispatch({ type: SET_STATS, payload: data });
       return data;
     } catch (error) {
@@ -141,6 +148,11 @@ export const SpotifyProvider = ({ children }) => {
       });
       return null;
     }
+  }, [state.userId]);
+  
+  // Set user ID for context
+  const setUserId = useCallback((userId) => {
+    dispatch({ type: SET_USER_ID, payload: userId });
   }, []);
   
   // Reset error state
@@ -149,21 +161,26 @@ export const SpotifyProvider = ({ children }) => {
   }, []);
   
   // Start polling for current track
-  const startPolling = useCallback(() => {
+  const startPolling = useCallback((userId = null) => {
+    // Set user ID if provided
+    if (userId) {
+      setUserId(userId);
+    }
+    
     // Clear any existing interval
     if (pollingIntervalRef.current) {
       clearInterval(pollingIntervalRef.current);
     }
     
     // Poll immediately
-    fetchCurrentTrack();
+    fetchCurrentTrack(false, userId);
     
     // Then set up the interval (every 5 seconds)
     pollingIntervalRef.current = setInterval(() => {
       // Use silent mode to avoid loading state flicker
-      fetchCurrentTrack(true);
+      fetchCurrentTrack(true, userId || state.userId);
     }, 5000);
-  }, [fetchCurrentTrack]);
+  }, [fetchCurrentTrack, state.userId, setUserId]);
   
   // Stop polling
   const stopPolling = useCallback(() => {
@@ -181,11 +198,6 @@ export const SpotifyProvider = ({ children }) => {
     return () => stopPolling();
   }, [startPolling, stopPolling]);
   
-  // Also fetch recently played on initial load
-  useEffect(() => {
-    fetchRecentlyPlayed(5);
-  }, [fetchRecentlyPlayed]);
-  
   // Context value
   const value = {
     ...state,
@@ -194,7 +206,8 @@ export const SpotifyProvider = ({ children }) => {
     fetchStats,
     resetError,
     startPolling,
-    stopPolling
+    stopPolling,
+    setUserId
   };
   
   return (
