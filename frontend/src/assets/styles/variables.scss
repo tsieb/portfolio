@@ -1,13 +1,13 @@
 // File: /frontend/src/assets/styles/variables.scss
-// Global SCSS variables with modern dark theme
+// Modified color variables to avoid using exact Spotify colors
 
 // Color Palette
 :root {
-  // Primary colors
-  --color-primary: #1ED760;       // Spotify green
-  --color-primary-light: #2EE870;
-  --color-primary-dark: #1AA34A;
-  --color-primary-glow: rgba(30, 215, 96, 0.2);
+  // Primary colors - Changed from Spotify green (#1ED760) to a teal color
+  --color-primary: #2DD7B5;       // Teal instead of Spotify green
+  --color-primary-light: #42E8C6;
+  --color-primary-dark: #1AA999;
+  --color-primary-glow: rgba(45, 215, 181, 0.2);
   
   // Secondary colors
   --color-secondary: #9C42F5;     // Purple accent
@@ -28,7 +28,7 @@
   
   // Gradient backgrounds
   --gradient-primary: linear-gradient(135deg, #181818 0%, #252525 100%);
-  --gradient-accent: linear-gradient(135deg, #1ED760 0%, #9C42F5 100%);
+  --gradient-accent: linear-gradient(135deg, #2DD7B5 0%, #9C42F5 100%);
   --gradient-dark: linear-gradient(135deg, #121212 0%, #181818 100%);
   
   // Text colors
@@ -38,7 +38,7 @@
   --color-text-disabled: rgba(255, 255, 255, 0.3);
   
   // Feedback colors
-  --color-success: #1ED760;
+  --color-success: #2DD7B5;
   --color-info: #2D9CDB;
   --color-warning: #F7B500;
   --color-danger: #F15A5A;
@@ -52,11 +52,11 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.4);
-  --shadow-primary: 0 4px 20px rgba(30, 215, 96, 0.2);
+  --shadow-primary: 0 4px 20px rgba(45, 215, 181, 0.2);
   --shadow-secondary: 0 4px 20px rgba(156, 66, 245, 0.2);
   
   // Glow effects
-  --glow-primary: 0 0 20px rgba(30, 215, 96, 0.4);
+  --glow-primary: 0 0 20px rgba(45, 215, 181, 0.4);
   --glow-secondary: 0 0 20px rgba(156, 66, 245, 0.4);
   
   // Spacing

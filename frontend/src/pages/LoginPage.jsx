@@ -1,10 +1,10 @@
 // File: /frontend/src/pages/LoginPage.jsx
-// Login page focused on Spotify authentication
+// Updated login page with music icons instead of Spotify ones
 
 import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
-import { FaSpotify } from 'react-icons/fa';
+import { FaHeadphones, FaMusic } from 'react-icons/fa';
 import '../assets/styles/pages/LoginPage.scss';
 
 const LoginPage = () => {
@@ -25,8 +25,8 @@ const LoginPage = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  const handleSpotifyLogin = () => {
-    // Redirect to backend Spotify OAuth endpoint
+  const handleMusicLogin = () => {
+    // Redirect to backend OAuth endpoint
     window.location.href = `${import.meta.env.VITE_API_URL || '/api'}/auth/spotify`;
   };
   
@@ -46,7 +46,7 @@ const LoginPage = () => {
       <div className="login-card">
         <div className="login-card__header">
           <div className="login-card__logo">
-            <FaSpotify className="login-card__logo-icon" />
+            <FaHeadphones className="login-card__logo-icon" />
           </div>
           <h1 className="login-card__title">Welcome to Music Activity</h1>
           <p className="login-card__subtitle">Share your listening habits with the world</p>
@@ -54,16 +54,16 @@ const LoginPage = () => {
         
         <div className="login-card__content">
           <button 
-            onClick={handleSpotifyLogin}
+            onClick={handleMusicLogin}
             className="btn btn-spotify login-form__spotify"
           >
-            <FaSpotify className="btn-spotify__icon" />
-            Continue with Spotify
+            <FaMusic className="btn-spotify__icon" />
+            Continue with Music Service
           </button>
           
           <div className="login-form__info">
             <p>By continuing, you agree to our <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link>.</p>
-            <p>We'll never post to Spotify without your permission.</p>
+            <p>We'll never post to your account without your permission.</p>
           </div>
         </div>
       </div>

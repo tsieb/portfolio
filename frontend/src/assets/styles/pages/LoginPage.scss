@@ -1,5 +1,5 @@
 // File: /frontend/src/assets/styles/pages/LoginPage.scss
-// Enhanced login page styles with Spotify authentication
+// Enhanced login page styles with updated colors
 
 .login-page {
   display: flex;
@@ -27,7 +27,7 @@
     background: radial-gradient(
       circle at center,
       rgba(156, 66, 245, 0.1) 0%,
-      rgba(30, 215, 96, 0.05) 50%,
+      rgba(45, 215, 181, 0.05) 50%,
       rgba(0, 0, 0, 0) 70%
     );
     z-index: -1;
@@ -68,7 +68,7 @@
     background: radial-gradient(
       circle at top right,
       rgba(156, 66, 245, 0.2) 0%,
-      rgba(30, 215, 96, 0.1) 60%,
+      rgba(45, 215, 181, 0.1) 60%,
       rgba(0, 0, 0, 0) 100%
     );
     pointer-events: none;
@@ -147,8 +147,8 @@
 
 .login-form__spotify {
   margin-bottom: var(--space-lg);
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--color-primary);
+  color: black;
   font-weight: var(--font-weight-semibold);
   padding: var(--space-md);
   justify-content: center;
@@ -160,8 +160,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1DB954;
-  color: white;
+  background-color: var(--color-primary);
+  color: black;
   border: none;
   padding: var(--space-md);
   border-radius: var(--radius-md);
@@ -173,9 +173,9 @@
   overflow: hidden;
   
   &:hover {
-    background-color: #1ed760;
+    background-color: var(--color-primary-light);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3);
+    box-shadow: 0 4px 12px rgba(45, 215, 181, 0.3);
   }
   
   &:active {
@@ -225,6 +225,22 @@
   
   span {
     padding: 0 var(--space-sm);
+  }
+}
+
+.login-form__info {
+  text-align: center;
+  margin-top: var(--space-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 

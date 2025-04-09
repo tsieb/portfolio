@@ -1,11 +1,12 @@
 // File: /frontend/src/components/ui/Header.jsx
-// Header component with user authentication and navigation
+// Modified header to use music icon instead of Spotify logo
 
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../../features/auth/hooks/useAuth';
 import { 
-  FaSpotify, 
+  FaMusic, 
+  FaHeadphones,
   FaUserCircle, 
   FaBars, 
   FaTimes, 
@@ -78,7 +79,7 @@ const Header = () => {
         <div className="header__inner">
           <div className="header__logo">
             <Link to="/" className="header__logo-link">
-              <span className="header__logo-icon"><FaSpotify /></span>
+              <span className="header__logo-icon"><FaHeadphones /></span>
               <span className="header__logo-text">Music Activity</span>
             </Link>
           </div>

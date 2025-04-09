@@ -96,13 +96,41 @@ const exchangeSpotifyCode = async (req, res, next) => {
       return next(new AppError('Authorization code is required', 400));
     }
 
+    // Log the incoming code for debugging (remove in production)
+    console.log('Received authorization code:', code.substring(0, 10) + '...');
+
+    // Get the proper redirect URI from environment variables
+    const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
+    if (!redirectToken) {
+      console.error('Missing SPOTIFY_REDIRECT_URI in environment variables');
+      return next(new AppError('Server configuration error', 500));
+    }
+
+    console.log('Using redirect URI:', redirectUri);
+
+    // Ensure client credentials are properly set
+    const clientId = process.env.SPOTIFY_CLIENT_ID;
+    const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+    
+    if (!clientId || !clientSecret) {
+      console.error('Missing Spotify API credentials in environment variables');
+      return next(new AppError('Server configuration error', 500));
+    }
+
     // Exchange code for tokens
     const tokenEndpoint = 'https://accounts.spotify.com/api/token';
-    const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
     const authString = Buffer.from(
-      `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+      `${clientId}:${clientSecret}`
     ).toString('base64');
 
+    const formData = new URLSearchParams({
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: redirectUri
+    });
+
+    console.log('Sending token exchange request...');
+    
     const response = await axios({
       method: 'post',
       url: tokenEndpoint,
@@ -110,20 +138,26 @@ const exchangeSpotifyCode = async (req, res, next) => {
         'Authorization': `Basic ${authString}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      data: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code,
-        redirect_uri: redirectUri
-      })
+      data: formData
     });
 
+    console.log('Token exchange successful');
+    
     res.status(200).json({
       status: 'success',
       data: response.data
     });
   } catch (error) {
-    console.error('Spotify token exchange error:', error.response?.data || error.message);
-    next(new AppError('Failed to exchange authorization code', 500));
+    console.error('Spotify token exchange error details:', error.response?.data || error.message);
+    console.error('Error stack:', error.stack);
+    
+    // Return more detailed error for debugging
+    const errorMessage = error.response?.data?.error_description || 
+                        error.response?.data?.error || 
+                        error.message || 
+                        'Failed to exchange authorization code';
+    
+    next(new AppError(`Spotify authentication failed: ${errorMessage}`, 500));
   }
 };
 

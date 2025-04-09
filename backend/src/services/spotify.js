@@ -88,39 +88,119 @@ const getSpotifyToken = async (refreshToken = null) => {
  * Initialize the Spotify service
  * - Get initial access token
  * - Set up periodic token refresh
- * - Set up periodic currently playing check for all active users
+ * - Set up periodic currently playing check for admin and active users
  * @returns {Promise<void>}
  */
 const initializeSpotifyService = async () => {
   try {
     // Get initial token
     await getSpotifyToken();
+    console.log('Initial Spotify token obtained successfully');
     
     // Set up interval to refresh token every 50 minutes (tokens expire after 1 hour)
     setInterval(async () => {
       try {
         await refreshSpotifyToken();
+        console.log('Spotify token refreshed successfully');
       } catch (error) {
         console.error('Error in token refresh interval:', error);
       }
     }, 50 * 60 * 1000); // 50 minutes
     
+    // Ensure admin user exists and has admin account data
+    await ensureAdminUserData();
+    
     // Set up interval to check currently playing for all active users
+    const checkInterval = parseInt(process.env.REFRESH_INTERVAL || '5') * 60 * 1000;
     setInterval(async () => {
       try {
+        // Always update admin user data for homepage
+        await updateAdminUserCurrentlyPlaying();
+        
+        // Then update other active users
         await updateAllUsersCurrentlyPlaying();
       } catch (error) {
         console.error('Error in currently playing interval:', error);
       }
-    }, 60 * 1000); // 60 seconds
+    }, checkInterval); // Default: every 5 minutes
     
-    // Initial check
+    // Initial check immediately
+    await updateAdminUserCurrentlyPlaying();
     await updateAllUsersCurrentlyPlaying();
     
     console.log('Spotify service initialized successfully');
   } catch (error) {
     console.error('Error initializing Spotify service:', error);
     throw error;
+  }
+};
+
+/**
+ * Ensure admin user exists and has Spotify data
+ * @returns {Promise<void>}
+ */
+const ensureAdminUserData = async () => {
+  try {
+    // Check if admin user exists
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) {
+      console.error('ADMIN_EMAIL not set in environment variables');
+      return;
+    }
+    
+    let adminUser = await User.findOne({ email: adminEmail, role: 'admin' });
+    
+    // If no admin user, it will be created by the auth service
+    if (!adminUser) {
+      console.log('Admin user not found - will be created by auth service');
+      return;
+    }
+    
+    // Ensure admin has Spotify connection for homepage data
+    if (!adminUser.spotifyConnected) {
+      console.log('Setting up Spotify connection for admin user');
+      
+      // Update admin user with Spotify connection using the admin refresh token
+      adminUser.spotifyConnected = true;
+      adminUser.spotifyToken = {
+        refreshToken: process.env.SPOTIFY_REFRESH_TOKEN,
+        expiresAt: new Date(Date.now() + 3600 * 1000) // 1 hour from now
+      };
+      
+      // Get a fresh access token
+      const accessToken = await refreshSpotifyToken(process.env.SPOTIFY_REFRESH_TOKEN);
+      adminUser.spotifyToken.accessToken = accessToken;
+      
+      await adminUser.save();
+      console.log('Admin user updated with Spotify connection');
+    }
+  } catch (error) {
+    console.error('Error ensuring admin user data:', error);
+  }
+};
+
+/**
+ * Update currently playing track for admin user
+ * @returns {Promise<Object|null>} Currently playing track or null
+ */
+const updateAdminUserCurrentlyPlaying = async () => {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (!adminEmail) {
+      console.error('ADMIN_EMAIL not set in environment variables');
+      return null;
+    }
+    
+    const adminUser = await User.findOne({ email: adminEmail, role: 'admin' });
+    if (!adminUser) {
+      console.error('Admin user not found');
+      return null;
+    }
+    
+    return await updateUserCurrentlyPlaying(adminUser);
+  } catch (error) {
+    console.error('Error updating admin user currently playing:', error);
+    return null;
   }
 };
 

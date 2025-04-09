@@ -1,8 +1,8 @@
 // File: /frontend/src/components/ui/Footer.jsx
-// Enhanced footer component with modern styling and animations
+// Updated footer with music icon instead of Spotify logo
 
 import { Link } from 'react-router-dom';
-import { FaSpotify, FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa';
+import { FaHeadphones, FaMusic, FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa';
 import '../../assets/styles/components/ui/Footer.scss';
 
 /**
@@ -20,11 +20,11 @@ const Footer = () => {
           <div className="footer__top">
             <div className="footer__brand">
               <div className="footer__logo">
-                <FaSpotify className="footer__logo-icon" />
-                <span className="footer__logo-text">Music Portfolio</span>
+                <FaHeadphones className="footer__logo-icon" />
+                <span className="footer__logo-text">Music Activity</span>
               </div>
               <p className="footer__tagline">
-                Showcasing web development skills with real-time Spotify integration
+                Showcase your music taste with live streaming data
               </p>
             </div>
             
@@ -77,7 +77,7 @@ const Footer = () => {
           
           <div className="footer__bottom">
             <div className="footer__copyright">
-              &copy; {currentYear} Music Portfolio. All rights reserved.
+              &copy; {currentYear} Music Activity. All rights reserved.
             </div>
             
             <div className="footer__made-with">

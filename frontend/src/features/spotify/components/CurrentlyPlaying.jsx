@@ -1,10 +1,10 @@
 // File: /frontend/src/features/spotify/components/CurrentlyPlaying.jsx
-// Currently playing component with user-specific data
+// Updated CurrentlyPlaying component with music icons instead of Spotify ones
 
 import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSpotify } from '../hooks/useSpotify';
-import { FaSpotify, FaMusic, FaPlay, FaPause, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaMusic, FaHeadphones, FaPlay, FaPause, FaExternalLinkAlt } from 'react-icons/fa';
 import '../../../assets/styles/features/spotify/components/CurrentlyPlaying.scss';
 
 const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
@@ -157,7 +157,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
                   rel="noopener noreferrer" 
                   className="current-track-mini__link"
                 >
-                  <FaSpotify />
+                  <FaMusic />
                 </a>
               )}
             </div>
@@ -166,6 +166,85 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
           <div className="current-track-mini__not-playing">
             <FaPause className="current-track-mini__icon" />
             <span>Not playing</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+  
+  // Hero variant
+  if (variant === 'hero') {
+    return (
+      <div className={`current-track-hero ${isChanging ? 'is-changing' : ''} ${isVisible ? 'is-visible' : ''}`}>
+        <div className="current-track-hero__status">
+          {isPlaying ? (
+            <>
+              <FaPlay className="current-track-hero__status-icon" />
+              <span>Currently playing</span>
+            </>
+          ) : (
+            <>
+              <FaPause className="current-track-hero__status-icon" />
+              <span>Not playing right now</span>
+            </>
+          )}
+          <FaHeadphones className="current-track-hero__spotify-icon" />
+        </div>
+        
+        {isPlaying && currentTrack ? (
+          <div className="current-track-hero__content">
+            <div className="current-track-hero__artwork">
+              {currentTrack.albumImageUrl ? (
+                <img 
+                  src={currentTrack.albumImageUrl} 
+                  alt={`${currentTrack.albumName} album cover`} 
+                  className="current-track-hero__image"
+                />
+              ) : (
+                <div className="current-track-hero__placeholder">
+                  <FaMusic size={64} />
+                </div>
+              )}
+            </div>
+            
+            <div className="current-track-hero__info">
+              <h2 className="current-track-hero__track">{currentTrack.trackName}</h2>
+              <div className="current-track-hero__artist">{currentTrack.artistName}</div>
+              <div className="current-track-hero__album">{currentTrack.albumName}</div>
+              
+              <div className="current-track-hero__progress">
+                <div className="current-track-hero__progress-bar">
+                  <div 
+                    className="current-track-hero__progress-fill"
+                    style={{ width: `${getProgressPercentage()}%` }}
+                  ></div>
+                </div>
+                <div className="current-track-hero__times">
+                  <div>{formatTime(elapsedTime)}</div>
+                  <div>{formatTime(currentTrack.duration)}</div>
+                </div>
+              </div>
+              
+              {currentTrack.trackUrl && (
+                <a 
+                  href={currentTrack.trackUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="btn btn-primary"
+                >
+                  <FaExternalLinkAlt className="mr-sm" />
+                  Open in Music App
+                </a>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="current-track-hero__not-playing">
+            <FaHeadphones size={64} />
+            <div>
+              <h3>Not playing right now</h3>
+              <p>Check back later to see what's playing</p>
+            </div>
           </div>
         )}
       </div>
@@ -192,7 +271,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
           {isPlaying ? (
             <>
               <FaPlay className="currently-playing__status-icon" />
-              <span>Currently playing on Spotify</span>
+              <span>Currently playing</span>
             </>
           ) : (
             <>
@@ -201,7 +280,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
             </>
           )}
         </div>
-        <FaSpotify className="currently-playing__spotify-icon" />
+        <FaHeadphones className="currently-playing__spotify-icon" />
       </div>
       
       <div className="currently-playing__content">
@@ -248,7 +327,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
                     rel="noopener noreferrer" 
                     className="currently-playing__link"
                   >
-                    Listen on Spotify
+                    Open in Music App
                   </a>
                 )}
               </div>
@@ -257,7 +336,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
         ) : (
           <div className="currently-playing__not-playing">
             <div className="currently-playing__icon">
-              <FaSpotify />
+              <FaHeadphones />
             </div>
             <div className="currently-playing__info">
               <div className="currently-playing__status">
@@ -276,7 +355,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
 };
 
 CurrentlyPlaying.propTypes = {
-  variant: PropTypes.oneOf(['default', 'mini']),
+  variant: PropTypes.oneOf(['default', 'mini', 'hero']),
   userId: PropTypes.string
 };
 
