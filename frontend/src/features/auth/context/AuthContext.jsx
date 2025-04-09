@@ -1,13 +1,14 @@
-// File: /frontend/src/context/AuthContext.jsx
-// Authentication context for managing auth state
+// File: /frontend/src/features/auth/context/AuthContext.jsx
+// Enhanced authentication context with Spotify OAuth support
 
-import { createContext, useReducer, useCallback } from 'react';
-import authService from '../services/auth';
+import { createContext, useReducer, useCallback, useEffect } from 'react';
+import authService from '../services/authApi';
 
 // Initial state
 const initialState = {
   user: null,
   isAuthenticated: false,
+  isAdmin: false,
   isLoading: true,
   error: null
 };
@@ -33,6 +34,7 @@ const authReducer = (state, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: true,
+        isAdmin: action.payload?.role === 'admin',
         user: action.payload,
         error: null
       };
@@ -41,6 +43,7 @@ const authReducer = (state, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: false,
+        isAdmin: false,
         user: null,
         error: action.payload
       };
@@ -49,6 +52,7 @@ const authReducer = (state, action) => {
         ...state,
         isLoading: false,
         isAuthenticated: false,
+        isAdmin: false,
         user: null
       };
     case AUTH_RESET_ERROR:
@@ -68,7 +72,12 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   
-  // Login user
+  // Check authentication status on mount
+  useEffect(() => {
+    checkAuth();
+  }, []);
+  
+  // Traditional login with email and password
   const login = useCallback(async (email, password) => {
     dispatch({ type: AUTH_START });
     
@@ -80,6 +89,23 @@ export const AuthProvider = ({ children }) => {
       dispatch({ 
         type: AUTH_FAIL, 
         payload: error.response?.data?.message || 'Authentication failed' 
+      });
+      throw error;
+    }
+  }, []);
+  
+  // Login or register with Spotify OAuth tokens
+  const loginWithSpotify = useCallback(async (tokenData) => {
+    dispatch({ type: AUTH_START });
+    
+    try {
+      const data = await authService.loginWithSpotify(tokenData);
+      dispatch({ type: AUTH_SUCCESS, payload: data.user });
+      return data.user;
+    } catch (error) {
+      dispatch({ 
+        type: AUTH_FAIL, 
+        payload: error.response?.data?.message || 'Spotify authentication failed' 
       });
       throw error;
     }
@@ -121,13 +147,38 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_RESET_ERROR });
   }, []);
   
+  // Update user data in state after settings change
+  const updateUser = useCallback((userData) => {
+    dispatch({ type: AUTH_SUCCESS, payload: userData });
+  }, []);
+  
+  // Register new user
+  const register = useCallback(async (userData) => {
+    dispatch({ type: AUTH_START });
+    
+    try {
+      const data = await authService.register(userData);
+      dispatch({ type: AUTH_SUCCESS, payload: data.user });
+      return data.user;
+    } catch (error) {
+      dispatch({ 
+        type: AUTH_FAIL, 
+        payload: error.response?.data?.message || 'Registration failed' 
+      });
+      throw error;
+    }
+  }, []);
+  
   // Context value
   const value = {
     ...state,
     login,
+    loginWithSpotify,
     logout,
     checkAuth,
-    resetError
+    resetError,
+    updateUser,
+    register
   };
   
   return (

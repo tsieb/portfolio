@@ -1,16 +1,19 @@
 // File: /frontend/src/pages/LoginPage.jsx
-// Enhanced login page with new theme and animations
+// Enhanced login page with Spotify authentication
 
 import { useState, useEffect } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { toast } from 'react-toastify';
-import { FaLock, FaEnvelope, FaSpotify, FaSignInAlt } from 'react-icons/fa';
-import './LoginPage.scss';
+import { useNavigate, Navigate, Link } from 'react-router-dom';
+import { useAuth } from '../features/auth/hooks/useAuth';
+import { showToast } from '../config/toast';
+import { 
+  FaLock, 
+  FaEnvelope, 
+  FaSpotify, 
+  FaSignInAlt, 
+  FaUserPlus 
+} from 'react-icons/fa';
+import '../assets/styles/pages/LoginPage.scss';
 
-/**
- * Enhanced login page component that handles user authentication
- */
 const LoginPage = () => {
   const { login, isAuthenticated, isLoading, error, resetError } = useAuth();
   const navigate = useNavigate();
@@ -24,9 +27,9 @@ const LoginPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   
-  // If already authenticated, redirect to admin dashboard
+  // If already authenticated, redirect to home
   if (isAuthenticated) {
-    return <Navigate to="/admin" replace />;
+    return <Navigate to="/" replace />;
   }
   
   // Animation on mount
@@ -85,14 +88,19 @@ const LoginPage = () => {
     
     try {
       await login(formData.email, formData.password);
-      toast.success('Login successful!');
-      navigate('/admin');
+      showToast.success('Login successful!');
+      navigate('/');
     } catch (err) {
       // Error is handled by the auth context and displayed below
-      toast.error('Login failed. Please check your credentials.');
+      showToast.error('Login failed. Please check your credentials.');
     } finally {
       setIsSubmitting(false);
     }
+  };
+  
+  const handleSpotifyLogin = () => {
+    // Redirect to backend Spotify OAuth endpoint
+    window.location.href = `${import.meta.env.VITE_API_URL || '/api'}/auth/spotify`;
   };
   
   return (
@@ -102,8 +110,8 @@ const LoginPage = () => {
           <div className="login-card__logo">
             <FaSpotify className="login-card__logo-icon" />
           </div>
-          <h1 className="login-card__title">Admin Login</h1>
-          <p className="login-card__subtitle">Sign in to manage your music portfolio</p>
+          <h1 className="login-card__title">Welcome Back</h1>
+          <p className="login-card__subtitle">Login to your music activity profile</p>
         </div>
         
         <div className="login-card__content">
@@ -113,6 +121,19 @@ const LoginPage = () => {
               <span>{error}</span>
             </div>
           )}
+          
+          <button 
+            onClick={handleSpotifyLogin}
+            className="btn btn-spotify login-form__spotify"
+            disabled={isSubmitting}
+          >
+            <FaSpotify className="btn-spotify__icon" />
+            Continue with Spotify
+          </button>
+          
+          <div className="login-form__divider">
+            <span>or login with email</span>
+          </div>
           
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
@@ -161,6 +182,21 @@ const LoginPage = () => {
               )}
             </div>
             
+            <div className="login-form__options">
+              <div className="form-checkbox">
+                <input 
+                  type="checkbox" 
+                  id="remember" 
+                  name="remember"
+                />
+                <label htmlFor="remember">Remember me</label>
+              </div>
+              
+              <Link to="/forgot-password" className="login-form__forgot">
+                Forgot password?
+              </Link>
+            </div>
+            
             <button
               type="submit"
               className="btn btn-primary login-form__submit"
@@ -179,6 +215,14 @@ const LoginPage = () => {
               )}
             </button>
           </form>
+          
+          <div className="login-form__footer">
+            <p>Don't have an account?</p>
+            <Link to="/register" className="login-form__register">
+              <FaUserPlus className="mr-sm" />
+              Create Account
+            </Link>
+          </div>
         </div>
       </div>
     </div>

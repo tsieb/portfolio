@@ -1,0 +1,279 @@
+// File: /frontend/src/assets/styles/pages/HomePage.scss
+// Enhanced homepage styles with immersive current track display
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// Hero section with current track
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.5s ease-out;
+  color: var(--color-text-primary);
+  
+  // Background transitions
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.8) 0%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  // Overlay color pulse animation
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(30, 215, 96, 0.05),
+      rgba(156, 66, 245, 0.05)
+    );
+    z-index: 2;
+    animation: pulse-overlay 10s infinite alternate;
+    pointer-events: none;
+  }
+  
+  // When scrolled, make it smaller
+  &--scrolled {
+    .hero__content {
+      transform: scale(0.95);
+      opacity: 0.7;
+    }
+  }
+}
+
+.hero__container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.hero__logo {
+  position: absolute;
+  top: 1.5rem;
+  left: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  color: var(--color-text-primary);
+  
+  svg {
+    color: var(--color-primary);
+    margin-right: 0.5rem;
+    font-size: 1.75rem;
+  }
+}
+
+.hero__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.5s ease;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero__scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: var(--color-primary);
+  }
+  
+  span {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.hero__scroll-icon {
+  animation: bounce 2s infinite;
+}
+
+// Content section
+.content {
+  padding: 4rem 0;
+  background: var(--color-bg-primary);
+  position: relative;
+  z-index: 15;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+  
+  &--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content__header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 3rem;
+}
+
+.content__title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  
+  &::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: var(--gradient-accent);
+    margin: 1rem auto 0;
+    border-radius: 999px;
+  }
+}
+
+.content__description {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.content__cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--gradient-accent);
+  color: white;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(156, 66, 245, 0.3);
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(156, 66, 245, 0.4);
+  }
+  
+  svg {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+  }
+}
+
+.content__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.content__section {
+  margin-bottom: 3rem;
+}
+
+.content__section-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-primary);
+  position: relative;
+  padding-left: 1rem;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.3rem;
+    bottom: 0.3rem;
+    width: 3px;
+    background: var(--color-primary);
+    border-radius: 999px;
+  }
+}
+
+// Mini player that appears when scrolled
+.mini-player {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 100;
+  transform: translateY(-100%);
+  transition: transform 0.4s ease-in-out;
+  border-bottom: 1px solid var(--color-border);
+  
+  &--visible {
+    transform: translateY(0);
+  }
+}
+
+// Animations
+@keyframes pulse-overlay {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
