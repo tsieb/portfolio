@@ -1,29 +1,48 @@
 // File: /frontend/src/components/ui/Header.jsx
-// Header component for main layout
+// Enhanced header with modern styling and animations
 
 import { Link, NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { FaSpotify, FaGithub, FaUser, FaBars, FaTimes } from 'react-icons/fa';
 import './Header.scss';
 
 /**
- * Header component with navigation links
+ * Enhanced header component with navigation links
  */
 const Header = () => {
   const { isAuthenticated, user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
   
+  // Add scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 20;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrolled]);
+  
   return (
-    <header className="header">
+    <header className={`header ${scrolled ? 'header--scrolled' : ''}`}>
       <div className="container">
         <div className="header__inner">
           <div className="header__logo">
             <Link to="/" className="header__logo-link">
-              My Portfolio
+              <span className="header__logo-icon"><FaSpotify /></span>
+              <span className="header__logo-text">Music Portfolio</span>
             </Link>
           </div>
           
@@ -32,7 +51,7 @@ const Header = () => {
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
-            <span className="header__toggle-icon"></span>
+            {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
           
           <nav className={`header__nav ${menuOpen ? 'open' : ''}`}>
@@ -44,6 +63,7 @@ const Header = () => {
                     isActive ? 'header__nav-link active' : 'header__nav-link'
                   }
                   end
+                  onClick={() => setMenuOpen(false)}
                 >
                   Home
                 </NavLink>
@@ -51,11 +71,12 @@ const Header = () => {
               <li className="header__nav-item">
                 <a 
                   href="https://github.com"
-                  className="header__nav-link"
+                  className="header__nav-link header__nav-link--with-icon"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  GitHub
+                  <FaGithub className="header__nav-icon" />
+                  <span>GitHub</span>
                 </a>
               </li>
               {isAuthenticated ? (
@@ -63,10 +84,14 @@ const Header = () => {
                   <NavLink 
                     to="/admin" 
                     className={({ isActive }) => 
-                      isActive ? 'header__nav-link active' : 'header__nav-link'
+                      isActive 
+                        ? 'header__nav-link header__nav-link--admin active' 
+                        : 'header__nav-link header__nav-link--admin'
                     }
+                    onClick={() => setMenuOpen(false)}
                   >
-                    Admin
+                    <FaUser className="header__nav-icon" />
+                    <span>Admin</span>
                   </NavLink>
                 </li>
               ) : (
@@ -74,10 +99,14 @@ const Header = () => {
                   <NavLink 
                     to="/login" 
                     className={({ isActive }) => 
-                      isActive ? 'header__nav-link active' : 'header__nav-link'
+                      isActive 
+                        ? 'header__nav-link header__nav-link--login active' 
+                        : 'header__nav-link header__nav-link--login'
                     }
+                    onClick={() => setMenuOpen(false)}
                   >
-                    Login
+                    <FaUser className="header__nav-icon" />
+                    <span>Login</span>
                   </NavLink>
                 </li>
               )}

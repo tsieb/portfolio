@@ -1,9 +1,9 @@
 // File: /frontend/src/pages/AdminDashboardPage.jsx
-// Admin dashboard page component
+// Enhanced admin dashboard page component
 
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { FaMusic, FaListAlt, FaUserAlt, FaCompactDisc } from 'react-icons/fa';
+import { showToast } from '../config/toast';
+import { FaMusic, FaListAlt, FaUserAlt, FaCompactDisc, FaSyncAlt, FaChartLine } from 'react-icons/fa';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -13,7 +13,8 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 } from 'chart.js';
 import adminService from '../services/admin';
 import spotifyService from '../services/spotify';
@@ -27,11 +28,12 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 /**
- * Admin dashboard page component
+ * Enhanced admin dashboard page component
  * Displays overview statistics and recent activity
  */
 const AdminDashboardPage = () => {
@@ -50,7 +52,7 @@ const AdminDashboardPage = () => {
       setDashboardData(data);
     } catch (err) {
       setError('Failed to fetch dashboard data. Please try again.');
-      toast.error('Error loading dashboard data');
+      showToast.error('Error loading dashboard data');
     } finally {
       setIsLoading(false);
     }
@@ -63,9 +65,9 @@ const AdminDashboardPage = () => {
     try {
       await spotifyService.refreshData();
       await fetchDashboardData();
-      toast.success('Spotify data refreshed successfully');
+      showToast.success('Spotify data refreshed successfully');
     } catch (err) {
-      toast.error('Failed to refresh Spotify data');
+      showToast.error('Failed to refresh Spotify data');
     } finally {
       setIsRefreshing(false);
     }
@@ -86,9 +88,24 @@ const AdminDashboardPage = () => {
         {
           label: 'Tracks Played',
           data: dashboardData.listeningTrends.map(item => item.count),
-          borderColor: 'rgba(29, 185, 84, 1)',
-          backgroundColor: 'rgba(29, 185, 84, 0.5)',
-          tension: 0.1
+          borderColor: 'rgba(30, 215, 96, 1)',
+          backgroundColor: (context) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 350);
+            gradient.addColorStop(0, 'rgba(30, 215, 96, 0.5)');
+            gradient.addColorStop(1, 'rgba(30, 215, 96, 0.05)');
+            return gradient;
+          },
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: 'rgba(30, 215, 96, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointHoverBackgroundColor: 'rgba(30, 215, 96, 1)',
+          pointHoverBorderColor: '#fff'
         }
       ]
     };
@@ -102,30 +119,74 @@ const AdminDashboardPage = () => {
     plugins: {
       legend: {
         position: 'top',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.7)',
+          font: {
+            size: 12
+          }
+        }
       },
       title: {
         display: true,
         text: 'Listening Activity (Last 14 Days)',
+        color: 'rgba(255, 255, 255, 0.9)',
         font: {
           size: 16,
           weight: 'bold'
         }
       },
+      tooltip: {
+        backgroundColor: 'rgba(24, 24, 24, 0.9)',
+        titleColor: 'rgba(255, 255, 255, 0.9)',
+        bodyColor: 'rgba(255, 255, 255, 0.7)',
+        borderColor: 'rgba(30, 215, 96, 0.3)',
+        borderWidth: 1,
+        padding: 10,
+        displayColors: false,
+        callbacks: {
+          title: function(tooltipItems) {
+            return `Date: ${tooltipItems[0].label}`;
+          },
+          label: function(context) {
+            return `${context.parsed.y} tracks played`;
+          }
+        }
+      }
     },
     scales: {
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.05)'
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.7)'
+        }
+      },
       y: {
         beginAtZero: true,
         ticks: {
-          precision: 0
+          precision: 0,
+          color: 'rgba(255, 255, 255, 0.7)'
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.05)'
         }
       }
+    },
+    interaction: {
+      intersect: false,
+      mode: 'index'
+    },
+    animation: {
+      duration: 2000,
+      easing: 'easeOutQuart'
     }
   };
   
   if (isLoading) {
     return (
       <div className="admin-dashboard">
-        <div className="loading-container">
+        <div className="admin-loading">
           <div className="spinner"></div>
           <p>Loading dashboard data...</p>
         </div>
@@ -162,7 +223,10 @@ const AdminDashboardPage = () => {
               Refreshing...
             </>
           ) : (
-            'Refresh Data'
+            <>
+              <FaSyncAlt className="mr-sm" />
+              Refresh Data
+            </>
           )}
         </button>
       </div>
@@ -212,7 +276,10 @@ const AdminDashboardPage = () => {
       {chartData && (
         <div className="admin-card">
           <div className="admin-card__header">
-            <h2 className="admin-card__title">Listening Trends</h2>
+            <h2 className="admin-card__title">
+              <FaChartLine className="admin-card__icon" />
+              Listening Trends
+            </h2>
           </div>
           <div className="admin-card__body">
             <div className="admin-chart">
@@ -224,7 +291,10 @@ const AdminDashboardPage = () => {
       
       <div className="admin-card">
         <div className="admin-card__header">
-          <h2 className="admin-card__title">Recent Tracks</h2>
+          <h2 className="admin-card__title">
+            <FaMusic className="admin-card__icon" />
+            Recent Tracks
+          </h2>
         </div>
         <div className="admin-card__body">
           {dashboardData?.recentTracks?.length > 0 ? (
@@ -241,7 +311,16 @@ const AdminDashboardPage = () => {
                 <tbody>
                   {dashboardData.recentTracks.map(track => (
                     <tr key={track._id}>
-                      <td>{track.trackName}</td>
+                      <td className="admin-track-cell">
+                        {track.albumImageUrl && (
+                          <img
+                            src={track.albumImageUrl}
+                            alt={`${track.albumName} cover`}
+                            className="admin-track-image"
+                          />
+                        )}
+                        <span>{track.trackName}</span>
+                      </td>
                       <td>{track.artistName}</td>
                       <td>{track.albumName}</td>
                       <td>{new Date(track.playedAt).toLocaleString()}</td>
@@ -251,7 +330,10 @@ const AdminDashboardPage = () => {
               </table>
             </div>
           ) : (
-            <p className="admin-card__empty">No recent tracks found.</p>
+            <div className="admin-empty">
+              <FaMusic />
+              <p>No recent tracks found.</p>
+            </div>
           )}
         </div>
       </div>

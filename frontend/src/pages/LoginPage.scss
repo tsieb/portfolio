@@ -1,45 +1,122 @@
 // File: /frontend/src/pages/LoginPage.scss
-// Login page styles
+// Enhanced login page styles
 
 .login-page {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 200px);
+    min-height: calc(100vh - 140px);
     padding: var(--space-xl) 0;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    
+    &.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        circle at center,
+        rgba(156, 66, 245, 0.1) 0%,
+        rgba(30, 215, 96, 0.05) 50%,
+        rgba(0, 0, 0, 0) 70%
+      );
+      z-index: -1;
+      pointer-events: none;
+    }
   }
   
   .login-card {
     width: 100%;
-    max-width: 400px;
-    background-color: var(--color-bg-primary);
+    max-width: 420px;
+    background-color: var(--color-bg-secondary);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     overflow: hidden;
+    border: 1px solid var(--color-border);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg), 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
   }
   
   .login-card__header {
     padding: var(--space-xl);
-    background-color: var(--color-bg-secondary);
+    background: var(--gradient-primary);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        circle at top right,
+        rgba(156, 66, 245, 0.2) 0%,
+        rgba(30, 215, 96, 0.1) 60%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      pointer-events: none;
+    }
   }
   
-  .login-card__icon {
-    width: 60px;
-    height: 60px;
-    background-color: var(--color-primary);
+  .login-card__logo {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-accent);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto var(--space-md);
+    box-shadow: var(--shadow-md), 0 0 15px rgba(156, 66, 245, 0.4);
+    position: relative;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      animation: pulse 2s infinite;
+    }
+  }
+  
+  .login-card__logo-icon {
+    font-size: 36px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
   }
   
   .login-card__title {
     font-size: var(--font-size-xxl);
     font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--space-xs);
+    color: var(--color-text-primary);
+  }
+  
+  .login-card__subtitle {
+    color: var(--color-text-secondary);
     margin: 0;
+    font-size: var(--font-size-md);
   }
   
   .login-card__content {
@@ -47,8 +124,10 @@
   }
   
   .login-card__error {
-    background-color: rgba(220, 53, 69, 0.1);
-    border: 1px solid var(--color-danger);
+    display: flex;
+    align-items: center;
+    background-color: rgba(241, 90, 90, 0.1);
+    border: 1px solid rgba(241, 90, 90, 0.3);
     color: var(--color-danger);
     padding: var(--space-md);
     border-radius: var(--radius-md);
@@ -56,22 +135,56 @@
     font-size: var(--font-size-sm);
   }
   
+  .login-card__error-icon {
+    margin-right: var(--space-sm);
+    flex-shrink: 0;
+  }
+  
   .login-form {
     display: flex;
     flex-direction: column;
+  }
+  
+  .form-input-group {
+    position: relative;
+  }
+  
+  .form-input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-tertiary);
+    pointer-events: none;
+    transition: color var(--transition-fast) var(--ease-in-out);
+    
+    .form-input:focus + & {
+      color: var(--color-primary);
+    }
+  }
+  
+  .form-input--with-icon {
+    padding-left: 40px;
   }
   
   .login-form__submit {
     width: 100%;
     padding: var(--space-md);
     margin-top: var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    span {
+      margin-left: var(--space-xs);
+    }
   }
   
   .form-input--error {
     border-color: var(--color-danger);
     
     &:focus {
-      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+      box-shadow: 0 0 0 2px rgba(241, 90, 90, 0.25);
     }
   }
   
@@ -83,4 +196,20 @@
   
   .mr-sm {
     margin-right: var(--space-sm);
+  }
+  
+  // Animation
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.4;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
   }

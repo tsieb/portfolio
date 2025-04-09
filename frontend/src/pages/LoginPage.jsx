@@ -1,15 +1,15 @@
 // File: /frontend/src/pages/LoginPage.jsx
-// Login page component
+// Enhanced login page with new theme and animations
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { toast } from 'react-toastify';
-import { FaLock } from 'react-icons/fa';
+import { FaLock, FaEnvelope, FaSpotify, FaSignInAlt } from 'react-icons/fa';
 import './LoginPage.scss';
 
 /**
- * Login page component that handles user authentication
+ * Enhanced login page component that handles user authentication
  */
 const LoginPage = () => {
   const { login, isAuthenticated, isLoading, error, resetError } = useAuth();
@@ -22,11 +22,21 @@ const LoginPage = () => {
   
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   
   // If already authenticated, redirect to admin dashboard
   if (isAuthenticated) {
     return <Navigate to="/admin" replace />;
   }
+  
+  // Animation on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,36 +96,43 @@ const LoginPage = () => {
   };
   
   return (
-    <div className="login-page">
+    <div className={`login-page ${isVisible ? 'is-visible' : ''}`}>
       <div className="login-card">
         <div className="login-card__header">
-          <div className="login-card__icon">
-            <FaLock size={24} />
+          <div className="login-card__logo">
+            <FaSpotify className="login-card__logo-icon" />
           </div>
           <h1 className="login-card__title">Admin Login</h1>
+          <p className="login-card__subtitle">Sign in to manage your music portfolio</p>
         </div>
         
         <div className="login-card__content">
           {error && (
             <div className="login-card__error">
-              {error}
+              <FaLock className="login-card__error-icon" />
+              <span>{error}</span>
             </div>
           )}
           
           <form className="login-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email" className="form-label">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className={`form-input ${formErrors.email ? 'form-input--error' : ''}`}
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                disabled={isSubmitting}
-                autoComplete="email"
-              />
+              <div className="form-input-group">
+                <div className="form-input-icon">
+                  <FaEnvelope />
+                </div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={`form-input form-input--with-icon ${formErrors.email ? 'form-input--error' : ''}`}
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  disabled={isSubmitting}
+                  autoComplete="email"
+                />
+              </div>
               {formErrors.email && (
                 <div className="form-error">{formErrors.email}</div>
               )}
@@ -123,17 +140,22 @@ const LoginPage = () => {
             
             <div className="form-group">
               <label htmlFor="password" className="form-label">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className={`form-input ${formErrors.password ? 'form-input--error' : ''}`}
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                disabled={isSubmitting}
-                autoComplete="current-password"
-              />
+              <div className="form-input-group">
+                <div className="form-input-icon">
+                  <FaLock />
+                </div>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className={`form-input form-input--with-icon ${formErrors.password ? 'form-input--error' : ''}`}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  disabled={isSubmitting}
+                  autoComplete="current-password"
+                />
+              </div>
               {formErrors.password && (
                 <div className="form-error">{formErrors.password}</div>
               )}
@@ -147,10 +169,13 @@ const LoginPage = () => {
               {isSubmitting ? (
                 <>
                   <div className="spinner spinner--sm mr-sm"></div>
-                  Logging in...
+                  <span>Signing in...</span>
                 </>
               ) : (
-                'Login'
+                <>
+                  <FaSignInAlt className="mr-sm" />
+                  <span>Sign In</span>
+                </>
               )}
             </button>
           </form>

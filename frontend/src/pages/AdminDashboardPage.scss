@@ -1,54 +1,102 @@
 // File: /frontend/src/pages/AdminDashboardPage.scss
-// Admin dashboard page styles
+// Enhanced admin dashboard page styles
 
 .admin-dashboard {
-    width: 100%;
-  }
+  width: 100%;
+}
+
+.admin-dashboard__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
   
-  .admin-dashboard__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-lg);
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+}
+
+.admin-dashboard__title {
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  position: relative;
+  
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+  }
+}
+
+// Admin track cell with image
+.admin-track-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.admin-track-image {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  box-shadow: var(--shadow-sm);
+}
+
+// Animation for stats cards
+.admin-stats {
+  .admin-stat-card {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fade-in-up 0.5s forwards;
     
-    @media (max-width: 480px) {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-md);
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
     }
   }
-  
-  .admin-dashboard__title {
-    font-size: var(--font-size-xxl);
-    font-weight: var(--font-weight-bold);
-    margin: 0;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .admin-stat-card__icon {
-    width: 48px;
-    height: 48px;
-    background-color: rgba(29, 185, 84, 0.1);
-    color: var(--color-primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--space-sm);
-    font-size: var(--font-size-xl);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+// Enhanced chart container
+.admin-chart {
+  position: relative;
   
-  .admin-chart {
-    height: 300px;
-    width: 100%;
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to top, rgba(24, 24, 24, 0.8), transparent);
+    z-index: 1;
+    pointer-events: none;
+    border-bottom-left-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
   }
-  
-  .admin-table-container {
-    overflow-x: auto;
-  }
-  
-  .admin-card__empty {
-    color: var(--color-text-tertiary);
-    text-align: center;
-    font-style: italic;
-    padding: var(--space-lg);
-  }
+}

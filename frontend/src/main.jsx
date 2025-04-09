@@ -1,5 +1,5 @@
 // File: /frontend/src/main.jsx
-// Main entry point for the React application
+// Main entry point for the React application with theme enhancements
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -9,9 +9,23 @@ import { AuthProvider } from './context/AuthContext';
 import { SpotifyProvider } from './context/SpotifyContext';
 import { ToastContainer } from 'react-toastify';
 
-// Import global styles
+// Import global styles - using modern SCSS approach
 import './assets/styles/main.scss';
 import 'react-toastify/dist/ReactToastify.css';
+
+// Toast container configuration
+const toastContainerProps = {
+  position: "bottom-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  newestOnTop: true,
+  closeOnClick: true,
+  rtl: false,
+  pauseOnFocusLoss: true,
+  draggable: true,
+  pauseOnHover: true,
+  theme: "dark"
+};
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -19,18 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <SpotifyProvider>
           <App />
-          <ToastContainer 
-            position="bottom-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
+          <ToastContainer {...toastContainerProps} />
         </SpotifyProvider>
       </AuthProvider>
     </BrowserRouter>

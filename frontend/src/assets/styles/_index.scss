@@ -1,0 +1,9 @@
+// File: /frontend/src/assets/styles/_index.scss
+// Root index file for SCSS using modern @use approach
+
+@forward 'variables';
+@forward 'reset';
+@forward 'typography';
+@forward 'utilities';
+@forward 'form-controls';
+@forward 'toast';

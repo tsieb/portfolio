@@ -1,9 +1,9 @@
 // File: /frontend/src/features/spotify/components/SpotifyStats.jsx
-// Spotify stats component to display listening statistics
+// Enhanced Spotify stats component with improved visuals
 
 import { useEffect } from 'react';
 import { useSpotify } from '../../../hooks/useSpotify';
-import { FaChartBar, FaMicrophone, FaCompactDisc } from 'react-icons/fa';
+import { FaChartBar, FaMicrophone, FaCompactDisc, FaHeadphones, FaMusic } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import { 
   Chart as ChartJS, 
@@ -27,7 +27,8 @@ ChartJS.register(
 );
 
 /**
- * Component to display Spotify listening statistics
+ * Enhanced component to display Spotify listening statistics
+ * with improved visuals
  */
 const SpotifyStats = () => {
   const { 
@@ -41,7 +42,7 @@ const SpotifyStats = () => {
     fetchStats();
   }, [fetchStats]);
   
-  if (isLoading) {
+  if (isLoading && !stats) {
     return (
       <div className="spotify-stats">
         <div className="spotify-stats__header">
@@ -92,16 +93,30 @@ const SpotifyStats = () => {
     );
   }
   
-  // Prepare chart data for activity by hour
+  // Prepare chart data for activity by hour with gradient background
   const activityData = {
     labels: stats.activityByHour?.map(hour => `${hour._id}:00`) || [],
     datasets: [
       {
         label: 'Tracks Played',
         data: stats.activityByHour?.map(hour => hour.count) || [],
-        backgroundColor: 'rgba(29, 185, 84, 0.7)',
-        borderColor: 'rgba(29, 185, 84, 1)',
-        borderWidth: 1,
+        backgroundColor: function(context) {
+          const chart = context.chart;
+          const {ctx, chartArea} = chart;
+          
+          if (!chartArea) {
+            // This case happens on initial chart load
+            return 'rgba(30, 215, 96, 0.7)';
+          }
+          
+          // Create gradient
+          const gradient = ctx.createLinearGradient(0, 0, 0, chartArea.bottom);
+          gradient.addColorStop(0, 'rgba(30, 215, 96, 0.8)');
+          gradient.addColorStop(1, 'rgba(30, 215, 96, 0.2)');
+          return gradient;
+        },
+        borderWidth: 0,
+        borderRadius: 4,
       },
     ],
   };
@@ -116,21 +131,60 @@ const SpotifyStats = () => {
       title: {
         display: true,
         text: 'Listening Activity by Hour',
-        color: '#333333',
+        color: 'rgba(255, 255, 255, 0.8)',
         font: {
           size: 14,
           weight: '600',
         },
+        padding: {
+          top: 10,
+          bottom: 20
+        }
       },
+      tooltip: {
+        backgroundColor: 'rgba(24, 24, 24, 0.9)',
+        titleColor: 'rgba(255, 255, 255, 0.9)',
+        bodyColor: 'rgba(255, 255, 255, 0.7)',
+        borderColor: 'rgba(30, 215, 96, 0.3)',
+        borderWidth: 1,
+        padding: 10,
+        displayColors: false,
+        callbacks: {
+          title: function(tooltipItems) {
+            return `${tooltipItems[0].label}`;
+          },
+          label: function(context) {
+            const label = context.dataset.label || '';
+            const value = context.parsed.y || 0;
+            return `${value} ${value === 1 ? 'track' : 'tracks'}`;
+          }
+        }
+      }
     },
     scales: {
+      x: {
+        grid: {
+          color: 'rgba(255, 255, 255, 0.05)',
+        },
+        ticks: {
+          color: 'rgba(255, 255, 255, 0.6)',
+        }
+      },
       y: {
         beginAtZero: true,
+        grid: {
+          color: 'rgba(255, 255, 255, 0.05)',
+        },
         ticks: {
           precision: 0,
+          color: 'rgba(255, 255, 255, 0.6)',
         },
       },
     },
+    animation: {
+      duration: 2000,
+      easing: 'easeOutQuart'
+    }
   };
   
   return (
@@ -145,8 +199,9 @@ const SpotifyStats = () => {
       <div className="spotify-stats__content">
         <div className="spotify-stats__summary">
           <div className="spotify-stats__total">
-            <span className="spotify-stats__total-label">Total Tracks</span>
+            <FaHeadphones className="spotify-stats__total-icon" />
             <span className="spotify-stats__total-value">{stats.totalTracks}</span>
+            <span className="spotify-stats__total-label">Total Tracks</span>
           </div>
         </div>
         
@@ -162,6 +217,14 @@ const SpotifyStats = () => {
                   <li key={artist._id} className="spotify-stats__list-item">
                     <span className="spotify-stats__list-rank">{index + 1}</span>
                     <span className="spotify-stats__list-name">{artist._id}</span>
+                    <div className="spotify-stats__list-bar-container">
+                      <div 
+                        className="spotify-stats__list-bar" 
+                        style={{ 
+                          width: `${Math.min(100, (artist.count / stats.topArtists[0].count) * 100)}%` 
+                        }}
+                      ></div>
+                    </div>
                     <span className="spotify-stats__list-count">{artist.count} plays</span>
                   </li>
                 ))}
@@ -182,6 +245,14 @@ const SpotifyStats = () => {
                   <li key={track._id.trackId} className="spotify-stats__list-item">
                     <span className="spotify-stats__list-rank">{index + 1}</span>
                     <span className="spotify-stats__list-name">{track._id.name}</span>
+                    <div className="spotify-stats__list-bar-container">
+                      <div 
+                        className="spotify-stats__list-bar spotify-stats__list-bar--alt" 
+                        style={{ 
+                          width: `${Math.min(100, (track.count / stats.topTracks[0].count) * 100)}%` 
+                        }}
+                      ></div>
+                    </div>
                     <span className="spotify-stats__list-count">{track.count} plays</span>
                   </li>
                 ))}

@@ -1,13 +1,14 @@
 // File: /frontend/src/features/spotify/components/CurrentlyPlaying.jsx
-// Currently playing component to display current Spotify track
+// Enhanced currently playing component with animations and auto-update
 
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSpotify } from '../../../hooks/useSpotify';
-import { FaSpotify, FaMusic, FaPlay, FaPause } from 'react-icons/fa';
+import { FaSpotify, FaMusic, FaPlay, FaPause, FaVolumeUp } from 'react-icons/fa';
 import './CurrentlyPlaying.scss';
 
 /**
- * Component to display the currently playing Spotify track
+ * Enhanced component to display the currently playing Spotify track
+ * with animations and more frequent updates
  */
 const CurrentlyPlaying = () => {
   const { 
@@ -18,19 +19,59 @@ const CurrentlyPlaying = () => {
     fetchCurrentTrack 
   } = useSpotify();
   
+  // Track the previous track to animate changes
+  const [prevTrack, setPrevTrack] = useState(null);
+  const [isChanging, setIsChanging] = useState(false);
+  const [updateTime, setUpdateTime] = useState(new Date());
+  const animationTimeoutRef = useRef(null);
+  
   useEffect(() => {
     // Initial fetch of currently playing track
     fetchCurrentTrack();
     
-    // Poll for currently playing track every 30 seconds
+    // Poll for currently playing track more frequently (every 5 seconds)
     const interval = setInterval(() => {
       fetchCurrentTrack();
-    }, 30000);
+    }, 5000);
     
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+      }
+    };
   }, [fetchCurrentTrack]);
   
-  if (isLoading) {
+  // Handle track change animations
+  useEffect(() => {
+    if (currentTrack && (!prevTrack || prevTrack.trackId !== currentTrack.trackId)) {
+      // Only animate if it's not the first load
+      if (prevTrack) {
+        setIsChanging(true);
+        setUpdateTime(new Date());
+        
+        // Reset animation state after animation completes
+        animationTimeoutRef.current = setTimeout(() => {
+          setIsChanging(false);
+        }, 800); // Match this with CSS animation duration
+      }
+      
+      // Update previous track
+      setPrevTrack(currentTrack);
+    }
+  }, [currentTrack, prevTrack]);
+  
+  // Format relative time for update display
+  const getUpdateTimeText = () => {
+    const seconds = Math.floor((new Date() - updateTime) / 1000);
+    if (seconds < 60) {
+      return `${seconds}s ago`;
+    } else {
+      return `${Math.floor(seconds / 60)}m ${seconds % 60}s ago`;
+    }
+  };
+  
+  if (isLoading && !currentTrack) {
     return (
       <div className="currently-playing">
         <div className="currently-playing__loading">
@@ -74,11 +115,12 @@ const CurrentlyPlaying = () => {
   }
   
   return (
-    <div className="currently-playing">
+    <div className={`currently-playing ${isChanging ? 'is-changing' : ''}`}>
       <div className="currently-playing__header">
         <div className="currently-playing__status">
           <FaPlay size={14} className="currently-playing__status-icon" />
-          Currently playing on Spotify
+          <span>Currently playing on Spotify</span>
+          <span className="currently-playing__update-time">{getUpdateTimeText()}</span>
         </div>
         <FaSpotify size={24} className="currently-playing__spotify-icon" />
       </div>
@@ -91,10 +133,20 @@ const CurrentlyPlaying = () => {
               alt={`${currentTrack.albumName} album cover`} 
               className="currently-playing__image"
             />
+            <div className="currently-playing__artwork-overlay">
+              <div className="currently-playing__eq-animation">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="currently-playing__artwork currently-playing__artwork--placeholder">
             <FaMusic size={32} />
+            <div className="currently-playing__artwork-overlay">
+              <div className="currently-playing__eq-animation">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
           </div>
         )}
         
@@ -109,16 +161,25 @@ const CurrentlyPlaying = () => {
             {currentTrack.albumName}
           </p>
           
-          {currentTrack.trackUrl && (
-            <a 
-              href={currentTrack.trackUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="currently-playing__link"
-            >
-              Listen on Spotify
-            </a>
-          )}
+          <div className="currently-playing__meta">
+            <div className="currently-playing__volume">
+              <FaVolumeUp className="currently-playing__volume-icon" />
+              <div className="currently-playing__volume-bar">
+                <div className="currently-playing__volume-level"></div>
+              </div>
+            </div>
+            
+            {currentTrack.trackUrl && (
+              <a 
+                href={currentTrack.trackUrl} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="currently-playing__link"
+              >
+                Listen on Spotify
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>
