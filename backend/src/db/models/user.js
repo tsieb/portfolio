@@ -1,13 +1,9 @@
 // File: /backend/src/db/models/user.js
-// User model schema definition
+// Enhanced user model with profile and privacy fields
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-/**
- * User Schema
- * Defines the structure for user documents in the database
- */
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -23,6 +19,20 @@ const userSchema = new mongoose.Schema(
         message: 'Please provide a valid email address'
       }
     },
+    username: {
+      type: String,
+      required: [true, 'Username is required'],
+      unique: true,
+      trim: true,
+      minlength: [3, 'Username must be at least 3 characters'],
+      maxlength: [20, 'Username cannot exceed 20 characters'],
+      validate: {
+        validator: function(username) {
+          return /^[a-zA-Z0-9_-]+$/.test(username);
+        },
+        message: 'Username can only contain letters, numbers, underscores and hyphens'
+      }
+    },
     password: {
       type: String,
       required: [true, 'Password is required'],
@@ -34,24 +44,51 @@ const userSchema = new mongoose.Schema(
       enum: ['user', 'admin'],
       default: 'user'
     },
-    firstName: {
+    displayName: {
       type: String,
       trim: true
     },
-    lastName: {
+    bio: {
       type: String,
-      trim: true
+      trim: true,
+      maxlength: [300, 'Bio cannot exceed 300 characters']
     },
+    avatar: {
+      type: String
+    },
+    isPublic: {
+      type: Boolean,
+      default: true
+    },
+    allowedViewers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }],
     spotifyToken: {
       accessToken: String,
       refreshToken: String,
       expiresAt: Date
+    },
+    spotifyConnected: {
+      type: Boolean,
+      default: false
+    },
+    spotifyId: {
+      type: String
+    },
+    lastActive: {
+      type: Date,
+      default: Date.now
     },
     passwordChangedAt: Date,
     active: {
       type: Boolean,
       default: true,
       select: false
+    },
+    onboardingCompleted: {
+      type: Boolean,
+      default: false
     }
   },
   {
@@ -61,9 +98,12 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-/**
- * Pre-save middleware to hash password
- */
+// Virtual for full name
+userSchema.virtual('fullName').get(function() {
+  return this.displayName || this.username;
+});
+
+// Pre-save middleware to hash password
 userSchema.pre('save', async function(next) {
   // Only run if password was modified
   if (!this.isModified('password')) return next();
@@ -77,20 +117,12 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-/**
- * Instance method to compare password
- * @param {string} candidatePassword - The password to compare
- * @returns {Promise<boolean>} - True if passwords match, false otherwise
- */
+// Method to compare password
 userSchema.methods.correctPassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-/**
- * Instance method to check if password was changed after token was issued
- * @param {number} JWTTimestamp - Token issued timestamp
- * @returns {boolean} - True if password changed after token issued
- */
+// Method to check if password changed after token issued
 userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
@@ -99,6 +131,27 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
     );
     return JWTTimestamp < changedTimestamp;
   }
+  return false;
+};
+
+// Method to check if a user can view another user's profile
+userSchema.methods.canView = function(targetUser) {
+  // Admin can view all profiles
+  if (this.role === 'admin') return true;
+  
+  // Users can view their own profile
+  if (this._id.equals(targetUser._id)) return true;
+  
+  // Users can view public profiles
+  if (targetUser.isPublic) return true;
+  
+  // Check if user is in allowed viewers
+  if (targetUser.allowedViewers && targetUser.allowedViewers.some(viewer => 
+    viewer.equals(this._id)
+  )) {
+    return true;
+  }
+  
   return false;
 };
 

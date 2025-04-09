@@ -1,5 +1,5 @@
 // File: /backend/src/server.js
-// Main entry point for the backend application
+// Enhanced server file with Spotify integration and API routes
 
 const express = require('express');
 const helmet = require('helmet');
@@ -7,6 +7,7 @@ const cors = require('cors');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 // Load environment variables
 require('dotenv').config();
@@ -20,6 +21,9 @@ const errorMiddleware = require('./middleware/error');
 // Import routes
 const authRoutes = require('./routes/api/auth');
 const spotifyRoutes = require('./routes/api/spotify');
+const userRoutes = require('./routes/api/users');
+const notificationRoutes = require('./routes/api/notifications');
+const settingsRoutes = require('./routes/api/settings');
 const adminRoutes = require('./routes/api/admin');
 
 // Initialize express app
@@ -27,6 +31,21 @@ const app = express();
 
 // Set security HTTP headers
 app.use(helmet());
+
+// Global rate limiter
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: {
+    status: 'error',
+    message: 'Too many requests, please try again later.'
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Apply rate limiter to all API routes
+app.use('/api', apiLimiter);
 
 // Enable CORS
 app.use(
@@ -58,6 +77,9 @@ if (process.env.NODE_ENV === 'development') {
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/spotify', spotifyRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Health check endpoint
@@ -88,7 +110,7 @@ const server = app.listen(PORT, async () => {
     await connectDB();
     console.log('MongoDB connected');
     
-    // Initialize the Spotify service if needed
+    // Initialize the Spotify service
     const { initializeSpotifyService } = require('./services/spotify');
     await initializeSpotifyService();
     console.log('Spotify service initialized');

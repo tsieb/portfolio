@@ -1,63 +1,95 @@
-// File: /backend/src/db/models/spotifyTrack.js
-// Spotify track schema definition for storing listening history
+// File: /backend/src/db/models/user.js
+// Enhanced user model with profile and privacy fields
 
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
-/**
- * Spotify Track Schema
- * Stores information about tracks the user has listened to
- */
-const spotifyTrackSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
-    trackId: {
+    email: {
       type: String,
-      required: true,
-      index: true
+      required: [true, 'Email is required'],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      validate: {
+        validator: function(email) {
+          return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+        },
+        message: 'Please provide a valid email address'
+      }
     },
-    trackName: {
+    username: {
       type: String,
-      required: true
+      required: [true, 'Username is required'],
+      unique: true,
+      trim: true,
+      minlength: [3, 'Username must be at least 3 characters'],
+      maxlength: [20, 'Username cannot exceed 20 characters'],
+      validate: {
+        validator: function(username) {
+          return /^[a-zA-Z0-9_-]+$/.test(username);
+        },
+        message: 'Username can only contain letters, numbers, underscores and hyphens'
+      }
     },
-    artistName: {
+    password: {
       type: String,
-      required: true
+      required: [true, 'Password is required'],
+      minlength: 8,
+      select: false // Don't include password in query results by default
     },
-    albumName: {
+    role: {
       type: String,
-      required: true
+      enum: ['user', 'admin'],
+      default: 'user'
     },
-    albumImageUrl: {
+    displayName: {
+      type: String,
+      trim: true
+    },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: [300, 'Bio cannot exceed 300 characters']
+    },
+    avatar: {
       type: String
     },
-    duration: {
-      type: Number
+    isPublic: {
+      type: Boolean,
+      default: true
     },
-    popularity: {
-      type: Number
+    allowedViewers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }],
+    spotifyToken: {
+      accessToken: String,
+      refreshToken: String,
+      expiresAt: Date
     },
-    previewUrl: {
-      type: String
-    },
-    playedAt: {
-      type: Date,
-      default: Date.now,
-      index: true
-    },
-    isCurrentlyPlaying: {
+    spotifyConnected: {
       type: Boolean,
       default: false
     },
-    genres: [{
+    spotifyId: {
       type: String
-    }],
-    // Additional metadata
-    trackUri: String,
-    trackUrl: String,
-    artistId: String,
-    artistUrl: String,
-    albumId: String,
-    albumUrl: String,
-    albumReleaseDate: String
+    },
+    lastActive: {
+      type: Date,
+      default: Date.now
+    },
+    passwordChangedAt: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false
+    },
+    onboardingCompleted: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: true,
@@ -66,74 +98,63 @@ const spotifyTrackSchema = new mongoose.Schema(
   }
 );
 
-// Index for efficient querying
-spotifyTrackSchema.index({ trackId: 1, playedAt: -1 });
+// Virtual for full name
+userSchema.virtual('fullName').get(function() {
+  return this.displayName || this.username;
+});
 
-/**
- * Static method to get currently playing track
- * @returns {Promise<Object>} The currently playing track or null
- */
-spotifyTrackSchema.statics.getCurrentlyPlaying = async function() {
-  return this.findOne({ isCurrentlyPlaying: true })
-    .sort({ playedAt: -1 })
-    .exec();
+// Pre-save middleware to hash password
+userSchema.pre('save', async function(next) {
+  // Only run if password was modified
+  if (!this.isModified('password')) return next();
+  
+  // Hash the password with cost of 12
+  this.password = await bcrypt.hash(this.password, 12);
+  
+  // Update passwordChangedAt field
+  this.passwordChangedAt = Date.now() - 1000;
+  
+  next();
+});
+
+// Method to compare password
+userSchema.methods.correctPassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
 };
 
-/**
- * Static method to get listening history
- * @param {number} limit - Number of tracks to get
- * @param {number} skip - Number of tracks to skip
- * @returns {Promise<Array>} Array of track objects
- */
-spotifyTrackSchema.statics.getHistory = async function(limit = 10, skip = 0) {
-  return this.find()
-    .sort({ playedAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .exec();
+// Method to check if password changed after token issued
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimestamp;
+  }
+  return false;
 };
 
-/**
- * Static method to get listening statistics
- * @returns {Promise<Object>} Object containing statistics
- */
-spotifyTrackSchema.statics.getStatistics = async function() {
-  // Get total tracks
-  const totalTracks = await this.countDocuments();
+// Method to check if a user can view another user's profile
+userSchema.methods.canView = function(targetUser) {
+  // Admin can view all profiles
+  if (this.role === 'admin') return true;
   
-  // Get top artists
-  const topArtists = await this.aggregate([
-    { $group: { _id: '$artistName', count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: 5 }
-  ]);
+  // Users can view their own profile
+  if (this._id.equals(targetUser._id)) return true;
   
-  // Get top tracks
-  const topTracks = await this.aggregate([
-    { $group: { _id: { trackId: '$trackId', name: '$trackName' }, count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: 5 }
-  ]);
+  // Users can view public profiles
+  if (targetUser.isPublic) return true;
   
-  // Get listening activity by hour
-  const activityByHour = await this.aggregate([
-    { 
-      $group: { 
-        _id: { $hour: '$playedAt' }, 
-        count: { $sum: 1 } 
-      } 
-    },
-    { $sort: { _id: 1 } }
-  ]);
+  // Check if user is in allowed viewers
+  if (targetUser.allowedViewers && targetUser.allowedViewers.some(viewer => 
+    viewer.equals(this._id)
+  )) {
+    return true;
+  }
   
-  return {
-    totalTracks,
-    topArtists,
-    topTracks,
-    activityByHour
-  };
+  return false;
 };
 
-const SpotifyTrack = mongoose.model('SpotifyTrack', spotifyTrackSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = SpotifyTrack;
+module.exports = User;

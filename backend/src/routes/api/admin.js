@@ -1,9 +1,8 @@
 // File: /backend/src/routes/api/admin.js
-// Admin routes
+// Admin routes for user and data management
 
 const express = require('express');
-const SpotifyTrack = require('../../db/models/spotifyTrack');
-const User = require('../../db/models/user');
+const adminService = require('../../services/admin');
 const { protect, restrictTo } = require('../../middleware/auth');
 
 const router = express.Router();
@@ -17,184 +16,228 @@ router.use(restrictTo('admin'));
  * @desc    Get admin dashboard data
  * @access  Private/Admin
  */
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', async (req, res, next) => {
   try {
-    // Get listening statistics
-    const listeningStats = await SpotifyTrack.getStatistics();
-    
-    // Get user count
-    const userCount = await User.countDocuments();
-    
-    // Get recent tracks with pagination
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = parseInt(req.query.skip) || 0;
-    const recentTracks = await SpotifyTrack.getHistory(limit, skip);
-    
-    // Get total track count
-    const trackCount = await SpotifyTrack.countDocuments();
-    
-    // Get listening trends (tracks per day for the last 14 days)
-    const twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-    
-    const listeningTrends = await SpotifyTrack.aggregate([
-      { 
-        $match: { 
-          playedAt: { $gte: twoWeeksAgo } 
-        } 
-      },
-      {
-        $group: {
-          _id: { 
-            $dateToString: { format: '%Y-%m-%d', date: '$playedAt' } 
-          },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { _id: 1 } }
-    ]);
+    const data = await adminService.getDashboardData();
     
     res.status(200).json({
       status: 'success',
-      data: {
-        listeningStats,
-        userCount,
-        recentTracks,
-        trackCount,
-        listeningTrends
-      }
+      data
     });
   } catch (error) {
-    console.error('Error in admin dashboard route:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Error fetching admin dashboard data'
+    next(error);
+  }
+});
+
+/**
+ * @route   GET /api/admin/users
+ * @desc    Get all users with filtering and pagination
+ * @access  Private/Admin
+ */
+router.get('/users', async (req, res, next) => {
+  try {
+    const options = {
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 20,
+      search: req.query.search || '',
+      sort: req.query.sort || 'createdAt',
+      order: req.query.order || 'desc',
+      onlySpotifyConnected: req.query.onlySpotifyConnected === 'true'
+    };
+    
+    const data = await adminService.getUsers(options);
+    
+    res.status(200).json({
+      status: 'success',
+      data
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   GET /api/admin/users/:id
+ * @desc    Get user by ID
+ * @access  Private/Admin
+ */
+router.get('/users/:id', async (req, res, next) => {
+  try {
+    const user = await adminService.getUserById(req.params.id);
+    
+    res.status(200).json({
+      status: 'success',
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   PUT /api/admin/users/:id
+ * @desc    Update user
+ * @access  Private/Admin
+ */
+router.put('/users/:id', async (req, res, next) => {
+  try {
+    const user = await adminService.updateUser(req.params.id, req.body);
+    
+    res.status(200).json({
+      status: 'success',
+      data: user
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   DELETE /api/admin/users/:id
+ * @desc    Delete user
+ * @access  Private/Admin
+ */
+router.delete('/users/:id', async (req, res, next) => {
+  try {
+    await adminService.deleteUser(req.params.id);
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'User deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   POST /api/admin/users/create
+ * @desc    Create test user
+ * @access  Private/Admin
+ */
+router.post('/users/create', async (req, res, next) => {
+  try {
+    const user = await adminService.createTestUser(req.body);
+    
+    res.status(201).json({
+      status: 'success',
+      data: user
+    });
+  } catch (error) {
+    next(error);
   }
 });
 
 /**
  * @route   GET /api/admin/tracks
- * @desc    Get all tracks with pagination, sorting, and filtering
+ * @desc    Get all tracks with pagination, filtering, and sorting
  * @access  Private/Admin
  */
-router.get('/tracks', async (req, res) => {
+router.get('/tracks', async (req, res, next) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
+    const options = {
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 20,
+      sort: req.query.sort || 'playedAt',
+      order: req.query.order || 'desc',
+      artist: req.query.artist || '',
+      track: req.query.track || '',
+      album: req.query.album || '',
+      userId: req.query.userId || null,
+      startDate: req.query.startDate || null,
+      endDate: req.query.endDate || null
+    };
     
-    const sortField = req.query.sort || 'playedAt';
-    const sortOrder = req.query.order === 'asc' ? 1 : -1;
-    
-    // Build filter object from query parameters
-    const filter = {};
-    
-    if (req.query.artist) {
-      filter.artistName = { $regex: req.query.artist, $options: 'i' };
-    }
-    
-    if (req.query.track) {
-      filter.trackName = { $regex: req.query.track, $options: 'i' };
-    }
-    
-    if (req.query.album) {
-      filter.albumName = { $regex: req.query.album, $options: 'i' };
-    }
-    
-    if (req.query.startDate) {
-      if (!filter.playedAt) filter.playedAt = {};
-      filter.playedAt.$gte = new Date(req.query.startDate);
-    }
-    
-    if (req.query.endDate) {
-      if (!filter.playedAt) filter.playedAt = {};
-      filter.playedAt.$lte = new Date(req.query.endDate);
-    }
-    
-    // Execute query with pagination and sorting
-    const tracks = await SpotifyTrack
-      .find(filter)
-      .sort({ [sortField]: sortOrder })
-      .skip(skip)
-      .limit(limit);
-    
-    // Get total count for pagination info
-    const total = await SpotifyTrack.countDocuments(filter);
+    const data = await adminService.getTracks(options);
     
     res.status(200).json({
       status: 'success',
-      data: {
-        tracks,
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
-        }
-      }
+      data
     });
   } catch (error) {
-    console.error('Error in admin tracks route:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Error fetching tracks'
-    });
+    next(error);
   }
 });
 
 /**
  * @route   DELETE /api/admin/tracks/:id
- * @desc    Delete a track by ID
+ * @desc    Delete track
  * @access  Private/Admin
  */
-router.delete('/tracks/:id', async (req, res) => {
+router.delete('/tracks/:id', async (req, res, next) => {
   try {
-    const track = await SpotifyTrack.findById(req.params.id);
-    
-    if (!track) {
-      return res.status(404).json({
-        status: 'error',
-        message: 'Track not found'
-      });
-    }
-    
-    await SpotifyTrack.findByIdAndDelete(req.params.id);
+    await adminService.deleteTrack(req.params.id);
     
     res.status(200).json({
       status: 'success',
       message: 'Track deleted successfully'
     });
   } catch (error) {
-    console.error('Error in delete track route:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Error deleting track'
-    });
+    next(error);
   }
 });
 
 /**
- * @route   GET /api/admin/users
- * @desc    Get all users (admin only)
+ * @route   GET /api/admin/settings
+ * @desc    Get application settings
  * @access  Private/Admin
  */
-router.get('/users', async (req, res) => {
+router.get('/settings', async (req, res, next) => {
   try {
-    const users = await User.find().select('-password');
+    const settings = await adminService.getAppSettings();
     
     res.status(200).json({
       status: 'success',
-      data: {
-        users
-      }
+      data: settings
     });
   } catch (error) {
-    console.error('Error in admin users route:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Error fetching users'
+    next(error);
+  }
+});
+
+/**
+ * @route   PUT /api/admin/settings
+ * @desc    Update application settings
+ * @access  Private/Admin
+ */
+router.put('/settings', async (req, res, next) => {
+  try {
+    const settings = await adminService.updateAppSettings(req.body);
+    
+    res.status(200).json({
+      status: 'success',
+      data: settings
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   POST /api/admin/login
+ * @desc    Admin login with email and password
+ * @access  Public
+ */
+router.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1) Check if email and password exist
+    if (!email || !password) {
+      return next(new AppError('Please provide email and password', 400));
+    }
+
+    // 2) Check if user exists && password is correct
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user || user.role !== 'admin' || !(await user.correctPassword(password))) {
+      return next(new AppError('Incorrect email or password', 401));
+    }
+
+    // 3) If everything ok, send token to client
+    createSendToken(user, 200, res);
+  } catch (error) {
+    next(error);
   }
 });
 
