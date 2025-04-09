@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSpotify } from '../hooks/useSpotify';
 import { FaSpotify, FaMusic, FaPlay, FaPause, FaExternalLinkAlt } from 'react-icons/fa';
-import '../styles/CurrentlyPlaying.scss';
+import '../../../assets/styles/features/spotify/components/CurrentlyPlaying.scss';
 
 const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
   const { 

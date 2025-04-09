@@ -3,7 +3,7 @@
 
 import { Link } from 'react-router-dom';
 import { FaExclamationTriangle, FaHome } from 'react-icons/fa';
-import './NotFoundPage.scss';
+import '../assets/styles/pages/NotFoundPage.scss';
 
 /**
  * Not Found page component for 404 errors

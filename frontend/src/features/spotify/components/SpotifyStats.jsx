@@ -2,7 +2,7 @@
 // Enhanced Spotify stats component with improved visuals
 
 import { useEffect } from 'react';
-import { useSpotify } from '../../../hooks/useSpotify';
+import { useSpotify } from '../hooks/useSpotify';
 import { FaChartBar, FaMicrophone, FaCompactDisc, FaHeadphones, FaMusic } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import { 
@@ -14,7 +14,7 @@ import {
   Tooltip, 
   Legend 
 } from 'chart.js';
-import './SpotifyStats.scss';
+import '../../../assets/styles/features/spotify/components/SpotifyStats.scss';
 
 // Register Chart.js components
 ChartJS.register(

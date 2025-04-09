@@ -1,4 +1,4 @@
-// File: /frontend/src/hooks/useSpotify.js
+// File: /frontend/src/features/spotify/hooks/useSpotify.js
 // Custom hook for Spotify context
 
 import { useContext } from 'react';

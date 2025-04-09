@@ -13,7 +13,7 @@ import {
   FaCog,
   FaSignOutAlt
 } from 'react-icons/fa';
-import './Header.scss';
+import '../../assets/styles/components/ui/Header.scss';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();

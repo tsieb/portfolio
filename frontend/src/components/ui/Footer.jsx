@@ -3,7 +3,7 @@
 
 import { Link } from 'react-router-dom';
 import { FaSpotify, FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa';
-import './Footer.scss';
+import '../../assets/styles/components/ui/Footer.scss';
 
 /**
  * Enhanced footer component with modern styling

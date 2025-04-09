@@ -17,8 +17,8 @@ import {
   Filler
 } from 'chart.js';
 import adminService from '../services/admin';
-import spotifyService from '../services/spotify';
-import './AdminDashboardPage.scss';
+import spotifyService from '../features/spotify/services/spotifyApi';
+import '../assets/styles/pages/AdminDashboardPage.scss';
 
 // Register Chart.js components
 ChartJS.register(

@@ -8,6 +8,7 @@ import CurrentlyPlaying from '../features/spotify/components/CurrentlyPlaying';
 import RecentlyPlayed from '../features/spotify/components/RecentlyPlayed';
 import SpotifyStats from '../features/spotify/components/SpotifyStats';
 import { FaSpotify, FaUserCircle, FaChevronDown } from 'react-icons/fa';
+import '../assets/styles/pages/HomePage.scss';
 
 const HomePage = () => {
   const { currentTrack, isPlaying } = useSpotify();

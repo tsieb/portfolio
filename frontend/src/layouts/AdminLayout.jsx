@@ -5,7 +5,7 @@ import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../features/auth/hooks/useAuth';
 
 import '../assets/styles/admin.scss';
 

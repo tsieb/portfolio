@@ -1,4 +1,4 @@
-// File: /frontend/src/hooks/useAuth.js
+// File: /frontend/src/features/auth/hooks/useAuth.js
 // Custom hook for authentication context
 
 import { useContext } from 'react';
