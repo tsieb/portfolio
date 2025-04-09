@@ -1,5 +1,5 @@
 // File: /frontend/src/pages/AuthCallbackPage.jsx
-// Universal OAuth callback page handling both success and error cases
+// Enhanced universal auth callback with improved token handling
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ const AuthCallbackPage = () => {
         const details = urlParams.get('details');
         
         if (error) {
+          console.error('Auth error:', error, details);
           setStatus('error');
           setMessage(`Authentication failed: ${error}`);
           if (details) {
@@ -35,6 +36,7 @@ const AuthCallbackPage = () => {
         }
         
         if (success && token) {
+          console.log('Received token from server, storing...');
           // Store token in localStorage
           localStorage.setItem('token', token);
           
@@ -57,6 +59,7 @@ const AuthCallbackPage = () => {
         // If we get here, something unexpected happened
         setStatus('error');
         setMessage('Unexpected authentication response. Please try again.');
+        console.error('Unexpected auth response', { success, token, error });
         
       } catch (err) {
         console.error('Auth callback error:', err);

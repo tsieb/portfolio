@@ -96,7 +96,7 @@ const exchangeSpotifyCode = async (req, res, next) => {
       return next(new AppError('Authorization code is required', 400));
     }
 
-    // Log the incoming code for debugging (remove in production)
+    // Log the incoming code for debugging (first 10 chars only for security)
     console.log('Received authorization code:', code.substring(0, 10) + '...');
 
     // Get the proper redirect URI from environment variables
@@ -143,6 +143,12 @@ const exchangeSpotifyCode = async (req, res, next) => {
 
     console.log('Token exchange successful');
     
+    // Validate token response
+    if (!response.data.access_token || !response.data.refresh_token) {
+      console.error('Missing tokens in Spotify response', response.data);
+      return next(new AppError('Invalid token response from Spotify', 500));
+    }
+    
     res.status(200).json({
       status: 'success',
       data: response.data
@@ -158,163 +164,6 @@ const exchangeSpotifyCode = async (req, res, next) => {
                         'Failed to exchange authorization code';
     
     next(new AppError(`Spotify authentication failed: ${errorMessage}`, 500));
-  }
-};
-
-/**
- * Handle direct Spotify OAuth callback
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next function
- */
-const handleSpotifyCallback = async (req, res, next) => {
-  try {
-    const { code, error } = req.query;
-    
-    if (error) {
-      console.error('Spotify authorization error:', error);
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=${error}`);
-    }
-    
-    if (!code) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=missing_code`);
-    }
-    
-    // Get the proper redirect URI from environment variables
-    const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
-    if (!redirectUri) {
-      console.error('Missing SPOTIFY_REDIRECT_URI in environment variables');
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=server_configuration_error`);
-    }
-
-    // Exchange code for tokens directly in the backend
-    try {
-      // Get Spotify API credentials
-      const clientId = process.env.SPOTIFY_CLIENT_ID;
-      const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-      
-      if (!clientId || !clientSecret) {
-        console.error('Missing Spotify API credentials in environment variables');
-        return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=server_configuration_error`);
-      }
-
-      // Exchange code for tokens
-      const tokenEndpoint = 'https://accounts.spotify.com/api/token';
-      const authString = Buffer.from(
-        `${clientId}:${clientSecret}`
-      ).toString('base64');
-
-      const formData = new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: redirectUri
-      });
-
-      console.log('Exchanging code for tokens...');
-      
-      const response = await axios({
-        method: 'post',
-        url: tokenEndpoint,
-        headers: {
-          'Authorization': `Basic ${authString}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: formData
-      });
-
-      const { access_token, refresh_token, expires_in } = response.data;
-      
-      if (!access_token || !refresh_token) {
-        console.error('Missing tokens in Spotify response');
-        return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=invalid_token_response`);
-      }
-      
-      // Get Spotify user profile with the access token
-      const spotifyUser = await spotifyService.getUserProfile(access_token);
-
-      if (!spotifyUser || !spotifyUser.id) {
-        console.error('Failed to get Spotify user profile');
-        return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=profile_fetch_failed`);
-      }
-
-      // Check if user exists with this Spotify ID
-      let user = await User.findOne({ spotifyId: spotifyUser.id });
-      
-      // If no user exists, create a new one
-      if (!user) {
-        // Generate a unique username based on Spotify display name
-        let username = spotifyUser.display_name
-          ? spotifyUser.display_name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '')
-          : `user_${crypto.randomBytes(4).toString('hex')}`;
-        
-        // Check if username exists, if so, add a random suffix
-        const usernameExists = await User.findOne({ username });
-        if (usernameExists) {
-          username = `${username}_${crypto.randomBytes(4).toString('hex')}`;
-        }
-        
-        // Create new user
-        user = await User.create({
-          email: spotifyUser.email || `${username}@spotifyuser.com`,
-          username,
-          password: crypto.randomBytes(16).toString('hex'), // Random secure password
-          displayName: spotifyUser.display_name,
-          avatar: spotifyUser.images && spotifyUser.images.length > 0 ? spotifyUser.images[0].url : null,
-          spotifyId: spotifyUser.id,
-          spotifyToken: {
-            accessToken: access_token,
-            refreshToken: refresh_token,
-            expiresAt: new Date(Date.now() + expires_in * 1000)
-          },
-          spotifyConnected: true,
-          onboardingCompleted: false
-        });
-      } else {
-        // Update existing user's Spotify token
-        user.spotifyToken = {
-          accessToken: access_token,
-          refreshToken: refresh_token,
-          expiresAt: new Date(Date.now() + expires_in * 1000)
-        };
-        user.spotifyConnected = true;
-        
-        // Update profile if needed
-        if (spotifyUser.display_name && !user.displayName) {
-          user.displayName = spotifyUser.display_name;
-        }
-        
-        if (spotifyUser.images && spotifyUser.images.length > 0 && !user.avatar) {
-          user.avatar = spotifyUser.images[0].url;
-        }
-        
-        await user.save();
-      }
-
-      // Create JWT token
-      const token = signToken(user._id);
-      
-      // Set JWT as cookie
-      const cookieOptions = {
-        expires: new Date(
-          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-        ),
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax'
-      };
-
-      res.cookie('jwt', token, cookieOptions);
-
-      // Redirect to frontend with success and token
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?success=true&token=${token}`);
-      
-    } catch (error) {
-      console.error('Spotify authentication error:', error.response?.data || error.message);
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=${encodeURIComponent('authentication_failed')}&details=${encodeURIComponent(error.message)}`);
-    }
-  } catch (err) {
-    console.error('Error handling Spotify callback:', err);
-    res.redirect(`${process.env.FRONTEND_URL}/auth/callback?error=server_error`);
   }
 };
 
@@ -339,11 +188,15 @@ const spotifyCallback = async (req, res, next) => {
       return next(new AppError('Failed to get Spotify user profile', 500));
     }
 
+    console.log(`Retrieved Spotify profile for user ID: ${spotifyUser.id}`);
+
     // Check if user exists with this Spotify ID
     let user = await User.findOne({ spotifyId: spotifyUser.id });
     
     // If no user exists, create a new one
     if (!user) {
+      console.log('Creating new user from Spotify profile');
+      
       // Generate a unique username based on Spotify display name
       let username = spotifyUser.display_name
         ? spotifyUser.display_name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '')
@@ -371,7 +224,11 @@ const spotifyCallback = async (req, res, next) => {
         spotifyConnected: true,
         onboardingCompleted: false
       });
+      
+      console.log(`New user created with ID: ${user._id}, username: ${username}`);
     } else {
+      console.log(`Updating existing user with ID: ${user._id}`);
+      
       // Update existing user's Spotify token
       user.spotifyToken = {
         accessToken: access_token,
@@ -390,6 +247,7 @@ const spotifyCallback = async (req, res, next) => {
       }
       
       await user.save();
+      console.log('User updated successfully');
     }
 
     // Create and send JWT
@@ -575,7 +433,6 @@ module.exports = {
   adminLogin,
   exchangeSpotifyCode,
   spotifyCallback,
-  handleSpotifyCallback,
   logout,
   getCurrentUser,
   createAdminUser,

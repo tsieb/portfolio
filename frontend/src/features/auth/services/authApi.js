@@ -1,5 +1,5 @@
 // File: /frontend/src/features/auth/services/authApi.js
-// Auth service focused on Spotify OAuth and admin login
+// Enhanced auth service with improved token validation
 
 import api from '../../../services/api';
 
@@ -19,6 +19,7 @@ const adminLogin = async (email, password) => {
     
     return response.data;
   } catch (error) {
+    console.error('Admin login error:', error.response?.data || error);
     throw error;
   }
 };
@@ -30,14 +31,28 @@ const adminLogin = async (email, password) => {
  */
 const loginWithSpotify = async (tokenData) => {
   try {
-    const response = await api.post('/auth/spotify/callback', tokenData);
+    // Validate the token data before proceeding
+    if (!tokenData || !tokenData.access_token || !tokenData.refresh_token) {
+      console.error('Invalid token data:', tokenData);
+      throw new Error('Invalid Spotify token data provided');
+    }
+
+    const response = await api.post('/auth/spotify/callback', {
+      access_token: tokenData.access_token,
+      refresh_token: tokenData.refresh_token,
+      expires_in: tokenData.expires_in || 3600
+    });
     
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
+      console.log('JWT token stored successfully');
+    } else {
+      console.warn('No token received from server');
     }
     
     return response.data;
   } catch (error) {
+    console.error('Spotify login error:', error.response?.data || error);
     throw error;
   }
 };
@@ -49,9 +64,14 @@ const loginWithSpotify = async (tokenData) => {
  */
 const exchangeSpotifyCode = async (code) => {
   try {
+    if (!code) {
+      throw new Error('Authorization code is required');
+    }
+    
     const response = await api.post('/auth/spotify/exchange', { code });
     return response.data;
   } catch (error) {
+    console.error('Code exchange error:', error.response?.data || error);
     throw error;
   }
 };
@@ -80,6 +100,7 @@ const getCurrentUser = async () => {
     const response = await api.get('/auth/me');
     return response.data;
   } catch (error) {
+    console.error('Get current user error:', error.response?.data || error);
     throw error;
   }
 };

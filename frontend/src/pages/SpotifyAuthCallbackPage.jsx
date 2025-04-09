@@ -1,5 +1,5 @@
 // File: /frontend/src/pages/SpotifyAuthCallbackPage.jsx
-// Enhanced Spotify OAuth callback handling with improved error reporting
+// Enhanced Spotify OAuth callback with improved error handling and token validation
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -26,12 +26,14 @@ const SpotifyAuthCallbackPage = () => {
         if (error) {
           setStatus('error');
           setMessage(`Authentication failed: ${error}`);
+          showToast.error('Spotify login failed');
           return;
         }
         
         if (!code) {
           setStatus('error');
           setMessage('No authorization code provided');
+          showToast.error('Missing authorization code');
           return;
         }
         
@@ -40,11 +42,20 @@ const SpotifyAuthCallbackPage = () => {
         console.log('Sending code to backend:', code.substring(0, 10) + '...');
         
         try {
-          const tokenData = await authService.exchangeSpotifyCode(code);
+          const response = await authService.exchangeSpotifyCode(code);
+          
+          // Validate token data
+          if (!response.data || !response.data.access_token || !response.data.refresh_token) {
+            console.error('Invalid token data received:', response);
+            setStatus('error');
+            setMessage('Received invalid token data from server');
+            showToast.error('Authentication error: Invalid token data');
+            return;
+          }
           
           // Log in with Spotify tokens
           setMessage('Logging in with Spotify...');
-          await loginWithSpotify(tokenData);
+          await loginWithSpotify(response.data);
           
           setStatus('success');
           setMessage('Successfully connected with Spotify!');
@@ -60,7 +71,7 @@ const SpotifyAuthCallbackPage = () => {
           console.error('Token exchange failed:', err);
           setStatus('error');
           setMessage('Failed to exchange authorization code. Please try again.');
-          setErrorDetails(err.message || 'Unknown error');
+          setErrorDetails(err.response?.data?.message || err.message || 'Unknown error');
           
           // Show error toast
           showToast.error('Connection to Spotify failed. Please try again.');

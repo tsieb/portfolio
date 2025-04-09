@@ -1,5 +1,5 @@
 // File: /backend/src/db/models/spotifyTrack.js
-// Enhanced track model with user reference
+// Enhanced track model with user reference - Fixed ObjectId constructor
 
 const mongoose = require('mongoose');
 
@@ -92,43 +92,48 @@ spotifyTrackSchema.statics.getHistory = async function(userId, limit = 10, skip 
 
 // Get listening statistics for a specific user
 spotifyTrackSchema.statics.getStatistics = async function(userId) {
-  // Get total tracks
-  const totalTracks = await this.countDocuments({ user: userId });
-  
-  // Get top artists
-  const topArtists = await this.aggregate([
-    { $match: { user: mongoose.Types.ObjectId(userId) } },
-    { $group: { _id: '$artistName', count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: 5 }
-  ]);
-  
-  // Get top tracks
-  const topTracks = await this.aggregate([
-    { $match: { user: mongoose.Types.ObjectId(userId) } },
-    { $group: { _id: { trackId: '$trackId', name: '$trackName' }, count: { $sum: 1 } } },
-    { $sort: { count: -1 } },
-    { $limit: 5 }
-  ]);
-  
-  // Get listening activity by hour
-  const activityByHour = await this.aggregate([
-    { $match: { user: mongoose.Types.ObjectId(userId) } },
-    { 
-      $group: { 
-        _id: { $hour: '$playedAt' }, 
-        count: { $sum: 1 } 
-      } 
-    },
-    { $sort: { _id: 1 } }
-  ]);
-  
-  return {
-    totalTracks,
-    topArtists,
-    topTracks,
-    activityByHour
-  };
+  try {
+    // Get total tracks
+    const totalTracks = await this.countDocuments({ user: userId });
+    
+    // Get top artists - FIX: use "new" keyword with ObjectId constructor
+    const topArtists = await this.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      { $group: { _id: '$artistName', count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+    
+    // Get top tracks - FIX: use "new" keyword with ObjectId constructor
+    const topTracks = await this.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      { $group: { _id: { trackId: '$trackId', name: '$trackName' }, count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 5 }
+    ]);
+    
+    // Get listening activity by hour - FIX: use "new" keyword with ObjectId constructor
+    const activityByHour = await this.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      { 
+        $group: { 
+          _id: { $hour: '$playedAt' }, 
+          count: { $sum: 1 } 
+        } 
+      },
+      { $sort: { _id: 1 } }
+    ]);
+    
+    return {
+      totalTracks,
+      topArtists,
+      topTracks,
+      activityByHour
+    };
+  } catch (error) {
+    console.error(`Error getting statistics for user ${userId}:`, error);
+    throw error;
+  }
 };
 
 const SpotifyTrack = mongoose.model('SpotifyTrack', spotifyTrackSchema);

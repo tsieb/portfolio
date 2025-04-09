@@ -46,7 +46,7 @@ router.get('/spotify', (req, res) => {
  * @desc    Handle Spotify OAuth callback
  * @access  Public
  */
-router.get('/spotify/callback', authService.handleSpotifyCallback);
+router.get('/spotify/callback', authService.spotifyCallback);
 
 /**
  * @route   POST /api/auth/spotify/exchange
