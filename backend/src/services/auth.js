@@ -162,6 +162,33 @@ const exchangeSpotifyCode = async (req, res, next) => {
 };
 
 /**
+ * Handle direct Spotify OAuth callback
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next function
+ */
+const handleSpotifyCallback = async (req, res, next) => {
+  try {
+    const { code, error } = req.query;
+    
+    if (error) {
+      console.error('Spotify authorization error:', error);
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/spotify/callback?error=${error}`);
+    }
+    
+    if (!code) {
+      return res.redirect(`${process.env.FRONTEND_URL}/auth/spotify/callback?error=missing_code`);
+    }
+    
+    // Send the code to the frontend to handle the exchange
+    res.redirect(`${process.env.FRONTEND_URL}/auth/spotify/callback?code=${code}`);
+  } catch (err) {
+    console.error('Error handling Spotify callback:', err);
+    res.redirect(`${process.env.FRONTEND_URL}/auth/spotify/callback?error=server_error`);
+  }
+};
+
+/**
  * Handle Spotify OAuth callback and user creation/login
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -290,24 +317,33 @@ const getCurrentUser = async (req, res, next) => {
  */
 const createAdminUser = async () => {
   try {
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    
+    if (!adminEmail || !adminPassword) {
+      console.error('Missing ADMIN_EMAIL or ADMIN_PASSWORD in environment');
+      return;
+    }
+    
     // Check if admin user already exists
     const adminExists = await User.findOne({ 
-      email: process.env.ADMIN_EMAIL,
+      email: adminEmail,
       role: 'admin'
     });
     
     if (!adminExists) {
       console.log('Creating admin user...');
       
+      // Ensure a valid username for admin
       const username = 'admin';
       
       await User.create({
-        email: process.env.ADMIN_EMAIL,
+        email: adminEmail,
         username,
-        password: process.env.ADMIN_PASSWORD,
+        password: adminPassword,
         role: 'admin',
         displayName: 'Admin User',
-        isPublic: false,
+        isPublic: true, // Make admin user public to showcase music data
         onboardingCompleted: true
       });
       
@@ -409,6 +445,7 @@ module.exports = {
   adminLogin,
   exchangeSpotifyCode,
   spotifyCallback,
+  handleSpotifyCallback,
   logout,
   getCurrentUser,
   createAdminUser,

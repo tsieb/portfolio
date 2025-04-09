@@ -1,5 +1,5 @@
 // File: /frontend/src/features/spotify/context/SpotifyContext.jsx
-// Spotify context with user-specific data
+// Spotify context with user-specific data and public endpoints
 
 import { createContext, useReducer, useEffect, useCallback, useRef } from 'react';
 import spotifyService from '../services/spotifyApi';
@@ -101,9 +101,26 @@ export const SpotifyProvider = ({ children }) => {
     }
     
     try {
-      const data = await spotifyService.getCurrentlyPlaying(userId || state.userId);
-      dispatch({ type: SET_CURRENT_TRACK, payload: data });
-      return data;
+      // If a specific userId is provided, use that endpoint
+      if (userId) {
+        const data = await spotifyService.getCurrentlyPlaying(userId);
+        dispatch({ type: SET_CURRENT_TRACK, payload: data });
+        return data;
+      }
+      
+      // If authenticated user, use their data
+      else if (state.userId) {
+        const data = await spotifyService.getCurrentlyPlaying(state.userId);
+        dispatch({ type: SET_CURRENT_TRACK, payload: data });
+        return data;
+      }
+      
+      // Otherwise use public endpoint for homepage
+      else {
+        const data = await spotifyService.getPublicCurrentlyPlaying();
+        dispatch({ type: SET_CURRENT_TRACK, payload: data });
+        return data;
+      }
     } catch (error) {
       // Only dispatch error if not silent
       if (!silent) {
@@ -121,9 +138,26 @@ export const SpotifyProvider = ({ children }) => {
     dispatch({ type: SPOTIFY_LOADING });
     
     try {
-      const data = await spotifyService.getRecentlyPlayed(limit, skip, userId || state.userId);
-      dispatch({ type: SET_RECENTLY_PLAYED, payload: data.tracks });
-      return data.tracks;
+      // If a specific userId is provided, use that endpoint
+      if (userId) {
+        const data = await spotifyService.getRecentlyPlayed(limit, skip, userId);
+        dispatch({ type: SET_RECENTLY_PLAYED, payload: data.tracks });
+        return data.tracks;
+      }
+      
+      // If authenticated user, use their data
+      else if (state.userId) {
+        const data = await spotifyService.getRecentlyPlayed(limit, skip, state.userId);
+        dispatch({ type: SET_RECENTLY_PLAYED, payload: data.tracks });
+        return data.tracks;
+      }
+      
+      // Otherwise use public endpoint for homepage
+      else {
+        const data = await spotifyService.getPublicRecentlyPlayed(limit, skip);
+        dispatch({ type: SET_RECENTLY_PLAYED, payload: data.tracks });
+        return data.tracks;
+      }
     } catch (error) {
       dispatch({ 
         type: SPOTIFY_ERROR, 
@@ -138,9 +172,26 @@ export const SpotifyProvider = ({ children }) => {
     dispatch({ type: SPOTIFY_LOADING });
     
     try {
-      const data = await spotifyService.getStats(userId || state.userId);
-      dispatch({ type: SET_STATS, payload: data });
-      return data;
+      // If a specific userId is provided, use that endpoint
+      if (userId) {
+        const data = await spotifyService.getStats(userId);
+        dispatch({ type: SET_STATS, payload: data });
+        return data;
+      }
+      
+      // If authenticated user, use their data
+      else if (state.userId) {
+        const data = await spotifyService.getStats(state.userId);
+        dispatch({ type: SET_STATS, payload: data });
+        return data;
+      }
+      
+      // Otherwise use public endpoint for homepage
+      else {
+        const data = await spotifyService.getPublicStats();
+        dispatch({ type: SET_STATS, payload: data });
+        return data;
+      }
     } catch (error) {
       dispatch({ 
         type: SPOTIFY_ERROR, 

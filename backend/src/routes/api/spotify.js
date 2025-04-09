@@ -5,8 +5,110 @@ const express = require('express');
 const spotifyService = require('../../services/spotify');
 const { SpotifyTrack, User } = require('../../db/models');
 const { protect, restrictTo, checkProfileAccess } = require('../../middleware/auth');
+const { AppError } = require('../../middleware/error');
 
 const router = express.Router();
+
+/**
+ * @route   GET /api/spotify/public/now-playing
+ * @desc    Get admin's currently playing track (for public display)
+ * @access  Public
+ */
+router.get('/public/now-playing', async (req, res, next) => {
+  try {
+    // Find admin user
+    const adminUser = await User.findOne({ role: 'admin' });
+    
+    if (!adminUser) {
+      return next(new AppError('Admin user not found', 404));
+    }
+    
+    // Get currently playing track from database
+    let currentTrack = await SpotifyTrack.getCurrentlyPlaying(adminUser._id);
+    
+    // If no track is found or it's stale (>1 min old), fetch fresh data
+    if (!currentTrack || !currentTrack.isCurrentlyPlaying || 
+        (Date.now() - new Date(currentTrack.updatedAt).getTime() > 60000)) {
+      // Force fetch new data
+      await spotifyService.forceRefreshUserData(adminUser._id);
+      // Try to get updated track
+      currentTrack = await SpotifyTrack.getCurrentlyPlaying(adminUser._id);
+    }
+    
+    if (!currentTrack) {
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          isPlaying: false
+        }
+      });
+    }
+    
+    res.status(200).json({
+      status: 'success',
+      data: {
+        isPlaying: true,
+        track: currentTrack
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   GET /api/spotify/public/recently-played
+ * @desc    Get admin's recently played tracks (for public display)
+ * @access  Public
+ */
+router.get('/public/recently-played', async (req, res, next) => {
+  try {
+    // Find admin user
+    const adminUser = await User.findOne({ role: 'admin' });
+    
+    if (!adminUser) {
+      return next(new AppError('Admin user not found', 404));
+    }
+    
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = parseInt(req.query.skip) || 0;
+    
+    // Get tracks from the database
+    const data = await spotifyService.getUserRecentlyPlayed(adminUser._id, limit, skip);
+    
+    res.status(200).json({
+      status: 'success',
+      data
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * @route   GET /api/spotify/public/stats
+ * @desc    Get admin's listening statistics (for public display)
+ * @access  Public
+ */
+router.get('/public/stats', async (req, res, next) => {
+  try {
+    // Find admin user
+    const adminUser = await User.findOne({ role: 'admin' });
+    
+    if (!adminUser) {
+      return next(new AppError('Admin user not found', 404));
+    }
+    
+    const stats = await spotifyService.getUserStats(adminUser._id);
+    
+    res.status(200).json({
+      status: 'success',
+      data: stats
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * @route   GET /api/spotify/now-playing
