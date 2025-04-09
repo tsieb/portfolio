@@ -21,6 +21,7 @@
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
+            word-break: break-all;
         }
         .hidden {
             display: none;
@@ -81,8 +82,7 @@
     
     <div id="authCode" class="hidden">
         <h2>Step 3: Exchange Authorization Code for Tokens</h2>
-        <p>Authorization code received:</p>
-        <pre id="codeDisplay"></pre>
+        <p>Authorization code received successfully!</p>
         
         <p>Enter your Client Secret:</p>
         <input type="text" id="clientSecret" placeholder="Client Secret">
@@ -114,10 +114,14 @@
     </div>
     
     <script>
+        // Get the full URL including search params
+        const urlString = window.location.href;
+        // Create a URL object to parse parameters
+        const url = new URL(urlString);
+        
         // Extract the authorization code from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        const error = urlParams.get('error');
+        const code = url.searchParams.get('code');
+        const error = url.searchParams.get('error');
         
         if (error) {
             document.getElementById('loadingMessage').classList.add('hidden');
@@ -126,7 +130,9 @@
         } else if (code) {
             document.getElementById('loadingMessage').classList.add('hidden');
             document.getElementById('authCode').classList.remove('hidden');
-            document.getElementById('codeDisplay').textContent = code;
+            
+            // Don't display code in UI to avoid length issues
+            console.log("Authorization code received:", code);
             
             // See if we can retrieve the client ID from localStorage
             const storedClientId = localStorage.getItem('spotifyClientId');
@@ -145,17 +151,8 @@
                 }
                 
                 try {
-                    // We can't make this request directly from the browser due to CORS
-                    // So we'll show instructions for using an external tool
-                    
                     const redirectUri = 'http://localhost:8000/callback.html';
                     const tokenEndpoint = 'https://accounts.spotify.com/api/token';
-                    
-                    // Create a form data object
-                    const formData = new FormData();
-                    formData.append('grant_type', 'authorization_code');
-                    formData.append('code', code);
-                    formData.append('redirect_uri', redirectUri);
                     
                     // Make the request
                     const response = await fetch(tokenEndpoint, {

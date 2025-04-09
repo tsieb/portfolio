@@ -2,14 +2,25 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const url = require('url');
 
 const PORT = 8000;
 
 const server = http.createServer((req, res) => {
+  // Parse the URL but ignore the query string for file path resolution
+  const parsedUrl = url.parse(req.url);
+  let pathname = parsedUrl.pathname;
+  
   // Get the file path
-  let filePath = '.' + req.url;
+  let filePath = '.' + pathname;
   if (filePath === './') {
     filePath = './index.html';
+  }
+  
+  // For callback URL, always serve callback.html regardless of parameters
+  if (pathname === '/callback.html') {
+    // Keep the file path as callback.html, but ignore any query parameters
+    filePath = './callback.html';
   }
 
   // Determine the content type based on file extension

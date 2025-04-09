@@ -68,6 +68,9 @@
                 return;
             }
             
+            // Store the client ID for later use
+            localStorage.setItem('spotifyClientId', clientId);
+            
             // The scopes define what your app can do with the user's account
             const scopes = [
                 'user-read-currently-playing',
@@ -76,6 +79,7 @@
             ];
             
             // Redirect to Spotify authorization page
+            // Use the exact redirect URI that's registered in your Spotify Dashboard
             const redirectUri = encodeURIComponent('http://localhost:8000/callback.html');
             const scopesEncoded = encodeURIComponent(scopes.join(' '));
             
