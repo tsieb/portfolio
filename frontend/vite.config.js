@@ -26,8 +26,8 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        // Using modern approach with @use instead of @import
-        additionalData: `@use "./src/assets/styles/variables" as *;`
+        // Fix the path to use the correct relative path or an alias
+        additionalData: `@use "@/assets/styles/variables" as *;`
       }
     }
   },

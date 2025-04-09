@@ -2,10 +2,11 @@
 // Main stylesheet with global styles
 
 @use 'sass:math';
-@use './variables' as *;
+// No need to import variables here as it's already imported via Vite's additionalData
 @use './reset';
 @use './typography';
 @use './utilities';
+@use './form-controls';
 
 // Base styles
 body {
