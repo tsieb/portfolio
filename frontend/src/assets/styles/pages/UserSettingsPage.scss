@@ -1,152 +1,284 @@
 // File: /frontend/src/assets/styles/pages/UserSettingsPage.scss
-// Styles for user settings page
+// Enhanced styles for user settings page with improved visual hierarchy and animations
 
 .settings-page {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-xl) var(--space-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-lg);
+  
+  // Add initial loading animation
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fade-in-up 0.8s forwards ease-out;
+}
+
+.settings-page__header {
+  margin-bottom: var(--space-xl);
+  text-align: center;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  
+  &::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background: var(--gradient-accent);
+    margin: var(--space-md) auto 0;
+    border-radius: var(--radius-full);
+  }
+}
+
+.settings-page__title {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.settings-page__subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-loose);
+}
+
+.settings-page__content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  
+  @media (min-width: 768px) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+// Settings Cards
+.settings-card {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  margin-bottom: var(--space-xl);
+  transition: transform var(--transition-normal) var(--ease-out),
+              box-shadow var(--transition-normal) var(--ease-out),
+              border-color var(--transition-normal) var(--ease-out);
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-border-hover);
   }
   
-  .settings-page__header {
-    margin-bottom: var(--space-xl);
-    text-align: center;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+  // Gradient corner accent
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(
+      circle at top right, 
+      rgba(45, 215, 181, 0.2) 0%,
+      rgba(156, 66, 245, 0.1) 40%,
+      transparent 70%
+    );
+    border-radius: 0 var(--radius-lg) 0 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.settings-card__header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  background-color: rgba(40, 40, 40, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.settings-card__icon {
+  font-size: 1.25rem;
+  margin-right: var(--space-md);
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 5px var(--color-primary-glow));
+}
+
+.settings-card__title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.settings-card__content {
+  padding: var(--space-lg);
+  position: relative;
+  z-index: 1;
+}
+
+.settings-card__divider {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
+  margin: var(--space-xl) 0;
+}
+
+// Settings Form
+.settings-form {
+  padding: var(--space-lg);
+}
+
+.settings-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-xl);
+}
+
+// Spotify connection section
+.settings-spotify {
+  text-align: center;
+  padding: var(--space-lg) 0;
+  
+  &--connected {
+    text-align: left;
+  }
+}
+
+.settings-spotify__message {
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+}
+
+.settings-spotify__status {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+  padding: var(--space-md) var(--space-lg);
+  background-color: rgba(45, 215, 181, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(45, 215, 181, 0.2);
+  transition: all var(--transition-normal) var(--ease-out);
+  
+  &:hover {
+    background-color: rgba(45, 215, 181, 0.15);
+    border-color: rgba(45, 215, 181, 0.3);
+    transform: translateY(-2px);
   }
   
-  .settings-page__title {
-    font-size: 2.5rem;
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-sm);
-    color: var(--color-text-primary);
-  }
-  
-  .settings-page__subtitle {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-lg);
-  }
-  
-  .settings-page__content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-xl);
-    
-    @media (min-width: 768px) {
-      grid-template-columns: 2fr 1fr;
-    }
-  }
-  
-  .settings-card {
-    background-color: var(--color-bg-secondary);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    margin-bottom: var(--space-xl);
-  }
-  
-  .settings-card__header {
-    display: flex;
-    align-items: center;
-    padding: var(--space-lg);
-    border-bottom: 1px solid var(--color-border);
-    background-color: rgba(40, 40, 40, 0.3);
-  }
-  
-  .settings-card__icon {
-    font-size: 1.25rem;
-    margin-right: var(--space-md);
-    color: var(--color-primary);
-  }
-  
-  .settings-card__title {
-    font-size: var(--font-size-lg);
+  // Pulsing animation
+  animation: pulse-glow 3s infinite;
+}
+
+.settings-spotify__status-icon {
+  font-size: 24px;
+  color: var(--color-primary);
+  margin-right: var(--space-md);
+}
+
+.settings-spotify__status-text {
+  h3 {
+    font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
-    margin: 0;
+    margin: 0 0 2px;
     color: var(--color-text-primary);
   }
   
-  .settings-card__content {
-    padding: var(--space-lg);
-  }
-  
-  .settings-card__divider {
-    height: 1px;
-    background: var(--color-border);
-    margin: var(--space-xl) 0;
-  }
-  
-  .settings-form {
-    padding: var(--space-lg);
-  }
-  
-  .settings-form__actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: var(--space-xl);
-  }
-  
-  // Spotify connection section
-  .settings-spotify {
-    text-align: center;
-    padding: var(--space-lg) 0;
-    
-    &--connected {
-      text-align: left;
-    }
-  }
-  
-  .settings-spotify__message {
-    margin-bottom: var(--space-lg);
-    color: var(--color-text-secondary);
-  }
-  
-  .settings-spotify__status {
-    display: flex;
-    align-items: center;
-    margin-bottom: var(--space-lg);
-    padding: var(--space-md);
-    background-color: rgba(30, 215, 96, 0.1);
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(30, 215, 96, 0.2);
-  }
-  
-  .settings-spotify__status-icon {
-    font-size: 24px;
-    color: var(--color-primary);
-    margin-right: var(--space-md);
-  }
-  
-  .settings-spotify__status-text {
-    h3 {
-      font-size: var(--font-size-md);
-      font-weight: var(--font-weight-semibold);
-      margin: 0 0 2px;
-      color: var(--color-text-primary);
-    }
-    
-    p {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      margin: 0;
-    }
-  }
-  
-  // Allowed viewers section
-  .settings-viewers {
-    margin-top: var(--space-md);
-  }
-  
-  .settings-viewers__empty {
-    color: var(--color-text-tertiary);
-    font-style: italic;
-    margin-bottom: var(--space-md);
+  p {
     font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0;
   }
+}
+
+// Allowed viewers section
+.settings-viewers {
+  margin-top: var(--space-md);
+  background-color: rgba(24, 24, 24, 0.5);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-light);
+}
+
+.settings-viewers__empty {
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
   
-  // Form checkbox with icon
-  .form-checkbox-icon {
+  &::before {
+    content: '—';
     margin-right: var(--space-xs);
+    opacity: 0.5;
+  }
+}
+
+// Form input styling fixes
+.form-input--with-icon {
+  padding-left: 40px; // Increase left padding to make room for icon
+}
+
+.form-input-icon {
+  color: var(--color-text-tertiary);
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 1;
+  
+  // Improve contrast on field focus
+  .form-input:focus + & {
     color: var(--color-primary);
   }
+}
+
+// Form checkbox with icon
+.form-checkbox-icon {
+  margin-right: var(--space-xs);
+  color: var(--color-primary);
+  transition: transform var(--transition-fast) var(--ease-in-out);
+  
+  .form-checkbox:hover & {
+    transform: scale(1.2);
+  }
+}
+
+// Animations
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(45, 215, 181, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(45, 215, 181, 0.3);
+  }
+}

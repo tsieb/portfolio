@@ -6,6 +6,7 @@ import { FaMusic, FaUser, FaLock, FaEdit, FaSave, FaGlobe, FaUserFriends } from 
 import { useAuth } from '../features/auth/hooks/useAuth';
 import userService from '../features/user/services/userApi';
 import { showToast } from '../config/toast';
+import '../assets/styles/pages/UserSettingsPage.scss';
 
 const UserSettingsPage = () => {
   const { user, updateUser } = useAuth();
