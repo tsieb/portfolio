@@ -1,0 +1,160 @@
+// File: /frontend/src/features/spotify/components/CurrentlyPlaying.scss
+// Currently playing component styles
+
+.currently-playing {
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: transform var(--transition-normal) var(--ease-out),
+                box-shadow var(--transition-normal) var(--ease-out);
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    &--not-playing {
+      background-color: var(--color-bg-secondary);
+    }
+  }
+  
+  .currently-playing__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md) var(--space-lg);
+    background-color: var(--color-secondary);
+    color: white;
+  }
+  
+  .currently-playing__spotify-icon {
+    color: var(--color-primary);
+  }
+  
+  .currently-playing__status {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .currently-playing__status-icon {
+    margin-right: var(--space-xs);
+  }
+  
+  .currently-playing__content {
+    display: flex;
+    padding: var(--space-lg);
+    
+    @media (max-width: 480px) {
+      flex-direction: column;
+    }
+  }
+  
+  .currently-playing__artwork {
+    width: 100px;
+    height: 100px;
+    flex-shrink: 0;
+    margin-right: var(--space-lg);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    
+    @media (max-width: 480px) {
+      margin-bottom: var(--space-md);
+      margin-right: 0;
+    }
+    
+    &--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-bg-tertiary);
+      color: var(--color-text-tertiary);
+    }
+  }
+  
+  .currently-playing__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .currently-playing__info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .currently-playing__track {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .currently-playing__artist {
+    font-size: var(--font-size-md);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-xs);
+  }
+  
+  .currently-playing__album {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+    margin-bottom: var(--space-md);
+    font-style: italic;
+  }
+  
+  .currently-playing__link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: color var(--transition-fast) var(--ease-in-out);
+    
+    &:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
+    }
+  }
+  
+  .currently-playing__description {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .currently-playing__loading,
+  .currently-playing__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    color: var(--color-text-secondary);
+    text-align: center;
+    
+    .spinner {
+      margin-bottom: var(--space-md);
+    }
+  }
+  
+  .currently-playing__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background-color: var(--color-bg-tertiary);
+    border-radius: 50%;
+    margin-right: var(--space-lg);
+    color: var(--color-primary);
+    
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }

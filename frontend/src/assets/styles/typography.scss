@@ -1,0 +1,230 @@
+// File: /frontend/src/assets/styles/typography.scss
+// Typography styles
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-tight);
+    color: var(--color-text-primary);
+  }
+  
+  h1 {
+    font-size: var(--font-size-xxxl);
+    
+    @media (min-width: 768px) {
+      font-size: calc(var(--font-size-xxxl) * 1.25);
+    }
+  }
+  
+  h2 {
+    font-size: var(--font-size-xxl);
+    
+    @media (min-width: 768px) {
+      font-size: calc(var(--font-size-xxl) * 1.15);
+    }
+  }
+  
+  h3 {
+    font-size: var(--font-size-xl);
+  }
+  
+  h4 {
+    font-size: var(--font-size-lg);
+  }
+  
+  h5 {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  h6 {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  // Paragraphs
+  p {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    line-height: var(--line-height-normal);
+  }
+  
+  .lead {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-loose);
+  }
+  
+  .small {
+    font-size: var(--font-size-sm);
+  }
+  
+  .smaller {
+    font-size: var(--font-size-xs);
+  }
+  
+  // Links
+  a {
+    color: var(--color-primary);
+    transition: color var(--transition-fast) var(--ease-in-out);
+    
+    &:hover {
+      color: var(--color-primary-dark);
+    }
+  }
+  
+  // Text alignment
+  .text-left {
+    text-align: left;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-right {
+    text-align: right;
+  }
+  
+  // Text transform
+  .text-uppercase {
+    text-transform: uppercase;
+  }
+  
+  .text-lowercase {
+    text-transform: lowercase;
+  }
+  
+  .text-capitalize {
+    text-transform: capitalize;
+  }
+  
+  // Text decoration
+  .text-underline {
+    text-decoration: underline;
+  }
+  
+  .text-no-underline {
+    text-decoration: none;
+  }
+  
+  // Font weights
+  .font-light {
+    font-weight: var(--font-weight-light);
+  }
+  
+  .font-normal {
+    font-weight: var(--font-weight-normal);
+  }
+  
+  .font-medium {
+    font-weight: var(--font-weight-medium);
+  }
+  
+  .font-semibold {
+    font-weight: var(--font-weight-semibold);
+  }
+  
+  .font-bold {
+    font-weight: var(--font-weight-bold);
+  }
+  
+  // Text colors
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+  
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+  
+  .text-tertiary {
+    color: var(--color-text-tertiary);
+  }
+  
+  .text-light {
+    color: var(--color-text-light);
+  }
+  
+  .text-primary-color {
+    color: var(--color-primary);
+  }
+  
+  .text-success {
+    color: var(--color-success);
+  }
+  
+  .text-warning {
+    color: var(--color-warning);
+  }
+  
+  .text-danger {
+    color: var(--color-danger);
+  }
+  
+  .text-info {
+    color: var(--color-info);
+  }
+  
+  // Lists
+  ul, ol {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-xl);
+  }
+  
+  ul {
+    list-style-type: disc;
+  }
+  
+  ol {
+    list-style-type: decimal;
+  }
+  
+  li {
+    margin-bottom: var(--space-xs);
+  }
+  
+  // Blockquote
+  blockquote {
+    margin: var(--space-lg) 0;
+    padding: var(--space-md) var(--space-lg);
+    border-left: 4px solid var(--color-primary);
+    background-color: var(--color-bg-secondary);
+    font-style: italic;
+    
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  // Code
+  code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9em;
+    padding: 0.2em 0.4em;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-tertiary);
+  }
+  
+  pre {
+    margin: var(--space-md) 0;
+    padding: var(--space-md);
+    overflow-x: auto;
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    
+    code {
+      padding: 0;
+      background-color: transparent;
+    }
+  }
+  
+  // Truncate
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }

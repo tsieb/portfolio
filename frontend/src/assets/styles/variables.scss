@@ -1,0 +1,111 @@
+// File: /frontend/src/assets/styles/variables.scss
+// Global SCSS variables
+
+// Colors
+:root {
+    // Primary colors
+    --color-primary: #1DB954;       // Spotify green
+    --color-primary-light: #1ED760;
+    --color-primary-dark: #1AA34A;
+    
+    // Secondary colors
+    --color-secondary: #191414;     // Spotify black
+    --color-secondary-light: #282828;
+    --color-secondary-dark: #121212;
+    
+    // Text colors
+    --color-text-primary: #333333;
+    --color-text-secondary: #666666;
+    --color-text-tertiary: #999999;
+    --color-text-light: #FFFFFF;
+    
+    // Background colors
+    --color-bg-primary: #FFFFFF;
+    --color-bg-secondary: #F5F5F5;
+    --color-bg-tertiary: #EEEEEE;
+    --color-bg-dark: #121212;
+    
+    // Accent colors
+    --color-accent-1: #1DB954;
+    --color-accent-2: #FF6B6B;
+    --color-accent-3: #4A90E2;
+    --color-accent-4: #FFD166;
+    
+    // Feedback colors
+    --color-success: #28a745;
+    --color-info: #17a2b8;
+    --color-warning: #ffc107;
+    --color-danger: #dc3545;
+    
+    // Border colors
+    --color-border: #DDDDDD;
+    --color-border-light: #EEEEEE;
+    --color-border-dark: #AAAAAA;
+    
+    // Shadows
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    // Spacing
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-xxl: 3rem;
+    
+    // Border radius
+    --radius-sm: 0.125rem;
+    --radius-md: 0.25rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 1rem;
+    --radius-full: 9999px;
+    
+    // Font sizes
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-xxl: 1.5rem;
+    --font-size-xxxl: 2rem;
+    
+    // Font weights
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    
+    // Line heights
+    --line-height-tight: 1.25;
+    --line-height-normal: 1.5;
+    --line-height-loose: 1.75;
+    
+    // Z-indices
+    --z-negative: -1;
+    --z-elevate: 1;
+    --z-dropdown: 1000;
+    --z-sticky: 1020;
+    --z-fixed: 1030;
+    --z-modal-backdrop: 1040;
+    --z-modal: 1050;
+    --z-popover: 1060;
+    --z-tooltip: 1070;
+    
+    // Animation
+    --transition-fast: 150ms;
+    --transition-normal: 300ms;
+    --transition-slow: 500ms;
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    
+    // Breakpoints (for reference, used in media queries)
+    // --breakpoint-sm: 640px;
+    // --breakpoint-md: 768px;
+    // --breakpoint-lg: 1024px;
+    // --breakpoint-xl: 1280px;
+    // --breakpoint-2xl: 1536px;
+  }

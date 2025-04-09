@@ -1,0 +1,114 @@
+// File: /frontend/src/features/spotify/components/RecentlyPlayed.scss
+// Recently played component styles
+
+.recently-played {
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    margin-top: var(--space-xl);
+  }
+  
+  .recently-played__header {
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-light);
+  }
+  
+  .recently-played__title {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin: 0;
+  }
+  
+  .recently-played__icon {
+    margin-right: var(--space-sm);
+    color: var(--color-primary);
+  }
+  
+  .recently-played__list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .recently-played__item {
+    display: flex;
+    align-items: center;
+    padding: var(--space-md) var(--space-lg);
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background-color var(--transition-fast) var(--ease-in-out);
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: var(--color-bg-secondary);
+    }
+  }
+  
+  .recently-played__image {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    margin-right: var(--space-md);
+    object-fit: cover;
+  }
+  
+  .recently-played__image-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    margin-right: var(--space-md);
+    background-color: var(--color-bg-tertiary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-tertiary);
+  }
+  
+  .recently-played__info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .recently-played__track {
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--space-xs);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .recently-played__artist {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .recently-played__time {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+    margin-left: var(--space-md);
+  }
+  
+  .recently-played__loading,
+  .recently-played__error,
+  .recently-played__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    color: var(--color-text-secondary);
+    text-align: center;
+    
+    .spinner {
+      margin-bottom: var(--space-md);
+    }
+  }
