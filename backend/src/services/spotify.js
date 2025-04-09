@@ -2,8 +2,7 @@
 // Enhanced Spotify service with user-specific functionality
 
 const axios = require('axios');
-const SpotifyTrack = require('../db/models/spotifyTrack');
-const User = require('../db/models/user');
+const { SpotifyTrack, User } = require('../db/models');
 
 // Spotify API URLs
 const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';

@@ -2,7 +2,7 @@
 // Notification routes for user notifications
 
 const express = require('express');
-const UserNotification = require('../../db/models/userNotification');
+const { UserNotification } = require('../../db/models');
 const { protect } = require('../../middleware/auth');
 const { AppError } = require('../../middleware/error');
 

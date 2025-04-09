@@ -3,8 +3,7 @@
 
 const express = require('express');
 const spotifyService = require('../../services/spotify');
-const SpotifyTrack = require('../../db/models/spotifyTrack');
-const User = require('../../db/models/user');
+const { SpotifyTrack, User } = require('../../db/models');
 const { protect, restrictTo, checkProfileAccess } = require('../../middleware/auth');
 
 const router = express.Router();

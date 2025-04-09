@@ -2,7 +2,7 @@
 // Public application settings routes
 
 const express = require('express');
-const AppSetting = require('../../db/models/appSetting');
+const { AppSetting } = require('../../db/models');
 
 const router = express.Router();
 

@@ -1,10 +1,7 @@
 // File: /backend/src/services/admin.js
 // Admin service for user and data management
 
-const User = require('../db/models/user');
-const SpotifyTrack = require('../db/models/spotifyTrack');
-const UserNotification = require('../db/models/userNotification');
-const AppSetting = require('../db/models/appSetting');
+const { User, SpotifyTrack, UserNotification, AppSetting } = require('../db/models');
 const { AppError } = require('../middleware/error');
 
 /**

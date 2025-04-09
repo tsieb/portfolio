@@ -1,9 +1,7 @@
 // File: /backend/src/services/user.js
 // User service for profile management
 
-const User = require('../db/models/user');
-const UserFollow = require('../db/models/userFollow');
-const UserNotification = require('../db/models/userNotification');
+const { User, UserFollow, UserNotification } = require('../db/models');
 const { AppError } = require('../middleware/error');
 
 /**

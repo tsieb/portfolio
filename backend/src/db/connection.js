@@ -2,7 +2,7 @@
 // Database connection configuration
 
 const mongoose = require('mongoose');
-const { createAdminUser } = require('../services/auth');
+const authService = require('../services/auth');
 
 /**
  * Connects to MongoDB using configuration from environment variables

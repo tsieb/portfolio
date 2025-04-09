@@ -3,7 +3,7 @@
 
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const User = require('../db/models/user');
+const { User } = require('../db/models');
 const spotifyService = require('./spotify');
 const { AppError } = require('../middleware/error');
 const axios = require('axios');
