@@ -19,7 +19,7 @@ const authService = {
       
       // Verify token with backend
       const response = await axiosInstance.get('/auth/me');
-      return response.data;
+      return response.data.data;
     } catch (error) {
       localStorage.removeItem('authToken');
       throw error;
