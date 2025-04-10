@@ -1,11 +1,10 @@
 // File: /frontend/src/features/spotify/components/RecentlyPlayed.jsx
-// Enhanced recently played component with animations - Fixed infinite update loop
+// Enhanced recently played component with animations
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSpotify } from '../hooks/useSpotify';
 import { FaMusic, FaHistory, FaClock } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
-import '../../../assets/styles/features/spotify/components/RecentlyPlayed.scss';
 
 /**
  * Enhanced component to display recently played Spotify tracks

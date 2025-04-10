@@ -18,7 +18,6 @@ import {
 } from 'chart.js';
 import adminService from '../services/admin';
 import spotifyService from '../features/spotify/services/spotifyApi';
-import '../assets/styles/pages/AdminDashboardPage.scss';
 
 // Register Chart.js components
 ChartJS.register(
@@ -197,7 +196,7 @@ const AdminDashboardPage = () => {
   if (error) {
     return (
       <div className="admin-dashboard">
-        <div className="alert alert-danger">{error}</div>
+        <div className="alert alert--error">{error}</div>
         <button 
           className="btn btn-primary" 
           onClick={fetchDashboardData}

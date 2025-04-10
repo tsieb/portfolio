@@ -6,7 +6,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import { showToast } from '../config/toast';
 import { FaHeadphones, FaMusic, FaCheckCircle, FaExclamationTriangle, FaHome } from 'react-icons/fa';
-import '../assets/styles/pages/AuthCallbackPage.scss';
 
 const AuthCallbackPage = () => {
   // State for handling the authentication process

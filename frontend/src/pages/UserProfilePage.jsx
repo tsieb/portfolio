@@ -9,7 +9,6 @@ import userService from '../features/user/services/userApi';
 import CurrentlyPlaying from '../features/spotify/components/CurrentlyPlaying';
 import RecentlyPlayed from '../features/spotify/components/RecentlyPlayed';
 import SpotifyStats from '../features/spotify/components/SpotifyStats';
-import '../assets/styles/pages/UserProfilePage.scss';
 
 const UserProfilePage = () => {
   const { username } = useParams();

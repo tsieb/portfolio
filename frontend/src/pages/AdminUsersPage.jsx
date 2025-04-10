@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { FaUser, FaSearch, FaFilter, FaEdit, FaTrash, FaUserPlus, FaUserShield } from 'react-icons/fa';
 import adminService from '../services/admin';
-import '../assets/styles/pages/AdminUsersPage.scss';
 
 /**
  * Admin users page component
@@ -337,7 +336,7 @@ const AdminUsersPage = () => {
       )}
       
       {error && (
-        <div className="alert alert-danger">{error}</div>
+        <div className="alert alert--error">{error}</div>
       )}
       
       <div className="admin-card">

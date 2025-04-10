@@ -13,7 +13,6 @@ import {
   FaUserPlus, 
   FaSignInAlt 
 } from 'react-icons/fa';
-import '../assets/styles/pages/RegisterPage.scss';
 
 const RegisterPage = () => {
   const { register, isAuthenticated, isLoading, error, resetError } = useAuth();

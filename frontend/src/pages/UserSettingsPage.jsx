@@ -6,7 +6,6 @@ import { FaMusic, FaUser, FaLock, FaEdit, FaSave, FaGlobe, FaUserFriends } from 
 import { useAuth } from '../features/auth/hooks/useAuth';
 import userService from '../features/user/services/userApi';
 import { showToast } from '../config/toast';
-import '../assets/styles/pages/UserSettingsPage.scss';
 
 const UserSettingsPage = () => {
   const { user, updateUser } = useAuth();
@@ -211,7 +210,6 @@ const UserSettingsPage = () => {
             {user.spotifyConnected ? (
               <div className="settings-spotify settings-spotify--connected">
                 <div className="settings-spotify__status">
-                  {/* <FaCheckCircle className="settings-spotify__status-icon" /> */}
                   <div className="settings-spotify__status-text">
                     <h3>Connected to Spotify</h3>
                     <p>Your music activity is being tracked</p>

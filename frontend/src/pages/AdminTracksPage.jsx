@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { FaSearch, FaFilter, FaMusic, FaTrash } from 'react-icons/fa';
 import adminService from '../services/admin';
-import '../assets/styles/pages/AdminTracksPage.scss';
 
 /**
  * Admin tracks page component
@@ -379,7 +378,7 @@ const AdminTracksPage = () => {
       )}
       
       {error && (
-        <div className="alert alert-danger">{error}</div>
+        <div className="alert alert--error">{error}</div>
       )}
       
       <div className="admin-card">
