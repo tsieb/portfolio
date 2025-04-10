@@ -1,0 +1,229 @@
+// src/assets/styles/components/_loaders.scss
+// Loading components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Spinners
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba($color-waveform-white, 0.1);
+  border-top-color: $color-electric-cyan;
+  border-radius: 50%;
+  animation: spin 1s ease-in-out infinite;
+  
+  &--sm {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+  
+  &--lg {
+    width: 50px;
+    height: 50px;
+    border-width: 4px;
+  }
+  
+  &--primary {
+    border-color: rgba($color-electric-cyan, 0.2);
+    border-top-color: $color-electric-cyan;
+  }
+  
+  &--secondary {
+    border-color: rgba($color-magenta-pulse, 0.2);
+    border-top-color: $color-magenta-pulse;
+  }
+  
+  &--center {
+    margin: 0 auto;
+  }
+}
+
+// Wave loader
+.wave-loader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 30px;
+  padding: 0 10px;
+  
+  span {
+    display: inline-block;
+    width: 3px;
+    border-radius: $radius-sm;
+    background-color: $color-electric-cyan;
+    margin: 0 2px;
+    animation: wave-loader 1.2s ease-in-out infinite;
+    
+    &:nth-child(1) {
+      animation-delay: -1.2s;
+    }
+    
+    &:nth-child(2) {
+      animation-delay: -1.1s;
+    }
+    
+    &:nth-child(3) {
+      animation-delay: -1.0s;
+    }
+    
+    &:nth-child(4) {
+      animation-delay: -0.9s;
+    }
+    
+    &:nth-child(5) {
+      animation-delay: -0.8s;
+    }
+  }
+}
+
+// Pulse loader
+.pulse-loader {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 50px;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: $color-electric-cyan;
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: pulse-animation 1.5s ease-out infinite;
+  }
+  
+  &--sm {
+    width: 20px;
+    height: 20px;
+  }
+  
+  &--lg {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+// Shimmer loading effect
+.shimmer {
+  position: relative;
+  background: $color-bg-tertiary;
+  background: linear-gradient(
+    90deg,
+    rgba($color-bg-tertiary, 0.2) 0%,
+    rgba($color-bg-tertiary, 0.3) 50%,
+    rgba($color-bg-tertiary, 0.2) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: $radius-md;
+  overflow: hidden;
+  
+  &--text {
+    height: 16px;
+    margin-bottom: $space-sm;
+    width: 100%;
+    
+    &:last-child {
+      width: 80%;
+    }
+  }
+  
+  &--title {
+    height: 24px;
+    margin-bottom: $space-md;
+    width: 70%;
+  }
+  
+  &--card {
+    height: 200px;
+    width: 100%;
+  }
+  
+  &--avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  
+  &--button {
+    height: 40px;
+    width: 120px;
+    border-radius: $radius-md;
+  }
+}
+
+// Page loading state
+.page-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 140px);
+  padding: $space-xl 0;
+  
+  &__spinner {
+    margin-bottom: $space-lg;
+  }
+  
+  &__text {
+    color: $color-text-secondary;
+    font-size: $font-size-lg;
+    text-align: center;
+    max-width: 400px;
+  }
+}
+
+// Loading bar
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(to right, $color-electric-cyan, $color-magenta-pulse);
+  z-index: $z-toast;
+  width: 0%;
+  transition: width 0.2s ease-out;
+  
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    width: 100px;
+    top: 0;
+    height: 100%;
+    box-shadow: 0 0 10px rgba($color-electric-cyan, 0.7);
+    transform: rotate(3deg) translate(0px, -4px);
+  }
+}
+
+// Animation keyframes
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wave-loader {
+  0%, 100% {
+    height: 5px;
+  }
+  50% {
+    height: 30px;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

@@ -1,0 +1,13 @@
+// src/assets/styles/components/_index.scss
+// Forward all component styles
+
+@forward 'buttons';
+@forward 'forms';
+@forward 'cards';
+@forward 'alerts';
+@forward 'navigation';
+@forward 'stats';
+@forward 'music';
+@forward 'visualizer';
+@forward 'loaders';
+@forward 'modals';
