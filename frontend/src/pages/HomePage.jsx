@@ -1,5 +1,5 @@
 // File: /frontend/src/pages/HomePage.jsx
-// Redesigned home page focused on current track with immersive design
+// Homepage with music activity display
 
 import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,6 @@ import CurrentlyPlaying from '../features/spotify/components/CurrentlyPlaying';
 import RecentlyPlayed from '../features/spotify/components/RecentlyPlayed';
 import SpotifyStats from '../features/spotify/components/SpotifyStats';
 import { FaMusic, FaUserCircle, FaChevronDown } from 'react-icons/fa';
-import '../assets/styles/pages/HomePage.scss';
 
 const HomePage = () => {
   const { currentTrack, isPlaying } = useSpotify();
@@ -68,18 +67,18 @@ const HomePage = () => {
         className={`hero ${scrolled ? 'hero--scrolled' : ''}`}
         style={getBackgroundStyle()}
       >
-        <div className="hero__container">
-          <div className="hero__logo">
-            <FaMusic />
-            <span>Music Activity</span>
-          </div>
-          
+        <div className="container">
           <div className="hero__content">
+            <div className="hero__logo">
+              <FaMusic className="text-electric-cyan" />
+              <span className="text-gradient">Music Activity</span>
+            </div>
+            
             <CurrentlyPlaying variant="hero" />
             
             <div className="hero__scroll-indicator" onClick={handleScrollDown}>
               <span>Scroll to see more</span>
-              <FaChevronDown className="hero__scroll-icon" />
+              <FaChevronDown className="hero__scroll-icon animate-bounce" />
             </div>
           </div>
         </div>
@@ -95,25 +94,25 @@ const HomePage = () => {
             </div>
           )}
           
-          <div className="content__header">
-            <h2 className="content__title">My Music Activity</h2>
-            <p className="content__description">
-              Track what I'm listening to in real-time through Spotify's API.
-              <Link to="/login" className="content__cta">
-                <FaUserCircle />
+          <div className="section-header text-center mb-xl">
+            <h2 className="section-title">My Music Activity</h2>
+            <p className="section-subtitle">
+              Track what I'm listening to in real-time through the music API.
+              <Link to="/login" className="btn btn-primary ml-md">
+                <FaUserCircle className="mr-xs" />
                 <span>Create your own music profile</span>
               </Link>
             </p>
           </div>
           
-          <div className="content__grid">
-            <div className="content__section">
-              <h3 className="content__section-title">Recent Tracks</h3>
+          <div className="grid grid--cols-2">
+            <div className="grid--item">
+              <h3 className="mb-md">Recent Tracks</h3>
               <RecentlyPlayed />
             </div>
             
-            <div className="content__section">
-              <h3 className="content__section-title">Listening Stats</h3>
+            <div className="grid--item">
+              <h3 className="mb-md">Listening Stats</h3>
               <SpotifyStats />
             </div>
           </div>

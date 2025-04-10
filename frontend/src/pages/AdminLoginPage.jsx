@@ -6,7 +6,6 @@ import { Navigate, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../features/auth/hooks/useAuth';
 import { showToast } from '../config/toast';
 import { FaLock, FaEnvelope, FaUserShield, FaArrowLeft } from 'react-icons/fa';
-import '../assets/styles/pages/AdminLoginPage.scss';
 
 const AdminLoginPage = () => {
   const { adminLogin, isAuthenticated, isAdmin, isLoading, error, resetError } = useAuth();
@@ -112,9 +111,9 @@ const AdminLoginPage = () => {
   if (isLoading) {
     return (
       <div className="admin-login-page">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Loading...</p>
+        <div className="page-loading">
+          <div className="spinner spinner--lg page-loading__spinner"></div>
+          <p className="page-loading__text">Loading...</p>
         </div>
       </div>
     );
@@ -122,24 +121,26 @@ const AdminLoginPage = () => {
   
   return (
     <div className={`admin-login-page ${isVisible ? 'is-visible' : ''}`}>
-      <div className="admin-login-card">
-        <div className="admin-login-card__header">
-          <div className="admin-login-card__logo">
-            <FaUserShield className="admin-login-card__logo-icon" />
+      <div className="card">
+        <div className="card__header">
+          <div className="flex-center mb-md">
+            <FaUserShield className="text-electric-cyan" style={{ fontSize: '3rem' }} />
           </div>
-          <h1 className="admin-login-card__title">Admin Login</h1>
-          <p className="admin-login-card__subtitle">Secure access for administrators only</p>
+          <h1 className="text-center">Admin Login</h1>
+          <p className="text-center text-secondary mb-lg">Secure access for administrators only</p>
         </div>
         
-        <div className="admin-login-card__content">
+        <div className="card__body">
           {error && (
-            <div className="admin-login-card__error">
-              <FaLock className="admin-login-card__error-icon" />
-              <span>{error}</span>
+            <div className="alert alert--error mb-lg">
+              <FaLock className="alert__icon" />
+              <div className="alert__content">
+                <span>{error}</span>
+              </div>
             </div>
           )}
           
-          <form className="admin-login-form" onSubmit={handleSubmit} noValidate>
+          <form className="form" onSubmit={handleSubmit} noValidate>
             <div className="form-group">
               <label htmlFor="email" className="form-label">Email</label>
               <div className="form-input-group">
@@ -190,7 +191,7 @@ const AdminLoginPage = () => {
             
             <button
               type="submit"
-              className="btn btn-primary admin-login-form__submit"
+              className="btn btn-primary w-full mb-lg"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
@@ -204,7 +205,7 @@ const AdminLoginPage = () => {
             </button>
           </form>
           
-          <Link to="/login" className="admin-login-back-link">
+          <Link to="/login" className="btn btn-text flex-center">
             <FaArrowLeft className="mr-sm" />
             Back to main login
           </Link>

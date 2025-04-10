@@ -1,9 +1,8 @@
 // File: /frontend/src/components/ui/Footer.jsx
-// Updated footer with music icon instead of Spotify logo
+// Main footer component for the application
 
 import { Link } from 'react-router-dom';
 import { FaHeadphones, FaMusic, FaGithub, FaLinkedin, FaHeart } from 'react-icons/fa';
-import '../../assets/styles/components/ui/Footer.scss';
 
 /**
  * Enhanced footer component with modern styling

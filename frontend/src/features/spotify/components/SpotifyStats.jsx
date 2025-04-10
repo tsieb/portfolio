@@ -1,5 +1,5 @@
 // File: /frontend/src/features/spotify/components/SpotifyStats.jsx
-// Enhanced Spotify stats component with improved visuals
+// Component to display Spotify listening statistics
 
 import { useEffect } from 'react';
 import { useSpotify } from '../hooks/useSpotify';
@@ -14,7 +14,6 @@ import {
   Tooltip, 
   Legend 
 } from 'chart.js';
-import '../../../assets/styles/features/spotify/components/SpotifyStats.scss';
 
 // Register Chart.js components
 ChartJS.register(
@@ -27,8 +26,7 @@ ChartJS.register(
 );
 
 /**
- * Enhanced component to display Spotify listening statistics
- * with improved visuals
+ * Component to display Spotify listening statistics
  */
 const SpotifyStats = () => {
   const { 
@@ -44,16 +42,18 @@ const SpotifyStats = () => {
   
   if (isLoading && !stats) {
     return (
-      <div className="spotify-stats">
-        <div className="spotify-stats__header">
-          <h2 className="spotify-stats__title">
-            <FaChartBar className="spotify-stats__icon" />
+      <div className="stats-card">
+        <div className="stats-card__header">
+          <h2 className="stats-card__title">
+            <FaChartBar className="stats-card__icon" />
             Listening Stats
           </h2>
         </div>
-        <div className="spotify-stats__loading">
-          <div className="spinner"></div>
-          <span>Loading statistics...</span>
+        <div className="stats-card__body">
+          <div className="loading">
+            <div className="spinner"></div>
+            <span className="loading__text">Loading statistics...</span>
+          </div>
         </div>
       </div>
     );
@@ -61,16 +61,18 @@ const SpotifyStats = () => {
   
   if (error) {
     return (
-      <div className="spotify-stats">
-        <div className="spotify-stats__header">
-          <h2 className="spotify-stats__title">
-            <FaChartBar className="spotify-stats__icon" />
+      <div className="stats-card">
+        <div className="stats-card__header">
+          <h2 className="stats-card__title">
+            <FaChartBar className="stats-card__icon" />
             Listening Stats
           </h2>
         </div>
-        <div className="spotify-stats__error">
-          <FaChartBar size={24} />
-          <p>Unable to fetch listening statistics.</p>
+        <div className="stats-card__body">
+          <div className="empty-state">
+            <FaChartBar className="empty-state__icon" />
+            <p className="empty-state__message">Unable to fetch listening statistics.</p>
+          </div>
         </div>
       </div>
     );
@@ -78,16 +80,18 @@ const SpotifyStats = () => {
   
   if (!stats) {
     return (
-      <div className="spotify-stats">
-        <div className="spotify-stats__header">
-          <h2 className="spotify-stats__title">
-            <FaChartBar className="spotify-stats__icon" />
+      <div className="stats-card">
+        <div className="stats-card__header">
+          <h2 className="stats-card__title">
+            <FaChartBar className="stats-card__icon" />
             Listening Stats
           </h2>
         </div>
-        <div className="spotify-stats__empty">
-          <FaChartBar size={24} />
-          <p>No listening statistics available yet.</p>
+        <div className="stats-card__body">
+          <div className="empty-state">
+            <FaChartBar className="empty-state__icon" />
+            <p className="empty-state__message">No listening statistics available yet.</p>
+          </div>
         </div>
       </div>
     );
@@ -188,85 +192,83 @@ const SpotifyStats = () => {
   };
   
   return (
-    <div className="spotify-stats">
-      <div className="spotify-stats__header">
-        <h2 className="spotify-stats__title">
-          <FaChartBar className="spotify-stats__icon" />
+    <div className="stats-card">
+      <div className="stats-card__header">
+        <h2 className="stats-card__title">
+          <FaChartBar className="stats-card__icon" />
           Listening Stats
         </h2>
       </div>
       
-      <div className="spotify-stats__content">
-        <div className="spotify-stats__summary">
-          <div className="spotify-stats__total">
-            <FaHeadphones className="spotify-stats__total-icon" />
-            <span className="spotify-stats__total-value">{stats.totalTracks}</span>
-            <span className="spotify-stats__total-label">Total Tracks</span>
-          </div>
+      <div className="stats-card__body">
+        <div className="stats-counter mb-lg">
+          <FaHeadphones className="stats-counter__icon" />
+          <div className="stats-counter__value">{stats.totalTracks}</div>
+          <div className="stats-counter__label">Total Tracks</div>
         </div>
         
-        <div className="spotify-stats__sections">
-          <div className="spotify-stats__section">
-            <h3 className="spotify-stats__section-title">
-              <FaMicrophone className="spotify-stats__section-icon" />
+        <div className="grid grid--cols-2 mb-xl">
+          <div className="grid__item">
+            <h3 className="stats-card__title mb-md">
+              <FaMicrophone className="stats-card__icon" />
               Top Artists
             </h3>
             {stats.topArtists && stats.topArtists.length > 0 ? (
-              <ul className="spotify-stats__list">
+              <div className="stats-list">
                 {stats.topArtists.map((artist, index) => (
-                  <li key={artist._id} className="spotify-stats__list-item">
-                    <span className="spotify-stats__list-rank">{index + 1}</span>
-                    <span className="spotify-stats__list-name">{artist._id}</span>
-                    <div className="spotify-stats__list-bar-container">
+                  <div key={artist._id} className="stats-list__item">
+                    <div className="stats-list__header">
+                      <div className="stats-list__name">{artist._id}</div>
+                      <div className="stats-list__value">{artist.count} plays</div>
+                    </div>
+                    <div className="stats-list__bar-container">
                       <div 
-                        className="spotify-stats__list-bar" 
+                        className="stats-list__bar" 
                         style={{ 
-                          width: `${Math.min(100, (artist.count / stats.topArtists[0].count) * 100)}%` 
+                          '--percent': `${Math.min(100, (artist.count / stats.topArtists[0].count) * 100)}%` 
                         }}
                       ></div>
                     </div>
-                    <span className="spotify-stats__list-count">{artist.count} plays</span>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
-              <p className="spotify-stats__empty-message">No top artists data available.</p>
+              <p className="text-tertiary">No top artists data available.</p>
             )}
           </div>
           
-          <div className="spotify-stats__section">
-            <h3 className="spotify-stats__section-title">
-              <FaCompactDisc className="spotify-stats__section-icon" />
+          <div className="grid__item">
+            <h3 className="stats-card__title mb-md">
+              <FaCompactDisc className="stats-card__icon" />
               Top Tracks
             </h3>
             {stats.topTracks && stats.topTracks.length > 0 ? (
-              <ul className="spotify-stats__list">
+              <div className="stats-list">
                 {stats.topTracks.map((track, index) => (
-                  <li key={track._id.trackId} className="spotify-stats__list-item">
-                    <span className="spotify-stats__list-rank">{index + 1}</span>
-                    <span className="spotify-stats__list-name">{track._id.name}</span>
-                    <div className="spotify-stats__list-bar-container">
+                  <div key={track._id.trackId} className="stats-list__item">
+                    <div className="stats-list__header">
+                      <div className="stats-list__name">{track._id.name}</div>
+                      <div className="stats-list__value">{track.count} plays</div>
+                    </div>
+                    <div className="stats-list__bar-container">
                       <div 
-                        className="spotify-stats__list-bar spotify-stats__list-bar--alt" 
+                        className="stats-list__bar stats-list__bar--alt" 
                         style={{ 
-                          width: `${Math.min(100, (track.count / stats.topTracks[0].count) * 100)}%` 
+                          '--percent': `${Math.min(100, (track.count / stats.topTracks[0].count) * 100)}%` 
                         }}
                       ></div>
                     </div>
-                    <span className="spotify-stats__list-count">{track.count} plays</span>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
-              <p className="spotify-stats__empty-message">No top tracks data available.</p>
+              <p className="text-tertiary">No top tracks data available.</p>
             )}
           </div>
         </div>
         
-        <div className="spotify-stats__chart">
-          <div className="spotify-stats__chart-container">
-            <Bar data={activityData} options={chartOptions} />
-          </div>
+        <div className="chart-container" style={{ height: '300px' }}>
+          <Bar data={activityData} options={chartOptions} />
         </div>
       </div>
     </div>

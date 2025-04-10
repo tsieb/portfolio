@@ -21,91 +21,108 @@ import {
  */
 const AdminSidebar = ({ isOpen, onClose }) => {
   return (
-    <aside className={`admin-sidebar ${isOpen ? 'open' : ''}`}>
-      <div className="admin-sidebar__header">
-        <div className="admin-sidebar__logo">Music Admin</div>
-        <button 
-          className="admin-sidebar__close"
-          onClick={onClose}
-          aria-label="Close sidebar"
-        >
-          <FaTimes size={18} />
-        </button>
-      </div>
-      
-      <nav className="admin-sidebar__nav">
-        <div className="admin-sidebar__nav-group">
-          <div className="admin-sidebar__nav-title">Dashboard</div>
-          <NavLink 
-            to="/admin" 
-            end
-            className={({ isActive }) => 
-              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
-            }
+    <>
+      <div className={`sidebar-overlay ${isOpen ? 'is-open' : ''}`} onClick={onClose}></div>
+      <aside className={`sidebar sidebar--admin ${isOpen ? 'is-open' : ''}`}>
+        <div className="sidebar__header">
+          <div className="sidebar__title">Music Admin</div>
+          <button 
+            className="sidebar__close"
+            onClick={onClose}
+            aria-label="Close sidebar"
           >
-            <FaHome className="admin-sidebar__nav-icon" />
-            Overview
-          </NavLink>
+            <FaTimes size={18} />
+          </button>
         </div>
         
-        <div className="admin-sidebar__nav-group">
-          <div className="admin-sidebar__nav-title">Spotify</div>
-          <NavLink 
-            to="/admin/tracks" 
-            className={({ isActive }) => 
-              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
-            }
-          >
-            <FaMusic className="admin-sidebar__nav-icon" />
-            Track History
-          </NavLink>
-          <NavLink 
-            to="/admin/stats" 
-            className={({ isActive }) => 
-              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
-            }
-          >
-            <FaChartBar className="admin-sidebar__nav-icon" />
-            Analytics
-          </NavLink>
-        </div>
-        
-        <div className="admin-sidebar__nav-group">
-          <div className="admin-sidebar__nav-title">Users</div>
-          <NavLink 
-            to="/admin/users" 
-            className={({ isActive }) => 
-              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
-            }
-          >
-            <FaUsers className="admin-sidebar__nav-icon" />
-            Manage Users
-          </NavLink>
-          <NavLink 
-            to="/admin/user-activity" 
-            className={({ isActive }) => 
-              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
-            }
-          >
-            <FaEye className="admin-sidebar__nav-icon" />
-            User Activity
-          </NavLink>
-        </div>
-        
-        <div className="admin-sidebar__nav-group">
-          <div className="admin-sidebar__nav-title">System</div>
-          <NavLink 
-            to="/admin/settings" 
-            className={({ isActive }) => 
-              isActive ? 'admin-sidebar__nav-item active' : 'admin-sidebar__nav-item'
-            }
-          >
-            <FaCog className="admin-sidebar__nav-icon" />
-            Settings
-          </NavLink>
-        </div>
-      </nav>
-    </aside>
+        <nav className="sidebar__content">
+          <div className="sidebar__nav">
+            <div className="sidebar__nav-group">
+              <div className="sidebar__divider">Dashboard</div>
+              <div className="sidebar__nav-item">
+                <NavLink 
+                  to="/admin" 
+                  end
+                  className={({ isActive }) => 
+                    isActive ? 'sidebar__nav-link active' : 'sidebar__nav-link'
+                  }
+                >
+                  <FaHome className="sidebar__nav-icon" />
+                  Overview
+                </NavLink>
+              </div>
+            </div>
+            
+            <div className="sidebar__nav-group">
+              <div className="sidebar__divider">Spotify</div>
+              <div className="sidebar__nav-item">
+                <NavLink 
+                  to="/admin/tracks" 
+                  className={({ isActive }) => 
+                    isActive ? 'sidebar__nav-link active' : 'sidebar__nav-link'
+                  }
+                >
+                  <FaMusic className="sidebar__nav-icon" />
+                  Track History
+                </NavLink>
+              </div>
+              <div className="sidebar__nav-item">
+                <NavLink 
+                  to="/admin/stats" 
+                  className={({ isActive }) => 
+                    isActive ? 'sidebar__nav-link active' : 'sidebar__nav-link'
+                  }
+                >
+                  <FaChartBar className="sidebar__nav-icon" />
+                  Analytics
+                </NavLink>
+              </div>
+            </div>
+            
+            <div className="sidebar__nav-group">
+              <div className="sidebar__divider">Users</div>
+              <div className="sidebar__nav-item">
+                <NavLink 
+                  to="/admin/users" 
+                  className={({ isActive }) => 
+                    isActive ? 'sidebar__nav-link active' : 'sidebar__nav-link'
+                  }
+                >
+                  <FaUsers className="sidebar__nav-icon" />
+                  Manage Users
+                </NavLink>
+              </div>
+              <div className="sidebar__nav-item">
+                <NavLink 
+                  to="/admin/user-activity" 
+                  className={({ isActive }) => 
+                    isActive ? 'sidebar__nav-link active' : 'sidebar__nav-link'
+                  }
+                >
+                  <FaEye className="sidebar__nav-icon" />
+                  User Activity
+                </NavLink>
+              </div>
+            </div>
+            
+            <div className="sidebar__nav-group">
+              <div className="sidebar__divider">System</div>
+              <div className="sidebar__nav-item">
+                <NavLink 
+                  to="/admin/settings" 
+                  className={({ isActive }) => 
+                    isActive ? 'sidebar__nav-link active' : 'sidebar__nav-link'
+                  }
+                >
+                  <FaCog className="sidebar__nav-icon" />
+                  Settings
+                </NavLink>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </aside>
+    </>
   );
 };
 

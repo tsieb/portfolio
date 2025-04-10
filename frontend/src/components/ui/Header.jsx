@@ -1,5 +1,5 @@
 // File: /frontend/src/components/ui/Header.jsx
-// Modified header to use music icon instead of Spotify logo
+// Main header component for the application
 
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
@@ -14,7 +14,6 @@ import {
   FaCog,
   FaSignOutAlt
 } from 'react-icons/fa';
-import '../../assets/styles/components/ui/Header.scss';
 
 const Header = () => {
   const { isAuthenticated, user, logout } = useAuth();
@@ -77,21 +76,21 @@ const Header = () => {
     <header className={`header ${scrolled ? 'header--scrolled' : ''}`}>
       <div className="container">
         <div className="header__inner">
-          <div className="header__logo">
-            <Link to="/" className="header__logo-link">
+          <div className="header__left">
+            <Link to="/" className="header__brand">
               <span className="header__logo-icon"><FaHeadphones /></span>
               <span className="header__logo-text">Music Activity</span>
             </Link>
           </div>
           
-          <div className="header__search">
-            <div className="header__search-input">
-              <FaSearch className="header__search-icon" />
+          <div className="header__center">
+            <div className="search-input">
               <input 
                 type="text" 
                 placeholder="Search users..." 
-                className="header__search-field"
+                className="search-input__field"
               />
+              <FaSearch className="search-input__icon" />
             </div>
           </div>
           
@@ -103,24 +102,24 @@ const Header = () => {
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
           
-          <nav className={`header__nav ${menuOpen ? 'open' : ''}`}>
-            <ul className="header__nav-list">
-              <li className="header__nav-item">
+          <nav className={`nav ${menuOpen ? 'nav--open' : ''}`}>
+            <ul className="nav__list">
+              <li className="nav__item">
                 <NavLink 
                   to="/" 
                   className={({ isActive }) => 
-                    isActive ? 'header__nav-link active' : 'header__nav-link'
+                    isActive ? 'nav__link active' : 'nav__link'
                   }
                   end
                 >
                   Home
                 </NavLink>
               </li>
-              <li className="header__nav-item">
+              <li className="nav__item">
                 <NavLink 
                   to="/discover" 
                   className={({ isActive }) => 
-                    isActive ? 'header__nav-link active' : 'header__nav-link'
+                    isActive ? 'nav__link active' : 'nav__link'
                   }
                 >
                   Discover
@@ -129,37 +128,37 @@ const Header = () => {
               
               {isAuthenticated ? (
                 <>
-                  <li className="header__nav-item header__nav-item--mobile">
+                  <li className="nav__item nav__item--mobile">
                     <NavLink 
                       to={`/user/${user?.username || ''}`} 
                       className={({ isActive }) => 
-                        isActive ? 'header__nav-link active' : 'header__nav-link'
+                        isActive ? 'nav__link active' : 'nav__link'
                       }
                     >
                       My Profile
                     </NavLink>
                   </li>
-                  <li className="header__nav-item header__nav-item--mobile">
+                  <li className="nav__item nav__item--mobile">
                     <NavLink 
                       to="/settings" 
                       className={({ isActive }) => 
-                        isActive ? 'header__nav-link active' : 'header__nav-link'
+                        isActive ? 'nav__link active' : 'nav__link'
                       }
                     >
                       Settings
                     </NavLink>
                   </li>
-                  <li className="header__nav-item header__nav-item--mobile">
+                  <li className="nav__item nav__item--mobile">
                     <button 
-                      className="header__nav-link header__nav-link--button"
+                      className="nav__link nav__link--button"
                       onClick={handleLogout}
                     >
-                      <FaSignOutAlt className="header__nav-icon" />
+                      <FaSignOutAlt className="nav__link-icon" />
                       <span>Logout</span>
                     </button>
                   </li>
                   
-                  <li className="header__nav-item header__nav-item--desktop">
+                  <li className="nav__item nav__item--desktop">
                     <div className="header__user" onClick={toggleUserMenu}>
                       {user?.avatar ? (
                         <img 
@@ -175,7 +174,7 @@ const Header = () => {
                       </span>
                       
                       {userMenuOpen && (
-                        <div className="header__user-menu" onClick={e => e.stopPropagation()}>
+                        <div className="header__user-menu">
                           <div className="header__user-menu-header">
                             <strong>Signed in as</strong>
                             <div>{user?.email}</div>
@@ -207,13 +206,13 @@ const Header = () => {
                 </>
               ) : (
                 <>
-                  <li className="header__nav-item">
+                  <li className="nav__item">
                     <NavLink 
                       to="/login" 
                       className={({ isActive }) => 
                         isActive 
-                          ? 'header__nav-link header__nav-link--login active' 
-                          : 'header__nav-link header__nav-link--login'
+                          ? 'nav__button nav__button--login active' 
+                          : 'nav__button nav__button--login'
                       }
                     >
                       <span>Login</span>
