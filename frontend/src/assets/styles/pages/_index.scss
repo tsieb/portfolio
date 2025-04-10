@@ -1,0 +1,14 @@
+// src/assets/styles/pages/_index.scss
+// Forward all page-specific styles
+
+@forward 'home';
+@forward 'login';
+@forward 'register';
+@forward 'user-profile';
+@forward 'user-settings';
+@forward 'not-found';
+@forward 'admin-dashboard';
+@forward 'admin-users';
+@forward 'admin-tracks';
+@forward 'admin-login';
+@forward 'auth-callback';

@@ -1,0 +1,41 @@
+// src/assets/styles/pages/_admin-login.scss
+// Admin login page specific styles
+
+@use "../abstracts" as *;
+
+.admin-login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-xl) 0;
+  position: relative;
+  
+  // Initial animation
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  // Page-specific background
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba($color-magenta-pulse, 0.1) 0%,
+      rgba($color-info, 0.05) 50%,
+      rgba(0, 0, 0, 0) 70%
+    );
+    z-index: -1;
+    pointer-events: none;
+  }
+}

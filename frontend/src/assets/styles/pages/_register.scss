@@ -1,0 +1,38 @@
+// src/assets/styles/pages/_register.scss
+// Register page specific styles
+
+@use "../abstracts" as *;
+
+.register-page {
+  min-height: calc(100vh - 140px);
+  padding: var(--space-xl) 0;
+  position: relative;
+  
+  // Initial animation
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  // Page-specific background effect
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba($color-magenta-pulse, 0.1) 0%,
+      rgba($color-electric-cyan, 0.05) 50%,
+      rgba(0, 0, 0, 0) 70%
+    );
+    z-index: -1;
+    pointer-events: none;
+  }
+}

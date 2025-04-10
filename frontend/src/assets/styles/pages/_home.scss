@@ -1,0 +1,35 @@
+// src/assets/styles/pages/_home.scss
+// Home page specific styles
+
+@use "../abstracts" as *;
+
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  
+  // Page-specific hero section styling
+  .hero {
+    min-height: calc(100vh - 70px);
+    position: relative;
+    
+    &--scrolled {
+      .hero__content {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+    }
+  }
+  
+  // Page-specific content section animation
+  .content {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+    
+    &--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

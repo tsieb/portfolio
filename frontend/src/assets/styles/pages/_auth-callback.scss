@@ -1,0 +1,45 @@
+// src/assets/styles/pages/_auth-callback.scss
+// Authentication callback page specific styles
+
+@use "../abstracts" as *;
+
+.spotify-callback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-xl) var(--space-lg);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+  
+  &__card {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    animation: fade-in 0.8s ease-out;
+  }
+  
+  // Status states specific to this page
+  &__status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-lg);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    
+    &--processing {
+      background-color: rgba($color-info, 0.1);
+      border: 1px solid rgba($color-info, 0.2);
+    }
+    
+    &--success {
+      background-color: rgba($color-electric-cyan, 0.1);
+      border: 1px solid rgba($color-electric-cyan, 0.2);
+    }
+    
+    &--error {
+      background-color: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.2);
+    }
+  }
+}
