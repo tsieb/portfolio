@@ -1,0 +1,118 @@
+// src/assets/styles/abstracts/_functions.scss
+// Utility functions for the Wavelength application
+
+@use "sass:math";
+@use "sass:color";
+@use "sass:map";
+@use "sass:string";
+@use "sass:list";
+
+// Convert pixels to rems
+@function rem($pixels, $context: 16) {
+  @return math.div($pixels, $context) * 1rem;
+}
+
+// Convert pixels to ems
+@function em($pixels, $context: 16) {
+  @return math.div($pixels, $context) * 1em;
+}
+
+// Get color with opacity
+@function color-opacity($color, $opacity) {
+  @return rgba($color, $opacity);
+}
+
+// Lighten color (safe version that works with variables)
+@function color-lighten($color, $percentage) {
+  @return color.scale($color, $lightness: $percentage);
+}
+
+// Darken color (safe version that works with variables)
+@function color-darken($color, $percentage) {
+  @return color.scale($color, $lightness: -$percentage);
+}
+
+// Create a tint of a color (mix with white)
+@function tint($color, $percentage) {
+  @return mix(white, $color, $percentage);
+}
+
+// Create a shade of a color (mix with black)
+@function shade($color, $percentage) {
+  @return mix(black, $color, $percentage);
+}
+
+// Removes the unit from a number
+@function strip-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return math.div($number, ($number * 0 + 1));
+  }
+  @return $number;
+}
+
+// Calculate fluid typography size
+@function fluid-type($min-vw, $max-vw, $min-font-size, $max-font-size) {
+  $u1: unit($min-vw);
+  $u2: unit($max-vw);
+  $u3: unit($min-font-size);
+  $u4: unit($max-font-size);
+
+  @if $u1 == $u2 and $u1 == $u3 and $u1 == $u4 {
+    $min-vw: strip-unit($min-vw);
+    $max-vw: strip-unit($max-vw);
+    $min-font-size: strip-unit($min-font-size);
+    $max-font-size: strip-unit($max-font-size);
+
+    $slope: math.div($max-font-size - $min-font-size, $max-vw - $min-vw);
+    $y-axis-intersection: -$min-vw * $slope + $min-font-size;
+
+    @return clamp(#{$min-font-size}#{$u1}, #{$y-axis-intersection}#{$u1} + #{$slope * 100}vw, #{$max-font-size}#{$u1});
+  }
+}
+
+// Create a waveform color gradient
+@function wave-gradient($color1, $color2, $direction: 135deg) {
+  @return linear-gradient($direction, $color1, $color2);
+}
+
+// Create a frequency color spectrum
+@function frequency-spectrum($base-color, $range: 3) {
+  $result: ();
+  @for $i from 0 through $range {
+    $offset: math.div($i, $range) * 100;
+    $new-color: adjust-hue($base-color, $offset);
+    $result: append($result, $new-color, comma);
+  }
+  @return $result;
+}
+
+// Generate a border glow effect
+@function border-glow($color, $intensity: 0.5) {
+  @return 0 0 0 1px $color, 0 0 8px rgba($color, $intensity);
+}
+
+// Check if a string starts with a specific substring
+@function starts-with($string, $prefix) {
+  @return string.slice($string, 1, string.length($prefix)) == $prefix;
+}
+
+// Calculate aspect ratio padding
+@function aspect-ratio($width, $height) {
+  @return math.div($height, $width) * 100%;
+}
+
+// Z-index function to manage layers
+@function z-index($layer) {
+  $z-indexes: (
+    "negative": -1,
+    "base": 0,
+    "elevate": 1,
+    "dropdown": 10,
+    "sticky": 100,
+    "modal": 1000,
+    "popover": 1010,
+    "tooltip": 1020
+  );
+
+  @return map.get($z-indexes, $layer);
+}

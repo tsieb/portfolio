@@ -1,0 +1,639 @@
+// src/assets/styles/components/_forms.scss
+// Form components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Form group container
+.form-group {
+    margin-bottom: $space-lg;
+    position: relative;
+}
+
+// Form label
+.form-label {
+    display: block;
+    margin-bottom: $space-sm;
+    font-weight: $font-weight-medium;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    transition: color $transition-fast $ease-in-out;
+
+    .form-input:focus+& {
+        color: $color-electric-cyan;
+    }
+}
+
+// Form input
+.form-input {
+    width: 100%;
+    padding: $space-md;
+    font-size: $font-size-md;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background-color: rgba($color-night-bass, 0.4);
+    color: $color-text-primary;
+    transition:
+        border-color $transition-fast $ease-in-out,
+        box-shadow $transition-fast $ease-in-out,
+        background-color $transition-fast $ease-in-out;
+
+    &:focus {
+        outline: none;
+        border-color: $color-electric-cyan;
+        box-shadow: 0 0 0 2px rgba($color-electric-cyan, 0.2);
+        background-color: rgba($color-electric-cyan, 0.05);
+    }
+
+    &::placeholder {
+        color: $color-text-tertiary;
+    }
+
+    &:disabled {
+        background-color: rgba($color-night-bass, 0.6);
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    // Input states
+    &--error {
+        border-color: $color-error;
+
+        &:focus {
+            box-shadow: 0 0 0 2px rgba($color-error, 0.2);
+        }
+    }
+
+    &--success {
+        border-color: $color-success;
+
+        &:focus {
+            box-shadow: 0 0 0 2px rgba($color-success, 0.2);
+        }
+    }
+
+    &--with-icon {
+        padding-left: 40px;
+    }
+}
+
+// Textarea
+textarea.form-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+// Select dropdown
+select.form-input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238E9BAE' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 12px) center;
+    padding-right: 36px;
+}
+
+// Frequency slider - custom range input
+.frequency-slider {
+    width: 100%;
+    margin: $space-md 0;
+
+    &__label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: $space-xs;
+
+        span {
+            font-size: $font-size-sm;
+            color: $color-text-secondary;
+        }
+    }
+
+    &__input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        border-radius: $radius-full;
+        background: linear-gradient(to right, $color-deep-ocean, $color-electric-cyan, $color-magenta-pulse);
+        outline: none;
+        transition: opacity $transition-fast $ease-in-out;
+
+        &::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: $color-waveform-white;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba($color-night-bass, 0.4);
+            border: 2px solid $color-electric-cyan;
+            transition: all $transition-fast $ease-out;
+
+            &:hover {
+                transform: scale(1.2);
+                box-shadow: 0 0 10px rgba($color-electric-cyan, 0.6);
+            }
+        }
+
+        &::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: $color-waveform-white;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba($color-night-bass, 0.4);
+            border: 2px solid $color-electric-cyan;
+            transition: all $transition-fast $ease-out;
+
+            &:hover {
+                transform: scale(1.2);
+                box-shadow: 0 0 10px rgba($color-electric-cyan, 0.6);
+            }
+        }
+
+        &::-webkit-slider-runnable-track {
+            height: 6px;
+            cursor: pointer;
+            border-radius: $radius-full;
+        }
+
+        &::-moz-range-track {
+            height: 6px;
+            cursor: pointer;
+            border-radius: $radius-full;
+        }
+    }
+
+    &__ticks {
+        display: flex;
+        justify-content: space-between;
+        margin-top: $space-xs;
+
+        span {
+            position: relative;
+            width: 1px;
+            height: 5px;
+            background-color: $color-text-tertiary;
+
+            &::after {
+                content: attr(data-value);
+                position: absolute;
+                top: 8px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 10px;
+                color: $color-text-tertiary;
+            }
+        }
+    }
+}
+
+// Checkbox
+.form-checkbox {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    margin-bottom: $space-sm;
+
+    input[type="checkbox"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        margin-right: $space-sm;
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+        background-color: rgba($color-night-bass, 0.4);
+        transition: all $transition-fast $ease-in-out;
+
+        &:checked {
+            background-color: $color-electric-cyan;
+            border-color: $color-electric-cyan;
+
+            &::after {
+                content: '';
+                position: absolute;
+                left: 6px;
+                top: 2px;
+                width: 6px;
+                height: 10px;
+                border: solid $color-night-bass;
+                border-width: 0 2px 2px 0;
+                transform: rotate(45deg);
+            }
+        }
+
+        &:focus {
+            outline: none;
+            border-color: $color-electric-cyan;
+            box-shadow: 0 0 0 2px rgba($color-electric-cyan, 0.2);
+        }
+    }
+
+    label {
+        cursor: pointer;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        padding-top: 1px;
+        user-select: none;
+    }
+}
+
+// Radio button
+.form-radio {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    margin-bottom: $space-sm;
+
+    input[type="radio"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 1px solid $color-border;
+        border-radius: 50%;
+        margin-right: $space-sm;
+        position: relative;
+        cursor: pointer;
+        flex-shrink: 0;
+        background-color: rgba($color-night-bass, 0.4);
+        transition: all $transition-fast $ease-in-out;
+
+        &:checked {
+            border-color: $color-electric-cyan;
+
+            &::after {
+                content: '';
+                position: absolute;
+                left: 4px;
+                top: 4px;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: $color-electric-cyan;
+            }
+        }
+
+        &:focus {
+            outline: none;
+            border-color: $color-electric-cyan;
+            box-shadow: 0 0 0 2px rgba($color-electric-cyan, 0.2);
+        }
+    }
+
+    label {
+        cursor: pointer;
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        padding-top: 1px;
+        user-select: none;
+    }
+}
+
+// Pulse Checkbox - custom animated checkbox
+.pulse-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+
+    input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        height: 0;
+        width: 0;
+
+        &:checked+.pulse-checkbox__box {
+            background-color: $color-electric-cyan;
+            border-color: $color-electric-cyan;
+
+            &::after {
+                transform: scale(1) rotate(45deg);
+                opacity: 1;
+            }
+        }
+
+        &:focus+.pulse-checkbox__box {
+            box-shadow: 0 0 0 2px rgba($color-electric-cyan, 0.2);
+        }
+    }
+
+    &__box {
+        width: 22px;
+        height: 22px;
+        background-color: rgba($color-night-bass, 0.4);
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        margin-right: $space-sm;
+        position: relative;
+        transition: all $transition-fast $ease-in-out;
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 11px;
+            border: solid $color-night-bass;
+            border-width: 0 2px 2px 0;
+            transform: scale(0.5) rotate(45deg);
+            opacity: 0;
+            transition: all $transition-fast $ease-out;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity $transition-fast $ease-out;
+        }
+    }
+
+    label {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        cursor: pointer;
+    }
+
+    &:hover {
+        .pulse-checkbox__box {
+            border-color: $color-electric-cyan;
+
+            &::before {
+                opacity: 1;
+                animation: pulse-animation 2s infinite;
+            }
+        }
+    }
+}
+
+// Switch - toggle
+.form-switch {
+    display: inline-block;
+    position: relative;
+    width: 52px;
+    height: 26px;
+
+    input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+
+        &:checked+.form-switch__slider {
+            background-color: $color-electric-cyan;
+
+            &::before {
+                transform: translateX(24px);
+            }
+        }
+
+        &:focus+.form-switch__slider {
+            box-shadow: 0 0 0 2px rgba($color-electric-cyan, 0.2);
+        }
+
+        &:disabled+.form-switch__slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    &__slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $color-bg-tertiary;
+        border-radius: 26px;
+        transition: background-color $transition-normal;
+
+        &::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: $color-waveform-white;
+            border-radius: 50%;
+            transition: transform $transition-normal $ease-wave;
+        }
+    }
+}
+
+// Form input group (input with icon or add-on)
+.form-input-group {
+    position: relative;
+    display: flex;
+
+    .form-input {
+        flex: 1;
+
+        &:not(:last-child) {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+    }
+
+    .form-input-addon {
+        display: flex;
+        align-items: center;
+        padding: 0 $space-md;
+        background-color: $color-bg-tertiary;
+        border: 1px solid $color-border;
+        border-left: none;
+        border-top-right-radius: $radius-md;
+        border-bottom-right-radius: $radius-md;
+        color: $color-text-tertiary;
+    }
+
+    .form-input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $color-text-tertiary;
+        pointer-events: none;
+        transition: color $transition-fast $ease-in-out;
+        z-index: 1;
+
+        .form-input:focus+& {
+            color: $color-electric-cyan;
+        }
+    }
+}
+
+// Floating label input
+.form-floating {
+    position: relative;
+
+    .form-input {
+        height: 60px;
+        padding-top: 24px;
+        padding-bottom: 8px;
+    }
+
+    .form-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        padding: $space-md;
+        pointer-events: none;
+        transform-origin: 0 0;
+        transition:
+            transform $transition-normal $ease-out,
+            color $transition-normal $ease-out;
+    }
+
+    .form-input:focus+.form-label,
+    .form-input:not(:placeholder-shown)+.form-label {
+        transform: translateY(-10px) scale(0.85);
+        color: $color-electric-cyan;
+    }
+
+    .form-input::placeholder {
+        color: transparent;
+    }
+}
+
+// Help text
+.form-help {
+    margin-top: $space-xs;
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+}
+
+// Error message
+.form-error {
+    margin-top: $space-xs;
+    font-size: $font-size-sm;
+    color: $color-error;
+    display: flex;
+    align-items: center;
+
+    .form-error-icon {
+        margin-right: $space-xs;
+        flex-shrink: 0;
+    }
+}
+
+// Search input
+.search-input {
+    position: relative;
+
+    .search-input__field {
+        width: 100%;
+        height: 40px;
+        padding: 0 $space-md 0 40px;
+        border-radius: $radius-full;
+        border: 1px solid $color-border;
+        background-color: rgba($color-night-bass, 0.3);
+        color: $color-text-primary;
+        transition: all $transition-fast $ease-in-out;
+
+        &:focus {
+            outline: none;
+            border-color: $color-electric-cyan;
+            background-color: rgba($color-night-bass, 0.5);
+            box-shadow: 0 0 0 2px rgba($color-electric-cyan, 0.1);
+        }
+
+        &::placeholder {
+            color: $color-text-tertiary;
+        }
+    }
+
+    .search-input__icon {
+        position: absolute;
+        left: $space-sm;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $color-text-tertiary;
+        pointer-events: none;
+        transition: color $transition-fast $ease-in-out;
+
+        .search-input__field:focus+& {
+            color: $color-electric-cyan;
+        }
+    }
+
+    .search-input__clear {
+        position: absolute;
+        right: $space-sm;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $color-text-tertiary;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all $transition-fast $ease-in-out;
+
+        &:hover {
+            background-color: rgba($color-waveform-white, 0.1);
+            color: $color-waveform-white;
+        }
+    }
+}
+
+// Form divider
+.form-divider {
+    display: flex;
+    align-items: center;
+    margin: $space-lg 0;
+    color: $color-text-tertiary;
+    font-size: $font-size-sm;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right,
+                transparent,
+                $color-border,
+                transparent);
+    }
+
+    span {
+        padding: 0 $space-sm;
+    }
+}
+
+// Form actions (buttons container)
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-md;
+    margin-top: $space-xl;
+
+    @include breakpoint-down("sm") {
+        flex-direction: column;
+        gap: $space-sm;
+
+        .btn {
+            width: 100%;
+        }
+    }
+}

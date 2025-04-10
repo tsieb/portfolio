@@ -1,0 +1,10 @@
+// src/assets/styles/abstracts/_index.scss
+// Forward all abstract files for easy importing elsewhere
+
+// Using @forward instead of @import to make variables, functions, mixins, etc.
+// available to any file that imports this index file
+
+@forward 'variables';
+@forward 'functions';
+@forward 'mixins';
+@forward 'animations';

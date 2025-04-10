@@ -1,0 +1,245 @@
+// src/assets/styles/abstracts/_animations.scss
+// Keyframe animations for Wavelength platform based on design guidelines
+
+// Wave pulse animation
+@keyframes wave-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+  }
+  
+  // Frequency shift animation (for gradients)
+  @keyframes frequency-shift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  // Resonance ripple animation (for interactive elements)
+  @keyframes resonance-ripple {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba($color-electric-cyan, 0.5);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba($color-electric-cyan, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba($color-electric-cyan, 0);
+    }
+  }
+  
+  // Amplitude expansion animation
+  @keyframes amplitude-expansion {
+    0% {
+      transform: scaleY(0.5);
+    }
+    50% {
+      transform: scaleY(1);
+    }
+    100% {
+      transform: scaleY(0.5);
+    }
+  }
+  
+  // Pulse animation for notifications
+  @keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0 rgba($color-electric-cyan, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba($color-electric-cyan, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba($color-electric-cyan, 0);
+    }
+  }
+  
+  // Shine animation for wave buttons
+  @keyframes shine {
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
+  }
+  
+  // EQ bar animation for audio visualization
+  @keyframes eq-animation {
+    0%, 100% {
+      height: 40%;
+    }
+    50% {
+      height: 100%;
+    }
+  }
+  
+  // Fade in up animation for content
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Fade in animation
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  // Waveform animation for playing visualization
+  @keyframes waveform {
+    0% {
+      height: 20%;
+    }
+    20% {
+      height: 60%;
+    }
+    40% {
+      height: 40%;
+    }
+    60% {
+      height: 80%;
+    }
+    80% {
+      height: 30%;
+    }
+    100% {
+      height: 20%;
+    }
+  }
+  
+  // Beat animation for pulsing elements
+  @keyframes beat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(1.1);
+    }
+    40% {
+      transform: scale(1);
+    }
+    60% {
+      transform: scale(1.05);
+    }
+  }
+  
+  // Highlight animation for new content
+  @keyframes highlight {
+    0% {
+      background-color: rgba($color-electric-cyan, 0.2);
+    }
+    100% {
+      background-color: transparent;
+    }
+  }
+  
+  // Track change animation
+  @keyframes track-change {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 0;
+      transform: translateY(-15px);
+    }
+    51% {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  // Bounce animation for scroll indicators
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+  
+  // Shimmer animation for loading states
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  // Spin animation for loading spinner
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  // Horizontal wave animation for dividers
+  @keyframes wave-horizontal {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+  
+  // Radial pulse for interactive elements
+  @keyframes radial-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba($color-electric-cyan, 0.6);
+    }
+    70% {
+      box-shadow: 0 0 0 15px rgba($color-electric-cyan, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba($color-electric-cyan, 0);
+    }
+  }
+  
+  // Float animation for hover effects
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }

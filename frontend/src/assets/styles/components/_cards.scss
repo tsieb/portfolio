@@ -1,0 +1,657 @@
+// src/assets/styles/components/_cards.scss
+// Card components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Base card styles
+.card {
+  @include card-base;
+  display: flex;
+  flex-direction: column;
+  
+  // Card inner parts
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-text-primary;
+    display: flex;
+    align-items: center;
+    
+    .card__icon {
+      margin-right: $space-sm;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  &__body {
+    padding: $space-lg;
+    flex: 1;
+  }
+  
+  &__footer {
+    padding: $space-md $space-lg;
+    border-top: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  // Glass card variant
+  &--glass {
+    @include glass-effect;
+  }
+  
+  // Gradient border card
+  &--gradient-border {
+    @include gradient-border($gradient-primary);
+  }
+  
+  // Accent card variants
+  &--primary {
+    border-left: 4px solid $color-electric-cyan;
+  }
+  
+  &--secondary {
+    border-left: 4px solid $color-magenta-pulse;
+  }
+  
+  &--success {
+    border-left: 4px solid $color-success;
+  }
+  
+  &--warning {
+    border-left: 4px solid $color-warning;
+  }
+  
+  &--error {
+    border-left: 4px solid $color-error;
+  }
+  
+  // Interactive card
+  &--interactive {
+    cursor: pointer;
+    transition: transform $transition-normal $ease-out,
+                box-shadow $transition-normal $ease-out;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $shadow-lg, 0 8px 16px rgba($color-electric-cyan, 0.1);
+    }
+    
+    &:active {
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Waveform Card - Specialized for audio wave display
+.waveform-card {
+  @include card-base;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(
+      circle at top right, 
+      rgba($color-electric-cyan, 0.15) 0%,
+      rgba($color-magenta-pulse, 0.05) 40%,
+      transparent 70%
+    );
+    border-radius: 0 0 0 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+  
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-text-primary;
+    display: flex;
+    align-items: center;
+    
+    .waveform-card__icon {
+      margin-right: $space-sm;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  &__subtitle {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+  
+  &__body {
+    padding: $space-lg;
+    position: relative;
+    z-index: 1;
+  }
+  
+  &__waveform {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-sm 0;
+    height: 60px;
+    
+    // Waveform bars
+    span {
+      display: inline-block;
+      width: 2px;
+      height: 20px;
+      margin: 0 2px;
+      background-color: $color-electric-cyan;
+      border-radius: $radius-full;
+      animation: waveform 1.2s ease infinite;
+      
+      @for $i from 1 through 20 {
+        &:nth-child(#{$i}) {
+          animation-delay: #{$i * 0.1}s;
+        }
+      }
+    }
+  }
+  
+  &__footer {
+    padding: $space-md $space-lg;
+    border-top: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+// Track Card - for displaying music tracks
+.track-card {
+  @include card-base;
+  display: flex;
+  padding: $space-md;
+  transition: all $transition-normal $ease-out;
+  
+  // Highlight for currently playing track
+  &--playing {
+    border-color: $color-electric-cyan;
+    background: linear-gradient(
+      to right,
+      rgba($color-electric-cyan, 0.1),
+      rgba($color-bg-secondary, 0.2)
+    );
+    
+    .track-card__image-container::after {
+      opacity: 1;
+    }
+  }
+  
+  // Highlight for new tracks
+  &--new {
+    animation: highlight 2s ease-out;
+  }
+  
+  &__image-container {
+    width: 60px;
+    height: 60px;
+    border-radius: $radius-md;
+    overflow: hidden;
+    margin-right: $space-md;
+    position: relative;
+    flex-shrink: 0;
+    
+    // Overlay for playing status
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        rgba($color-night-bass, 0.3),
+        rgba($color-night-bass, 0.7)
+      );
+      opacity: 0;
+      transition: opacity $transition-fast;
+    }
+  }
+  
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform $transition-normal;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+  
+  &__image-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: $color-bg-tertiary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-tertiary;
+    font-size: $font-size-xl;
+  }
+  
+  &__content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  &__title {
+    font-weight: $font-weight-semibold;
+    margin-bottom: $space-xs;
+    color: $color-text-primary;
+    @include truncate;
+  }
+  
+  &__artist {
+    font-size: $font-size-sm;
+    color: $color-electric-cyan;
+    margin-bottom: $space-xs;
+    @include truncate;
+  }
+  
+  &__album {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    @include truncate;
+  }
+  
+  &__meta {
+    display: flex;
+    align-items: center;
+    margin-top: $space-xs;
+  }
+  
+  &__time {
+    display: flex;
+    align-items: center;
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+  }
+  
+  &__time-icon {
+    margin-right: 4px;
+    font-size: 10px;
+  }
+  
+  &__new-badge {
+    position: absolute;
+    top: $space-xs;
+    right: $space-xs;
+    background-color: $color-electric-cyan;
+    color: $color-night-bass;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    box-shadow: 0 0 8px rgba($color-electric-cyan, 0.5);
+    animation: pulse-animation 2s infinite;
+  }
+  
+  &__playing-indicator {
+    position: absolute;
+    bottom: $space-xs;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  &__waveform {
+    display: flex;
+    align-items: flex-end;
+    height: 15px;
+    
+    span {
+      display: inline-block;
+      width: 3px;
+      height: 5px;
+      margin: 0 1px;
+      background-color: $color-electric-cyan;
+      border-radius: $radius-sm;
+      animation: eq-animation 1.2s ease-in-out infinite;
+      
+      &:nth-child(1) {
+        animation-delay: 0.2s;
+      }
+      
+      &:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+      
+      &:nth-child(3) {
+        animation-delay: 0.1s;
+      }
+      
+      &:nth-child(4) {
+        animation-delay: 0.3s;
+      }
+    }
+  }
+}
+
+// Stats Card - for audio stats visualization
+.stats-card {
+  @include card-base;
+  
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-text-primary;
+    display: flex;
+    align-items: center;
+    
+    .stats-card__icon {
+      margin-right: $space-sm;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  &__body {
+    padding: $space-lg;
+  }
+  
+  &__stat {
+    padding: $space-md;
+    border-radius: $radius-md;
+    background-color: $color-bg-tertiary;
+    margin-bottom: $space-md;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  &__label {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $space-xs;
+    display: flex;
+    align-items: center;
+    
+    .stats-card__label-icon {
+      margin-right: $space-xs;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  &__value {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    color: $color-electric-cyan;
+  }
+  
+  &__bar-container {
+    height: 6px;
+    background-color: rgba($color-electric-cyan, 0.1);
+    border-radius: $radius-full;
+    overflow: hidden;
+    margin-top: $space-sm;
+  }
+  
+  &__bar {
+    height: 100%;
+    background: linear-gradient(to right, $color-electric-cyan, $color-magenta-pulse);
+    border-radius: $radius-full;
+    transition: width 1s ease-out;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        transparent 100%
+      );
+      animation: shine 2s infinite;
+    }
+  }
+  
+  &__chart {
+    margin-top: $space-lg;
+    height: 200px;
+  }
+}
+
+// Profile Card - for user profiles
+.profile-card {
+  @include card-base;
+  overflow: visible;
+  
+  &__cover {
+    height: 120px;
+    overflow: hidden;
+    position: relative;
+    border-radius: $radius-lg $radius-lg 0 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__frequency {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, 
+      rgba($color-night-bass, 0.3),
+      rgba($color-night-bass, 0.7)
+    );
+    
+    // SVG waveform pattern
+    svg {
+      width: 100%;
+      height: 100%;
+      
+      path {
+        stroke: $color-electric-cyan;
+        stroke-width: 1.5;
+        fill: none;
+      }
+    }
+  }
+  
+  &__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid $color-bg-secondary;
+    background-color: $color-bg-tertiary;
+    overflow: hidden;
+    margin-top: -40px;
+    margin-left: $space-lg;
+    position: relative;
+    z-index: 2;
+    box-shadow: $shadow-md;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .profile-card__avatar-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $color-text-tertiary;
+      font-size: $font-size-xl;
+    }
+  }
+  
+  &__content {
+    padding: $space-lg;
+    padding-top: $space-sm;
+  }
+  
+  &__name {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    margin-bottom: $space-xs;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $space-xs;
+    
+    .profile-card__badge {
+      font-size: $font-size-xs;
+      font-weight: $font-weight-medium;
+      padding: 2px 8px;
+      border-radius: $radius-full;
+      background-color: rgba($color-electric-cyan, 0.1);
+      color: $color-electric-cyan;
+      white-space: nowrap;
+    }
+  }
+  
+  &__username {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $space-md;
+    display: flex;
+    align-items: center;
+    
+    .profile-card__icon {
+      margin-right: $space-xs;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  &__bio {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $space-lg;
+    line-height: $line-height-normal;
+  }
+  
+  &__stats {
+    display: flex;
+    border-top: 1px solid $color-border;
+    margin: 0 -#{$space-lg};
+    padding: 0 $space-lg;
+  }
+  
+  &__stat {
+    flex: 1;
+    padding: $space-md 0;
+    text-align: center;
+    
+    &:not(:last-child) {
+      border-right: 1px solid $color-border;
+    }
+  }
+  
+  &__stat-value {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    color: $color-electric-cyan;
+    margin-bottom: 2px;
+  }
+  
+  &__stat-label {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  &__footer {
+    padding: $space-md $space-lg;
+    border-top: 1px solid $color-border;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+// Empty state card
+.empty-card {
+  @include card-base;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $space-xl;
+  text-align: center;
+  
+  &__icon {
+    font-size: 48px;
+    color: $color-text-tertiary;
+    margin-bottom: $space-md;
+    opacity: 0.5;
+  }
+  
+  &__title {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-medium;
+    color: $color-text-primary;
+    margin-bottom: $space-sm;
+  }
+  
+  &__text {
+    font-size: $font-size-md;
+    color: $color-text-secondary;
+    margin-bottom: $space-lg;
+    max-width: 80%;
+  }
+}

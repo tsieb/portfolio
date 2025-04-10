@@ -1,0 +1,351 @@
+// src/assets/styles/abstracts/_mixins.scss
+// Reusable patterns and mixins for the Wavelength application
+
+@use "sass:map";
+@use "variables" as *;
+
+// Media query mixins - Mobile first approach
+@mixin breakpoint-up($breakpoint) {
+  @if map-has-key($map: (
+    "sm": $breakpoint-sm,
+    "md": $breakpoint-md,
+    "lg": $breakpoint-lg,
+    "xl": $breakpoint-xl,
+    "xxl": $breakpoint-xxl
+  ), $key: $breakpoint) {
+    $breakpoint-value: map-get((
+      "sm": $breakpoint-sm,
+      "md": $breakpoint-md,
+      "lg": $breakpoint-lg,
+      "xl": $breakpoint-xl,
+      "xxl": $breakpoint-xxl
+    ), $breakpoint);
+    
+    @media (min-width: $breakpoint-value) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+// Media query for max-width
+@mixin breakpoint-down($breakpoint) {
+  @if map-has-key($map: (
+    "sm": $breakpoint-sm,
+    "md": $breakpoint-md,
+    "lg": $breakpoint-lg,
+    "xl": $breakpoint-xl,
+    "xxl": $breakpoint-xxl
+  ), $key: $breakpoint) {
+    $breakpoint-value: map-get((
+      "sm": $breakpoint-sm,
+      "md": $breakpoint-md,
+      "lg": $breakpoint-lg,
+      "xl": $breakpoint-xl,
+      "xxl": $breakpoint-xxl
+    ), $breakpoint);
+    
+    @media (max-width: ($breakpoint-value - 0.1px)) {
+      @content;
+    }
+  } @else {
+    @media (max-width: ($breakpoint - 0.1px)) {
+      @content;
+    }
+  }
+}
+
+// Media query between breakpoints
+@mixin breakpoint-between($min, $max) {
+  $min-value: if(map-has-key((
+    "sm": $breakpoint-sm,
+    "md": $breakpoint-md,
+    "lg": $breakpoint-lg,
+    "xl": $breakpoint-xl,
+    "xxl": $breakpoint-xxl
+  ), $min), map-get((
+    "sm": $breakpoint-sm,
+    "md": $breakpoint-md,
+    "lg": $breakpoint-lg,
+    "xl": $breakpoint-xl,
+    "xxl": $breakpoint-xxl
+  ), $min), $min);
+  
+  $max-value: if(map-has-key((
+    "sm": $breakpoint-sm,
+    "md": $breakpoint-md,
+    "lg": $breakpoint-lg,
+    "xl": $breakpoint-xl,
+    "xxl": $breakpoint-xxl
+  ), $max), map-get((
+    "sm": $breakpoint-sm,
+    "md": $breakpoint-md,
+    "lg": $breakpoint-lg,
+    "xl": $breakpoint-xl,
+    "xxl": $breakpoint-xxl
+  ), $max), $max);
+  
+  @media (min-width: $min-value) and (max-width: ($max-value - 0.1px)) {
+    @content;
+  }
+}
+
+// Typography mixins
+@mixin font-heading-1 {
+  font-size: $font-size-xxxl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  
+  @include breakpoint-up("md") {
+    font-size: calc(#{$font-size-xxxl} * 1.25);
+  }
+}
+
+@mixin font-heading-2 {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  
+  @include breakpoint-up("md") {
+    font-size: calc(#{$font-size-xxl} * 1.15);
+  }
+}
+
+@mixin font-heading-3 {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+}
+
+@mixin font-heading-4 {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+}
+
+@mixin font-body {
+  font-size: $font-size-md;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-normal;
+}
+
+@mixin font-body-small {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-normal;
+}
+
+@mixin font-caption {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+}
+
+// Gradient text
+@mixin text-gradient {
+  background: $gradient-primary;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Truncate text with ellipsis
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Wave border
+@mixin wave-border($color: $color-electric-cyan, $width: 2px) {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -$width;
+    left: 0;
+    width: 100%;
+    height: $width;
+    background: linear-gradient(to right, transparent, $color, transparent);
+    border-radius: $radius-full;
+    animation: wave-pulse 3s infinite;
+  }
+}
+
+// Glass morphism
+@mixin glass-effect {
+  background: rgba($color-night-bass, 0.7);
+  backdrop-filter: blur($blur-md);
+  -webkit-backdrop-filter: blur($blur-md);
+  border: 1px solid $color-border;
+  box-shadow: $shadow-md;
+}
+
+// Focus style
+@mixin focus-ring($color: $color-electric-cyan) {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba($color, 0.4);
+}
+
+// Hover lift effect
+@mixin hover-lift($distance: -3px) {
+  transition: transform $transition-normal $ease-out,
+              box-shadow $transition-normal $ease-out;
+  
+  &:hover {
+    transform: translateY($distance);
+    box-shadow: $shadow-lg;
+  }
+}
+
+// Card base style
+@mixin card-base {
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+  border: 1px solid $color-border;
+  transition: transform $transition-normal $ease-out,
+              box-shadow $transition-normal $ease-out,
+              border-color $transition-normal $ease-out;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $shadow-lg;
+    border-color: $color-border-hover;
+  }
+}
+
+// Flex center
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Absolute center
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Grid auto-fill
+@mixin grid-auto-fill($min-size: 250px, $gap: $space-md) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($min-size, 1fr));
+  gap: $gap;
+}
+
+// Hide text visually but keep it accessible for screen readers
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Waveform pulse effect
+@mixin waveform-pulse($color: $color-electric-cyan) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    border: 1px solid rgba($color, 0.4);
+    animation: pulse-animation 2s infinite;
+    z-index: -1;
+  }
+}
+
+// Apply a gradient border
+@mixin gradient-border($gradient: $gradient-primary, $width: 1px, $radius: $radius-md) {
+  position: relative;
+  border-radius: $radius;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: $radius;
+    padding: $width;
+    background: $gradient;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+// Create a responsive aspect ratio container
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    display: block;
+    padding-top: ($height / $width) * 100%;
+  }
+  
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+// Add subtle wave pattern to background
+@mixin wave-pattern-bg {
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 Q 12.5 0, 25 10 T 50 10 T 75 10 T 100 10' stroke='%2300B8D9' fill='none' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 100px 20px;
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+// Responsive container
+@mixin container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $container-padding-sm;
+  padding-right: $container-padding-sm;
+  
+  @include breakpoint-up("lg") {
+    padding-left: $container-padding-lg;
+    padding-right: $container-padding-lg;
+  }
+}
