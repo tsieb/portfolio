@@ -1,0 +1,472 @@
+// src/assets/styles/components/_pills.scss
+// Pills, tags, and badges for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Base pill/tag component
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-xs $space-sm;
+  border-radius: $radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  background-color: rgba($color-electric-cyan, 0.1);
+  color: $color-electric-cyan;
+  border: 1px solid rgba($color-electric-cyan, 0.2);
+  transition: all $transition-fast;
+  
+  &:hover {
+    background-color: rgba($color-electric-cyan, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  // Icon within pill
+  &__icon {
+    margin-right: 4px;
+    font-size: 0.9em;
+  }
+  
+  // Close/remove button
+  &__remove {
+    margin-left: 4px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    color: currentColor;
+    opacity: 0.7;
+    transition: all $transition-fast;
+    
+    &:hover {
+      opacity: 1;
+      background-color: rgba($color-waveform-white, 0.1);
+    }
+  }
+  
+  // Pill variants
+  &--secondary {
+    background-color: rgba($color-magenta-pulse, 0.1);
+    color: $color-magenta-pulse;
+    border-color: rgba($color-magenta-pulse, 0.2);
+    
+    &:hover {
+      background-color: rgba($color-magenta-pulse, 0.15);
+    }
+  }
+  
+  &--success {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+    border-color: rgba($color-success, 0.2);
+    
+    &:hover {
+      background-color: rgba($color-success, 0.15);
+    }
+  }
+  
+  &--warning {
+    background-color: rgba($color-warning, 0.1);
+    color: $color-warning;
+    border-color: rgba($color-warning, 0.2);
+    
+    &:hover {
+      background-color: rgba($color-warning, 0.15);
+    }
+  }
+  
+  &--error {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+    border-color: rgba($color-error, 0.2);
+    
+    &:hover {
+      background-color: rgba($color-error, 0.15);
+    }
+  }
+  
+  &--info {
+    background-color: rgba($color-info, 0.1);
+    color: $color-info;
+    border-color: rgba($color-info, 0.2);
+    
+    &:hover {
+      background-color: rgba($color-info, 0.15);
+    }
+  }
+  
+  &--neutral {
+    background-color: rgba($color-text-tertiary, 0.1);
+    color: $color-text-secondary;
+    border-color: rgba($color-text-tertiary, 0.2);
+    
+    &:hover {
+      background-color: rgba($color-text-tertiary, 0.15);
+    }
+  }
+  
+  // Size variants
+  &--sm {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  
+  &--lg {
+    padding: $space-sm $space-md;
+    font-size: $font-size-sm;
+  }
+  
+  // Interactive variants
+  &--clickable {
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  &--selectable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity $transition-fast;
+    }
+    
+    &.pill--selected::before {
+      background-color: $color-electric-cyan;
+      opacity: 1;
+    }
+    
+    &.pill--secondary.pill--selected::before {
+      background-color: $color-magenta-pulse;
+    }
+    
+    &.pill--success.pill--selected::before {
+      background-color: $color-success;
+    }
+    
+    &.pill--warning.pill--selected::before {
+      background-color: $color-warning;
+    }
+    
+    &.pill--error.pill--selected::before {
+      background-color: $color-error;
+    }
+    
+    &.pill--info.pill--selected::before {
+      background-color: $color-info;
+    }
+  }
+  
+  // Filled/solid variant
+  &--filled {
+    background-color: $color-electric-cyan;
+    color: $color-night-bass;
+    border-color: transparent;
+    
+    &:hover {
+      background-color: lighten($color-electric-cyan, 5%);
+    }
+    
+    &.pill--secondary {
+      background-color: $color-magenta-pulse;
+      color: $color-waveform-white;
+      
+      &:hover {
+        background-color: lighten($color-magenta-pulse, 5%);
+      }
+    }
+    
+    &.pill--success {
+      background-color: $color-success;
+      color: $color-waveform-white;
+      
+      &:hover {
+        background-color: lighten($color-success, 5%);
+      }
+    }
+    
+    &.pill--warning {
+      background-color: $color-warning;
+      color: $color-night-bass;
+      
+      &:hover {
+        background-color: lighten($color-warning, 5%);
+      }
+    }
+    
+    &.pill--error {
+      background-color: $color-error;
+      color: $color-waveform-white;
+      
+      &:hover {
+        background-color: lighten($color-error, 5%);
+      }
+    }
+    
+    &.pill--info {
+      background-color: $color-info;
+      color: $color-waveform-white;
+      
+      &:hover {
+        background-color: lighten($color-info, 5%);
+      }
+    }
+    
+    &.pill--neutral {
+      background-color: $color-text-tertiary;
+      color: $color-waveform-white;
+      
+      &:hover {
+        background-color: lighten($color-text-tertiary, 5%);
+      }
+    }
+  }
+  
+  // Pulse animation variant
+  &--pulse {
+    animation: pill-pulse 2s infinite;
+  }
+}
+
+// Badge component (simpler than pill, usually for counts)
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: $radius-full;
+  font-size: 12px;
+  font-weight: $font-weight-semibold;
+  background-color: $color-electric-cyan;
+  color: $color-night-bass;
+  
+  // Positioned badge (e.g. for notifications)
+  &--positioned {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+  }
+  
+  // Badge variants
+  &--secondary {
+    background-color: $color-magenta-pulse;
+    color: $color-waveform-white;
+  }
+  
+  &--success {
+    background-color: $color-success;
+    color: $color-waveform-white;
+  }
+  
+  &--warning {
+    background-color: $color-warning;
+    color: $color-night-bass;
+  }
+  
+  &--error {
+    background-color: $color-error;
+    color: $color-waveform-white;
+  }
+  
+  &--info {
+    background-color: $color-info;
+    color: $color-waveform-white;
+  }
+  
+  // Size variants
+  &--sm {
+    min-width: 14px;
+    height: 14px;
+    font-size: 10px;
+  }
+  
+  &--lg {
+    min-width: 24px;
+    height: 24px;
+    font-size: 14px;
+  }
+  
+  // Dot variant (no content)
+  &--dot {
+    min-width: 10px;
+    height: 10px;
+    padding: 0;
+  }
+  
+  // Outline variant
+  &--outline {
+    background-color: transparent;
+    border: 1px solid currentColor;
+    
+    &.badge--primary {
+      color: $color-electric-cyan;
+    }
+    
+    &.badge--secondary {
+      color: $color-magenta-pulse;
+    }
+    
+    &.badge--success {
+      color: $color-success;
+    }
+    
+    &.badge--warning {
+      color: $color-warning;
+    }
+    
+    &.badge--error {
+      color: $color-error;
+    }
+    
+    &.badge--info {
+      color: $color-info;
+    }
+  }
+  
+  // Pulse animation
+  &--pulse {
+    animation: badge-pulse 2s infinite;
+  }
+}
+
+// Tag group for multiple tags
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-xs;
+  
+  // Inline variant
+  &--inline {
+    display: inline-flex;
+  }
+  
+  // Compact variant
+  &--compact {
+    gap: 2px;
+    
+    .pill {
+      border-radius: 0;
+      margin-right: -1px;
+      
+      &:first-child {
+        border-top-left-radius: $radius-md;
+        border-bottom-left-radius: $radius-md;
+      }
+      
+      &:last-child {
+        border-top-right-radius: $radius-md;
+        border-bottom-right-radius: $radius-md;
+        margin-right: 0;
+      }
+    }
+  }
+  
+  // With limit/more indicator
+  &__more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-xs $space-sm;
+    border-radius: $radius-full;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+    background-color: rgba($color-text-tertiary, 0.1);
+    color: $color-text-secondary;
+    cursor: pointer;
+    transition: all $transition-fast;
+    
+    &:hover {
+      background-color: rgba($color-text-tertiary, 0.2);
+    }
+  }
+}
+
+// Status indicators
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: $space-xs;
+    
+    &--online {
+      background-color: $color-success;
+      box-shadow: 0 0 6px rgba($color-success, 0.5);
+      animation: pulse-animation 2s infinite;
+    }
+    
+    &--offline {
+      background-color: $color-text-tertiary;
+    }
+    
+    &--away {
+      background-color: $color-warning;
+    }
+    
+    &--busy {
+      background-color: $color-error;
+    }
+    
+    &--positive {
+      background-color: $color-success;
+    }
+    
+    &--negative {
+      background-color: $color-error;
+    }
+    
+    &--neutral {
+      background-color: $color-text-tertiary;
+    }
+  }
+  
+  &__text {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+}
+
+// Animations
+@keyframes pill-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes badge-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

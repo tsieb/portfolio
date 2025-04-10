@@ -1,0 +1,472 @@
+// src/assets/styles/components/_tooltips.scss
+// Tooltip components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Base tooltip
+.tooltip {
+  --tooltip-arrow-size: 6px;
+  position: absolute;
+  z-index: $z-tooltip;
+  background-color: rgba($color-bg-secondary, 0.95);
+  color: $color-text-primary;
+  padding: $space-xs $space-sm;
+  border-radius: $radius-md;
+  font-size: $font-size-xs;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity $transition-fast, transform $transition-fast;
+  box-shadow: $shadow-md;
+  border: 1px solid $color-border;
+  max-width: 200px;
+  backdrop-filter: blur($blur-sm);
+  -webkit-backdrop-filter: blur($blur-sm);
+  pointer-events: none;
+  
+  // Arrow element
+  &::after {
+    content: '';
+    position: absolute;
+    border: var(--tooltip-arrow-size) solid transparent;
+  }
+  
+  // Tooltip positions
+  &--top {
+    transform: translateY(10px);
+    
+    &.tooltip--visible {
+      transform: translateY(0);
+    }
+    
+    &::after {
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-top-color: rgba($color-bg-secondary, 0.95);
+    }
+  }
+  
+  &--bottom {
+    transform: translateY(-10px);
+    
+    &.tooltip--visible {
+      transform: translateY(0);
+    }
+    
+    &::after {
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-color: rgba($color-bg-secondary, 0.95);
+    }
+  }
+  
+  &--left {
+    transform: translateX(10px);
+    
+    &.tooltip--visible {
+      transform: translateX(0);
+    }
+    
+    &::after {
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      border-left-color: rgba($color-bg-secondary, 0.95);
+    }
+  }
+  
+  &--right {
+    transform: translateX(-10px);
+    
+    &.tooltip--visible {
+      transform: translateX(0);
+    }
+    
+    &::after {
+      top: 50%;
+      right: 100%;
+      transform: translateY(-50%);
+      border-right-color: rgba($color-bg-secondary, 0.95);
+    }
+  }
+  
+  // Visible state
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  // Variations
+  &--primary {
+    background-color: $color-electric-cyan;
+    color: $color-night-bass;
+    border-color: $color-electric-cyan;
+    
+    &.tooltip--top::after {
+      border-top-color: $color-electric-cyan;
+    }
+    
+    &.tooltip--bottom::after {
+      border-bottom-color: $color-electric-cyan;
+    }
+    
+    &.tooltip--left::after {
+      border-left-color: $color-electric-cyan;
+    }
+    
+    &.tooltip--right::after {
+      border-right-color: $color-electric-cyan;
+    }
+  }
+  
+  &--secondary {
+    background-color: $color-magenta-pulse;
+    color: $color-waveform-white;
+    border-color: $color-magenta-pulse;
+    
+    &.tooltip--top::after {
+      border-top-color: $color-magenta-pulse;
+    }
+    
+    &.tooltip--bottom::after {
+      border-bottom-color: $color-magenta-pulse;
+    }
+    
+    &.tooltip--left::after {
+      border-left-color: $color-magenta-pulse;
+    }
+    
+    &.tooltip--right::after {
+      border-right-color: $color-magenta-pulse;
+    }
+  }
+  
+  &--error {
+    background-color: $color-error;
+    color: $color-waveform-white;
+    border-color: $color-error;
+    
+    &.tooltip--top::after {
+      border-top-color: $color-error;
+    }
+    
+    &.tooltip--bottom::after {
+      border-bottom-color: $color-error;
+    }
+    
+    &.tooltip--left::after {
+      border-left-color: $color-error;
+    }
+    
+    &.tooltip--right::after {
+      border-right-color: $color-error;
+    }
+  }
+  
+  // No arrow variant
+  &--no-arrow::after {
+    display: none;
+  }
+  
+  // Wide variant
+  &--wide {
+    max-width: 300px;
+  }
+  
+  // With title
+  &__title {
+    font-weight: $font-weight-semibold;
+    margin-bottom: 2px;
+    font-size: $font-size-sm;
+  }
+  
+  &__content {
+    line-height: 1.4;
+  }
+}
+
+// Popover component (like a rich tooltip)
+.popover {
+  position: absolute;
+  z-index: $z-popover;
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  min-width: 200px;
+  max-width: 300px;
+  box-shadow: $shadow-lg;
+  border: 1px solid $color-border;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.95);
+  transition: opacity $transition-normal $ease-out, 
+              transform $transition-normal $ease-out,
+              visibility $transition-normal $ease-out;
+  
+  // Visible state
+  &--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+  }
+  
+  // Arrow element
+  &::before {
+    content: '';
+    position: absolute;
+    border: 8px solid transparent;
+  }
+  
+  // Popover positions
+  &--top {
+    margin-bottom: 12px;
+    
+    &::before {
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-top-color: $color-border;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: $color-bg-secondary;
+      margin-top: -1px;
+    }
+  }
+  
+  &--bottom {
+    margin-top: 12px;
+    
+    &::before {
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-color: $color-border;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-bottom-color: $color-bg-secondary;
+      margin-bottom: -1px;
+    }
+  }
+  
+  &--left {
+    margin-right: 12px;
+    
+    &::before {
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      border-left-color: $color-border;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      border: 7px solid transparent;
+      border-left-color: $color-bg-secondary;
+      margin-left: -1px;
+    }
+  }
+  
+  &--right {
+    margin-left: 12px;
+    
+    &::before {
+      top: 50%;
+      right: 100%;
+      transform: translateY(-50%);
+      border-right-color: $color-border;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      transform: translateY(-50%);
+      border: 7px solid transparent;
+      border-right-color: $color-bg-secondary;
+      margin-right: -1px;
+    }
+  }
+  
+  // Header
+  &__header {
+    padding: $space-md;
+    border-bottom: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  &__title {
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    font-size: $font-size-md;
+    color: $color-text-primary;
+  }
+  
+  &__close {
+    background: none;
+    border: none;
+    color: $color-text-tertiary;
+    cursor: pointer;
+    transition: color $transition-fast;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      color: $color-text-primary;
+    }
+  }
+  
+  // Content
+  &__content {
+    padding: $space-md;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    line-height: 1.5;
+  }
+  
+  // Footer
+  &__footer {
+    padding: $space-sm $space-md;
+    border-top: 1px solid $color-border;
+    display: flex;
+    justify-content: flex-end;
+    gap: $space-sm;
+    background-color: rgba($color-bg-tertiary, 0.3);
+  }
+  
+  // No arrow variant
+  &--no-arrow {
+    &::before, &::after {
+      display: none;
+    }
+  }
+  
+  // Interactive variant
+  &--interactive {
+    // Allow mouse events
+    pointer-events: auto;
+  }
+}
+
+// Floating labels/badges that appear on hover
+.hover-info {
+  position: absolute;
+  z-index: $z-tooltip;
+  background-color: rgba($color-electric-cyan, 0.9);
+  color: $color-night-bass;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: 2px 6px;
+  border-radius: $radius-full;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: opacity $transition-fast, transform $transition-fast;
+  pointer-events: none;
+  white-space: nowrap;
+  
+  &--visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  // Different color variants
+  &--secondary {
+    background-color: rgba($color-magenta-pulse, 0.9);
+    color: $color-waveform-white;
+  }
+  
+  &--dark {
+    background-color: rgba($color-night-bass, 0.9);
+    color: $color-waveform-white;
+  }
+}
+
+// Inline footnote tooltips
+.footnote {
+  position: relative;
+  display: inline-block;
+  margin: 0 2px;
+  
+  &__marker {
+    font-size: 0.75em;
+    vertical-align: super;
+    color: $color-electric-cyan;
+    cursor: pointer;
+    font-weight: $font-weight-bold;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  &__content {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: $color-bg-secondary;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $space-sm;
+    box-shadow: $shadow-md;
+    font-size: $font-size-xs;
+    line-height: 1.4;
+    color: $color-text-secondary;
+    width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity $transition-fast, visibility $transition-fast;
+    z-index: $z-tooltip;
+    pointer-events: none;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: $color-border;
+    }
+    
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: $color-bg-secondary;
+      z-index: 1;
+    }
+    
+    .footnote:hover & {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}

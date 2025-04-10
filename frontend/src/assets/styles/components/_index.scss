@@ -1,13 +1,17 @@
 // src/assets/styles/components/_index.scss
 // Forward all component styles
 
-@forward 'buttons';
-@forward 'forms';
-@forward 'cards';
 @forward 'alerts';
-@forward 'navigation';
-@forward 'stats';
-@forward 'music';
-@forward 'visualizer';
+@forward 'buttons';
+@forward 'cards';
+@forward 'dropdowns';
+@forward 'forms';
 @forward 'loaders';
 @forward 'modals';
+@forward 'music';
+@forward 'navigation';
+@forward 'pills';
+@forward 'stats';
+@forward 'tables';
+@forward 'tooltips';
+@forward 'visualizer';

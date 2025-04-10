@@ -657,4 +657,470 @@
   &__title {
     display: flex;
     align-items: center;
-    font-size: $font-
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-text-primary;
+    
+    .music-summary__icon {
+      margin-right: $space-sm;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  &__content {
+    padding: $space-lg;
+  }
+  
+  &__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  &__list-item {
+    display: flex;
+    align-items: center;
+    padding: $space-sm 0;
+    border-bottom: 1px solid $color-border-light;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  
+  &__list-rank {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba($color-bg-tertiary, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    margin-right: $space-sm;
+    color: $color-text-tertiary;
+  }
+  
+  &__list-image {
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-sm;
+    margin-right: $space-sm;
+  }
+  
+  &__list-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  &__list-name {
+    font-weight: $font-weight-medium;
+    margin-bottom: 2px;
+    @include truncate;
+  }
+  
+  &__list-meta {
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+    @include truncate;
+  }
+  
+  &__list-count {
+    font-size: $font-size-sm;
+    color: $color-electric-cyan;
+    margin-left: $space-sm;
+  }
+  
+  &__footer {
+    padding: $space-md;
+    border-top: 1px solid $color-border;
+    text-align: center;
+  }
+  
+  &__more {
+    font-size: $font-size-sm;
+    color: $color-electric-cyan;
+    transition: all $transition-fast;
+    
+    &:hover {
+      color: darken($color-electric-cyan, 10%);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Track card component
+.track-card {
+  display: flex;
+  align-items: center;
+  padding: $space-md;
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  transition: all $transition-normal $ease-out;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $shadow-md;
+    border-color: $color-border-hover;
+  }
+  
+  &__image {
+    width: 60px;
+    height: 60px;
+    border-radius: $radius-md;
+    overflow: hidden;
+    margin-right: $space-md;
+    flex-shrink: 0;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  &__name {
+    font-weight: $font-weight-medium;
+    margin-bottom: $space-xs;
+    @include truncate;
+  }
+  
+  &__artist {
+    font-size: $font-size-sm;
+    color: $color-electric-cyan;
+    margin-bottom: $space-xs;
+    @include truncate;
+  }
+  
+  &__album {
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    @include truncate;
+  }
+  
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: $space-md;
+  }
+  
+  &__duration {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $space-xs;
+  }
+  
+  &__actions {
+    display: flex;
+    gap: $space-xs;
+  }
+  
+  &__action {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba($color-bg-tertiary, 0.5);
+    color: $color-text-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all $transition-fast;
+    border: none;
+    cursor: pointer;
+    
+    &:hover {
+      background: $color-electric-cyan;
+      color: $color-night-bass;
+    }
+  }
+  
+  // Currently playing state
+  &--playing {
+    border-color: $color-electric-cyan;
+    background: linear-gradient(
+      to right,
+      rgba($color-electric-cyan, 0.1),
+      transparent
+    );
+  }
+}
+
+// Playlist component
+.playlist {
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  overflow: hidden;
+  
+  &__header {
+    padding: $space-lg;
+    display: flex;
+    align-items: center;
+    
+    @include breakpoint-down("md") {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  &__cover {
+    width: 120px;
+    height: 120px;
+    border-radius: $radius-md;
+    overflow: hidden;
+    margin-right: $space-lg;
+    flex-shrink: 0;
+    
+    @include breakpoint-down("md") {
+      margin-right: 0;
+      margin-bottom: $space-md;
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__info {
+    flex: 1;
+  }
+  
+  &__name {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $space-xs;
+  }
+  
+  &__creator {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    margin-bottom: $space-sm;
+  }
+  
+  &__description {
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    margin-bottom: $space-md;
+  }
+  
+  &__meta {
+    display: flex;
+    gap: $space-md;
+    color: $color-text-tertiary;
+    font-size: $font-size-xs;
+    
+    @include breakpoint-down("md") {
+      justify-content: center;
+    }
+  }
+  
+  &__meta-item {
+    display: flex;
+    align-items: center;
+    
+    .playlist__meta-icon {
+      margin-right: $space-xs;
+    }
+  }
+  
+  &__actions {
+    margin-top: $space-md;
+    display: flex;
+    gap: $space-sm;
+    
+    @include breakpoint-down("md") {
+      justify-content: center;
+    }
+  }
+  
+  &__content {
+    padding: $space-lg;
+    border-top: 1px solid $color-border;
+  }
+  
+  &__tracks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+// Music player controls
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-sm;
+  margin: $space-lg 0;
+  
+  &__button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba($color-bg-tertiary, 0.5);
+    color: $color-text-primary;
+    border: none;
+    cursor: pointer;
+    transition: all $transition-fast;
+    
+    &:hover {
+      background: $color-electric-cyan;
+      color: $color-night-bass;
+      transform: scale(1.1);
+    }
+    
+    &--play {
+      width: 48px;
+      height: 48px;
+      background: $color-electric-cyan;
+      color: $color-night-bass;
+      
+      &:hover {
+        background: lighten($color-electric-cyan, 10%);
+      }
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      
+      &:hover {
+        transform: none;
+        background: rgba($color-bg-tertiary, 0.5);
+        color: $color-text-primary;
+      }
+    }
+  }
+  
+  &__volume {
+    display: flex;
+    align-items: center;
+    margin-left: $space-md;
+    
+    &-icon {
+      margin-right: $space-xs;
+      color: $color-text-secondary;
+    }
+    
+    &-slider {
+      width: 80px;
+      height: 4px;
+      background: rgba($color-waveform-white, 0.1);
+      border-radius: $radius-full;
+      overflow: hidden;
+      
+      &-fill {
+        height: 100%;
+        background: $color-electric-cyan;
+        width: var(--volume, 100%);
+      }
+    }
+  }
+}
+
+// Music genre pill
+.genre-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-xs $space-sm;
+  border-radius: $radius-full;
+  background: rgba($color-electric-cyan, 0.1);
+  border: 1px solid rgba($color-electric-cyan, 0.2);
+  color: $color-electric-cyan;
+  font-size: $font-size-xs;
+  margin-right: $space-xs;
+  margin-bottom: $space-xs;
+  transition: all $transition-fast;
+  
+  &:hover {
+    background: rgba($color-electric-cyan, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  &__icon {
+    margin-right: 4px;
+    font-size: 12px;
+  }
+  
+  // Alternate colors for variety
+  &--alt1 {
+    background: rgba($color-magenta-pulse, 0.1);
+    border-color: rgba($color-magenta-pulse, 0.2);
+    color: $color-magenta-pulse;
+    
+    &:hover {
+      background: rgba($color-magenta-pulse, 0.2);
+    }
+  }
+  
+  &--alt2 {
+    background: rgba($color-info, 0.1);
+    border-color: rgba($color-info, 0.2);
+    color: $color-info;
+    
+    &:hover {
+      background: rgba($color-info, 0.2);
+    }
+  }
+}
+
+// Album grid display
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: $space-md;
+  
+  &__item {
+    text-align: center;
+    transition: all $transition-normal $ease-out;
+    
+    &:hover {
+      transform: translateY(-5px);
+      
+      .album-grid__image {
+        box-shadow: $shadow-lg;
+      }
+    }
+  }
+  
+  &__image {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: $radius-md;
+    overflow: hidden;
+    margin-bottom: $space-sm;
+    transition: all $transition-normal $ease-out;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__name {
+    font-weight: $font-weight-medium;
+    margin-bottom: 3px;
+    @include truncate;
+  }
+  
+  &__artist {
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+    @include truncate;
+  }
+}
