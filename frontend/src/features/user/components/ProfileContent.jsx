@@ -8,20 +8,20 @@ import SpotifyStats from '../../spotify/components/SpotifyStats';
 const ProfileContent = ({ userId }) => {
   return (
     <div className="user-profile__content">
-      <div className="user-profile__section">
-        <h2 className="user-profile__section-title">Now Playing</h2>
+      <section className="user-profile__section">
+        <h2 className="section-title">Now Playing</h2>
         <CurrentlyPlaying userId={userId} />
-      </div>
+      </section>
       
-      <div className="user-profile__section">
-        <h2 className="user-profile__section-title">Recent Tracks</h2>
+      <section className="user-profile__section mt-xl">
+        <h2 className="section-title">Recent Tracks</h2>
         <RecentlyPlayed userId={userId} />
-      </div>
+      </section>
       
-      <div className="user-profile__section">
-        <h2 className="user-profile__section-title">Listening Stats</h2>
+      <section className="user-profile__section mt-xl">
+        <h2 className="section-title">Listening Stats</h2>
         <SpotifyStats userId={userId} />
-      </div>
+      </section>
     </div>
   );
 };

@@ -1,22 +1,35 @@
-// File: /frontend/src/features/user/components/ProfileNotFound.jsx
-// Not found state component for user profile
+// File: /frontend/src/pages/NotFoundPage.jsx
+// 404 Not Found page component
 
 import { Link } from 'react-router-dom';
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationTriangle, FaHome } from 'react-icons/fa';
 
-const ProfileNotFound = () => {
+/**
+ * Not Found page component for 404 errors
+ */
+const NotFoundPage = () => {
   return (
-    <div className="user-profile">
-      <div className="user-profile__error">
-        <FaExclamationCircle className="user-profile__error-icon" />
-        <h2>User not found</h2>
-        <p>The user you're looking for doesn't exist or has been removed.</p>
-        <Link to="/" className="btn btn-primary">
-          Return to Home
-        </Link>
+    <div className="not-found-page">
+      <div className="container">
+        <div className="error-state">
+          <div className="error-state__icon">
+            <FaExclamationTriangle />
+          </div>
+          <h1 className="error-state__title">404</h1>
+          <h2 className="error-state__message">Page Not Found</h2>
+          <p className="error-state__message">
+            The page you are looking for does not exist or has been moved.
+          </p>
+          <div className="error-state__actions">
+            <Link to="/" className="btn btn-primary">
+              <FaHome className="mr-sm" />
+              Go to Homepage
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default ProfileNotFound;
+export default NotFoundPage;

@@ -6,7 +6,7 @@ import { FaHeadphones, FaMusic } from 'react-icons/fa';
 
 const LoginCard = ({ onMusicLogin }) => {
   return (
-    <div className="card mx-auto" style={{ maxWidth: '450px' }}>
+    <div className="card card--glass mx-auto" style={{ maxWidth: '450px' }}>
       <div className="card__header">
         <div className="flex-center mb-md">
           <FaHeadphones className="text-electric-cyan" style={{ fontSize: '3rem' }} />

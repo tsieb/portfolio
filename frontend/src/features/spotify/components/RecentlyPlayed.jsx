@@ -3,14 +3,14 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useSpotify } from '../hooks/useSpotify';
-import { FaMusic, FaHistory, FaClock } from 'react-icons/fa';
+import { FaMusic, FaHistory, FaClock, FaRedo } from 'react-icons/fa';
 import { formatDistanceToNow } from 'date-fns';
 
 /**
  * Enhanced component to display recently played Spotify tracks
  * with animations and visual improvements
  */
-const RecentlyPlayed = () => {
+const RecentlyPlayed = ({ userId }) => {
   const { 
     recentlyPlayed, 
     isLoading, 
@@ -23,8 +23,8 @@ const RecentlyPlayed = () => {
   
   // Use useCallback to prevent the function from being recreated on every render
   const fetchTracks = useCallback(() => {
-    fetchRecentlyPlayed(5);
-  }, [fetchRecentlyPlayed]);
+    fetchRecentlyPlayed(5, userId);
+  }, [fetchRecentlyPlayed, userId]);
   
   // Fetch tracks on initial mount only
   useEffect(() => {
@@ -71,9 +71,11 @@ const RecentlyPlayed = () => {
             Recently Played
           </h2>
         </div>
-        <div className="recently-played__loading">
-          <div className="spinner"></div>
-          <span>Loading recently played tracks...</span>
+        <div className="loading">
+          <div className="loading__wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <p className="loading__text">Loading recently played tracks...</p>
         </div>
       </div>
     );
@@ -88,9 +90,9 @@ const RecentlyPlayed = () => {
             Recently Played
           </h2>
         </div>
-        <div className="recently-played__error">
-          <FaMusic size={24} />
-          <p>Unable to fetch recently played tracks.</p>
+        <div className="empty-state">
+          <FaMusic className="empty-state__icon" />
+          <p className="empty-state__message">Unable to fetch recently played tracks.</p>
         </div>
       </div>
     );
@@ -105,9 +107,10 @@ const RecentlyPlayed = () => {
             Recently Played
           </h2>
         </div>
-        <div className="recently-played__empty">
-          <FaMusic size={24} />
-          <p>No recently played tracks found.</p>
+        <div className="empty-state">
+          <FaMusic className="empty-state__icon" />
+          <h3 className="empty-state__title">No tracks yet</h3>
+          <p className="empty-state__message">No recently played tracks found.</p>
         </div>
       </div>
     );
@@ -169,7 +172,7 @@ const RecentlyPlayed = () => {
           onClick={fetchTracks}
           aria-label="Refresh recently played tracks"
         >
-          Refresh
+          <FaRedo className="mr-xs" /> Refresh
         </button>
       </div>
     </div>

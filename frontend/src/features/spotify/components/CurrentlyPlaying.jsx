@@ -211,12 +211,13 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
               <div className="currently-playing__artist">{currentTrack.artistName}</div>
               <div className="currently-playing__album">{currentTrack.albumName}</div>
               
-              <div className="audio-progress mt-lg">
+              <div className="audio-progress">
                 <div className="audio-progress__bar">
                   <div 
                     className="audio-progress__fill"
                     style={{ '--progress': `${getProgressPercentage()}%` }}
                   ></div>
+                  <div className="audio-progress__thumb"></div>
                 </div>
                 <div className="audio-progress__times">
                   <div>{formatTime(elapsedTime)}</div>
@@ -229,9 +230,9 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
                   href={currentTrack.trackUrl} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="btn btn-primary mt-lg"
+                  className="currently-playing__link"
                 >
-                  <FaExternalLinkAlt className="mr-sm" />
+                  <FaExternalLinkAlt className="currently-playing__link-icon" />
                   Open in Music App
                 </a>
               )}
@@ -285,24 +286,24 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
       <div className="currently-playing__content">
         {isPlaying && currentTrack ? (
           <>
-            {currentTrack.albumImageUrl ? (
-              <div className="currently-playing__artwork">
+            <div className="currently-playing__artwork">
+              {currentTrack.albumImageUrl ? (
                 <img 
                   src={currentTrack.albumImageUrl} 
                   alt={`${currentTrack.albumName} album cover`} 
                   className="currently-playing__image"
                 />
-                <div className="currently-playing__artwork-overlay">
-                  <div className="currently-playing__eq-animation">
-                    <span></span><span></span><span></span><span></span>
-                  </div>
+              ) : (
+                <div className="currently-playing__artwork currently-playing__artwork--placeholder">
+                  <FaMusic />
+                </div>
+              )}
+              <div className="currently-playing__artwork-overlay">
+                <div className="currently-playing__eq-animation">
+                  <span></span><span></span><span></span><span></span>
                 </div>
               </div>
-            ) : (
-              <div className="currently-playing__artwork currently-playing__artwork--placeholder">
-                <FaMusic />
-              </div>
-            )}
+            </div>
             
             <div className="currently-playing__info">
               <h3 className="currently-playing__track">{currentTrack.trackName}</h3>
@@ -326,6 +327,7 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
                     rel="noopener noreferrer" 
                     className="currently-playing__link"
                   >
+                    <FaExternalLinkAlt className="currently-playing__link-icon" />
                     Open in Music App
                   </a>
                 )}
@@ -334,17 +336,10 @@ const CurrentlyPlaying = ({ variant = 'default', userId = null }) => {
           </>
         ) : (
           <div className="currently-playing__not-playing">
-            <div className="currently-playing__icon">
-              <FaHeadphones />
-            </div>
-            <div className="currently-playing__info">
-              <div className="currently-playing__status">
-                <FaPause className="currently-playing__status-icon" />
-                Not playing right now
-              </div>
-              <p className="currently-playing__description">
-                Check back later to see what's playing.
-              </p>
+            <FaHeadphones className="currently-playing__icon" />
+            <div className="currently-playing__empty-message">
+              <h3>Not playing right now</h3>
+              <p>Check back later to see what's playing.</p>
             </div>
           </div>
         )}

@@ -1,5 +1,5 @@
 // File: /frontend/src/components/ui/Header.jsx
-// Main header component for the application
+// Modified header to use music icon instead of Spotify logo
 
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
@@ -76,21 +76,21 @@ const Header = () => {
     <header className={`header ${scrolled ? 'header--scrolled' : ''}`}>
       <div className="container">
         <div className="header__inner">
-          <div className="header__left">
-            <Link to="/" className="header__brand">
+          <div className="header__logo">
+            <Link to="/" className="header__logo-link">
               <span className="header__logo-icon"><FaHeadphones /></span>
               <span className="header__logo-text">Music Activity</span>
             </Link>
           </div>
           
-          <div className="header__center">
-            <div className="search-input">
+          <div className="header__search">
+            <div className="header__search-input">
+              <FaSearch className="header__search-icon" />
               <input 
                 type="text" 
                 placeholder="Search users..." 
-                className="search-input__field"
+                className="header__search-field"
               />
-              <FaSearch className="search-input__icon" />
             </div>
           </div>
           
@@ -102,24 +102,24 @@ const Header = () => {
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
           
-          <nav className={`nav ${menuOpen ? 'nav--open' : ''}`}>
-            <ul className="nav__list">
-              <li className="nav__item">
+          <nav className={`header__nav ${menuOpen ? 'open' : ''}`}>
+            <ul className="header__nav-list">
+              <li className="header__nav-item">
                 <NavLink 
                   to="/" 
                   className={({ isActive }) => 
-                    isActive ? 'nav__link active' : 'nav__link'
+                    isActive ? 'header__nav-link active' : 'header__nav-link'
                   }
                   end
                 >
                   Home
                 </NavLink>
               </li>
-              <li className="nav__item">
+              <li className="header__nav-item">
                 <NavLink 
                   to="/discover" 
                   className={({ isActive }) => 
-                    isActive ? 'nav__link active' : 'nav__link'
+                    isActive ? 'header__nav-link active' : 'header__nav-link'
                   }
                 >
                   Discover
@@ -128,37 +128,37 @@ const Header = () => {
               
               {isAuthenticated ? (
                 <>
-                  <li className="nav__item nav__item--mobile">
+                  <li className="header__nav-item header__nav-item--mobile">
                     <NavLink 
                       to={`/user/${user?.username || ''}`} 
                       className={({ isActive }) => 
-                        isActive ? 'nav__link active' : 'nav__link'
+                        isActive ? 'header__nav-link active' : 'header__nav-link'
                       }
                     >
                       My Profile
                     </NavLink>
                   </li>
-                  <li className="nav__item nav__item--mobile">
+                  <li className="header__nav-item header__nav-item--mobile">
                     <NavLink 
                       to="/settings" 
                       className={({ isActive }) => 
-                        isActive ? 'nav__link active' : 'nav__link'
+                        isActive ? 'header__nav-link active' : 'header__nav-link'
                       }
                     >
                       Settings
                     </NavLink>
                   </li>
-                  <li className="nav__item nav__item--mobile">
+                  <li className="header__nav-item header__nav-item--mobile">
                     <button 
-                      className="nav__link nav__link--button"
+                      className="header__nav-link header__nav-link--button"
                       onClick={handleLogout}
                     >
-                      <FaSignOutAlt className="nav__link-icon" />
+                      <FaSignOutAlt className="header__nav-icon" />
                       <span>Logout</span>
                     </button>
                   </li>
                   
-                  <li className="nav__item nav__item--desktop">
+                  <li className="header__nav-item header__nav-item--desktop">
                     <div className="header__user" onClick={toggleUserMenu}>
                       {user?.avatar ? (
                         <img 
@@ -174,7 +174,7 @@ const Header = () => {
                       </span>
                       
                       {userMenuOpen && (
-                        <div className="header__user-menu">
+                        <div className="header__user-menu" onClick={e => e.stopPropagation()}>
                           <div className="header__user-menu-header">
                             <strong>Signed in as</strong>
                             <div>{user?.email}</div>
@@ -206,13 +206,13 @@ const Header = () => {
                 </>
               ) : (
                 <>
-                  <li className="nav__item">
+                  <li className="header__nav-item">
                     <NavLink 
                       to="/login" 
                       className={({ isActive }) => 
                         isActive 
-                          ? 'nav__button nav__button--login active' 
-                          : 'nav__button nav__button--login'
+                          ? 'header__nav-link header__nav-link--login active' 
+                          : 'header__nav-link header__nav-link--login'
                       }
                     >
                       <span>Login</span>

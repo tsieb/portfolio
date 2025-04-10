@@ -13,11 +13,13 @@ const HeroSection = ({ scrolled, backgroundStyle, onScrollDown }) => {
       <div className="container">
         <div className="hero__content">
           <div className="hero__logo">
-            <FaMusic className="text-electric-cyan" />
+            <FaMusic className="hero__logo-icon" />
             <span className="text-gradient">Music Activity</span>
           </div>
           
-          <CurrentlyPlaying variant="hero" />
+          <div className="hero__player">
+            <CurrentlyPlaying variant="hero" />
+          </div>
           
           <div className="hero__scroll-indicator" onClick={onScrollDown}>
             <span>Scroll to see more</span>

@@ -32,7 +32,9 @@ const UserProfilePage = () => {
   return (
     <div className="user-profile">
       <ProfileHeader userProfile={userProfile} />
-      <ProfileContent userId={userProfile._id} />
+      <div className="container content-container">
+        <ProfileContent userId={userProfile._id} />
+      </div>
     </div>
   );
 };

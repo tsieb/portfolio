@@ -10,7 +10,8 @@ import {
   FaChartBar, 
   FaUsers, 
   FaCog, 
-  FaEye 
+  FaEye,
+  FaHeadphones
 } from 'react-icons/fa';
 
 /**
@@ -25,7 +26,10 @@ const AdminSidebar = ({ isOpen, onClose }) => {
       <div className={`sidebar-overlay ${isOpen ? 'is-open' : ''}`} onClick={onClose}></div>
       <aside className={`sidebar sidebar--admin ${isOpen ? 'is-open' : ''}`}>
         <div className="sidebar__header">
-          <div className="sidebar__title">Music Admin</div>
+          <div className="sidebar__title">
+            <FaHeadphones className="sidebar__title-icon" />
+            <span>Music Admin</span>
+          </div>
           <button 
             className="sidebar__close"
             onClick={onClose}
@@ -35,8 +39,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
         
-        <nav className="sidebar__content">
-          <div className="sidebar__nav">
+        <div className="sidebar__content">
+          <nav className="sidebar__nav">
             <div className="sidebar__nav-group">
               <div className="sidebar__divider">Dashboard</div>
               <div className="sidebar__nav-item">
@@ -54,7 +58,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
             </div>
             
             <div className="sidebar__nav-group">
-              <div className="sidebar__divider">Spotify</div>
+              <div className="sidebar__divider">Music</div>
               <div className="sidebar__nav-item">
                 <NavLink 
                   to="/admin/tracks" 
@@ -119,8 +123,8 @@ const AdminSidebar = ({ isOpen, onClose }) => {
                 </NavLink>
               </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </div>
       </aside>
     </>
   );

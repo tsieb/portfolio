@@ -25,6 +25,24 @@ const Footer = () => {
               <p className="footer__tagline">
                 Showcase your music taste with live streaming data
               </p>
+              <div className="footer__social">
+                <a 
+                  href="https://github.com"
+                  className="footer__social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaGithub />
+                </a>
+                <a 
+                  href="https://linkedin.com"
+                  className="footer__social-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FaLinkedin />
+                </a>
+              </div>
             </div>
             
             <div className="footer__links">
@@ -38,7 +56,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <Link to="/login" className="footer__link">
-                      Admin Login
+                      Log in
                     </Link>
                   </li>
                 </ul>

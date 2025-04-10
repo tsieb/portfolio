@@ -20,15 +20,15 @@ const AdminLayout = () => {
   };
   
   return (
-    <div className="admin-layout">
+    <div className="grid grid--dashboard">
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="admin-main">
+      <div className="admin-content">
         <AdminHeader 
           user={user} 
           onLogout={logout} 
           onMenuClick={toggleSidebar} 
         />
-        <main className="admin-content py-lg">
+        <main className="admin-content__main py-lg">
           <div className="container">
             <Outlet />
           </div>

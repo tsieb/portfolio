@@ -17,9 +17,9 @@ const LoginPage = () => {
   if (isLoading) {
     return (
       <div className="login-page">
-        <div className="page-loading">
-          <div className="spinner spinner--lg page-loading__spinner"></div>
-          <p className="page-loading__text">Loading...</p>
+        <div className="loading">
+          <div className="spinner spinner--lg loading__spinner"></div>
+          <p className="loading__text">Loading...</p>
         </div>
       </div>
     );

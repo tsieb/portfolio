@@ -23,52 +23,54 @@ const AdminHeader = ({ user, onLogout, onMenuClick }) => {
   
   return (
     <header className="header header--admin">
-      <div className="header__inner">
-        <div className="header__left">
-          <button 
-            className="header__toggle"
-            onClick={onMenuClick}
-            aria-label="Toggle sidebar"
-          >
-            <FaBars size={18} />
-          </button>
-          <h1 className="header__logo-text">Music Activity Admin</h1>
-        </div>
-        
-        <div className="header__right">
-          {user && (
-            <div className="header__user">
-              <div className="header__user-avatar">
-                {user.avatar ? (
-                  <img 
-                    src={user.avatar} 
-                    alt={user.firstName || user.email} 
-                    className="header__user-avatar-img" 
-                  />
-                ) : (
-                  <span>{getInitials(user.firstName)}</span>
-                )}
-              </div>
-              <div className="header__user-name">
-                <span>
-                  {user.firstName || user.email}
-                </span>
-                <span className="badge badge--primary">
-                  <FaUserShield className="badge__icon" />
-                  Administrator
-                </span>
-              </div>
-            </div>
-          )}
+      <div className="container">
+        <div className="header__inner">
+          <div className="header__left">
+            <button 
+              className="header__toggle"
+              onClick={onMenuClick}
+              aria-label="Toggle sidebar"
+            >
+              <FaBars size={18} />
+            </button>
+            <h1 className="header__title">Music Activity Admin</h1>
+          </div>
           
-          <button 
-            className="btn btn-outline"
-            onClick={onLogout}
-            aria-label="Logout"
-          >
-            <FaSignOutAlt className="mr-xs" />
-            Logout
-          </button>
+          <div className="header__right">
+            {user && (
+              <div className="header__user">
+                <div className="header__user-avatar">
+                  {user.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt={user.firstName || user.email} 
+                      className="header__user-avatar-img" 
+                    />
+                  ) : (
+                    <span>{getInitials(user.firstName)}</span>
+                  )}
+                </div>
+                <div className="header__user-info">
+                  <span className="header__user-name">
+                    {user.firstName || user.email}
+                  </span>
+                  <span className="badge badge--primary badge--sm">
+                    <FaUserShield className="badge__icon" />
+                    Administrator
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            <button 
+              className="btn btn-outline btn-sm"
+              onClick={onLogout}
+              aria-label="Logout"
+            >
+              <FaSignOutAlt className="mr-xs" />
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </header>
