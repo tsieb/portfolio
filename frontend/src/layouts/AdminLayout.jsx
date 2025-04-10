@@ -7,8 +7,6 @@ import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminHeader from '../components/admin/AdminHeader';
 import { useAuth } from '../features/auth/hooks/useAuth';
 
-import '../assets/styles/admin.scss';
-
 /**
  * Admin layout component for the admin dashboard
  * Includes the admin header, sidebar, and outlet for nested routes

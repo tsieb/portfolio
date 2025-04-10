@@ -27,7 +27,7 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         // Fix the path to use the correct relative path or an alias
-        additionalData: `@use "@/assets/styles/variables" as *;`
+        additionalData: `@use "@/assets/styles/abstracts/_variables" as *;`
       }
     }
   },

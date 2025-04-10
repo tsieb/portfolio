@@ -1,5 +1,6 @@
 // src/assets/styles/themes/_default.scss
 // Default theme for Wavelength platform with CSS Variables
+@use '../abstracts' as *;
 
 :root {
     // Color Palette

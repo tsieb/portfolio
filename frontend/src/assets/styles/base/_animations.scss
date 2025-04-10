@@ -1,5 +1,6 @@
-// src/assets/styles/abstracts/_animations.scss
+// src/assets/styles/base/_animations.scss
 // Keyframe animations for Wavelength platform based on design guidelines
+@use '../abstracts' as *;
 
 // Wave pulse animation
 @keyframes wave-pulse {
