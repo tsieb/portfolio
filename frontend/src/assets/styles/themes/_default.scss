@@ -1,0 +1,87 @@
+// src/assets/styles/themes/_default.scss
+// Default theme for Wavelength platform with CSS Variables
+
+:root {
+    // Color Palette
+    // Primary colors
+    --color-deep-ocean: #{$color-deep-ocean};
+    --color-electric-cyan: #{$color-electric-cyan};
+    --color-night-bass: #{$color-night-bass};
+    
+    // Secondary colors
+    --color-magenta-pulse: #{$color-magenta-pulse};
+    --color-sonic-silver: #{$color-sonic-silver};
+    --color-waveform-white: #{$color-waveform-white};
+    
+    // Functional colors
+    --color-success: #{$color-success};
+    --color-error: #{$color-error};
+    --color-warning: #{$color-warning};
+    --color-info: #{$color-info};
+    
+    // Background colors
+    --color-bg-primary: #{$color-bg-primary};
+    --color-bg-secondary: #{$color-bg-secondary};
+    --color-bg-tertiary: #{$color-bg-tertiary};
+    --color-bg-elevated: #{$color-bg-elevated};
+    
+    // Text colors
+    --color-text-primary: #{$color-text-primary};
+    --color-text-secondary: #{$color-text-secondary};
+    --color-text-tertiary: #{$color-text-tertiary};
+    
+    // Border colors
+    --color-border: #{$color-border};
+    --color-border-light: #{$color-border-light};
+    --color-border-hover: #{$color-border-hover};
+    
+    // Gradients
+    --gradient-primary: #{$gradient-primary};
+    --gradient-dark: #{$gradient-dark};
+    --gradient-accent: #{$gradient-accent};
+    --gradient-wave: #{$gradient-wave};
+    
+    // Shadows
+    --shadow-sm: #{$shadow-sm};
+    --shadow-md: #{$shadow-md};
+    --shadow-lg: #{$shadow-lg};
+    --shadow-focus: #{$shadow-focus};
+    --shadow-primary: #{$shadow-primary};
+    --shadow-secondary: #{$shadow-secondary};
+    
+    // Glows
+    --glow-primary: #{$glow-primary};
+    --glow-secondary: #{$glow-secondary};
+    
+    // Spacing
+    --space-xxs: #{$space-xxs};
+    --space-xs: #{$space-xs};
+    --space-sm: #{$space-sm};
+    --space-md: #{$space-md};
+    --space-lg: #{$space-lg};
+    --space-xl: #{$space-xl};
+    --space-xxl: #{$space-xxl};
+    --space-xxxl: #{$space-xxxl};
+    
+    // Border radius
+    --radius-sm: #{$radius-sm};
+    --radius-md: #{$radius-md};
+    --radius-lg: #{$radius-lg};
+    --radius-xl: #{$radius-xl};
+    --radius-xxl: #{$radius-xxl};
+    --radius-full: #{$radius-full};
+    
+    // Transitions
+    --transition-fast: #{$transition-fast};
+    --transition-normal: #{$transition-normal};
+    --transition-slow: #{$transition-slow};
+    --ease-in-out: #{$ease-in-out};
+    --ease-out: #{$ease-out};
+    --ease-in: #{$ease-in};
+    --ease-wave: #{$ease-wave};
+    
+    // Blurs
+    --blur-sm: #{$blur-sm};
+    --blur-md: #{$blur-md};
+    --blur-lg: #{$blur-lg};
+  }

@@ -1,0 +1,244 @@
+// src/assets/styles/layout/_section.scss
+// Section layout components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Base section
+.section {
+  padding: $space-xl 0;
+  position: relative;
+  
+  @include breakpoint-up("md") {
+    padding: $space-xxl 0;
+  }
+  
+  // Section with background
+  &--bg {
+    background-color: $color-bg-secondary;
+    
+    &-dark {
+      background-color: darken($color-night-bass, 3%);
+    }
+    
+    &-gradient {
+      background: $gradient-dark;
+    }
+  }
+  
+  // Section with wave pattern
+  &--wave {
+    @include wave-pattern-bg;
+  }
+  
+  // Section with spacing variants
+  &--sm {
+    padding: $space-lg 0;
+  }
+  
+  &--lg {
+    padding: $space-xxl 0 $space-xxxl;
+  }
+  
+  // Hero section
+  &--hero {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to top, $color-bg-primary, transparent);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+  
+  // Section with divider
+  &--divider {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 3px;
+      background: $gradient-primary;
+      border-radius: $radius-full;
+    }
+  }
+  
+  // Centered content section
+  &--centered {
+    text-align: center;
+    
+    .section__title::after {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+  
+  // Content sections
+  &__content {
+    position: relative;
+    z-index: 2;
+  }
+  
+  // Section header
+  &__header {
+    margin-bottom: $space-xl;
+    
+    @include breakpoint-up("md") {
+      margin-bottom: $space-xxl;
+    }
+  }
+  
+  // Section title
+  &__title {
+    @include font-heading-2;
+    margin-bottom: $space-md;
+    position: relative;
+    
+    &::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      margin-top: $space-sm;
+      background: $gradient-primary;
+      border-radius: $radius-full;
+    }
+    
+    &--gradient {
+      @include text-gradient;
+    }
+    
+    &--light {
+      color: $color-waveform-white;
+    }
+  }
+  
+  // Section subtitle
+  &__subtitle {
+    font-size: $font-size-lg;
+    color: $color-text-secondary;
+    max-width: 600px;
+    margin-top: $space-sm;
+    line-height: $line-height-loose;
+  }
+  
+  // Section background elements
+  &__bg-shape {
+    position: absolute;
+    z-index: 0;
+    
+    &--1 {
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(
+        circle,
+        rgba($color-electric-cyan, 0.1) 0%,
+        rgba($color-magenta-pulse, 0.05) 40%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      filter: blur(50px);
+    }
+    
+    &--2 {
+      bottom: -100px;
+      left: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(
+        circle,
+        rgba($color-magenta-pulse, 0.1) 0%,
+        rgba($color-electric-cyan, 0.05) 40%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+  }
+  
+  // Audio waveform background
+  &__waveform {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    opacity: 0.1;
+    pointer-events: none;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+      
+      path {
+        stroke: $color-electric-cyan;
+        stroke-width: 1;
+        fill: none;
+      }
+    }
+  }
+}
+
+// Feature section
+.feature-section {
+  padding: $space-lg 0;
+  
+  &__item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $space-xl;
+    
+    @include breakpoint-up("md") {
+      flex-direction: row;
+      align-items: center;
+      margin-bottom: $space-xxl;
+      
+      &:nth-child(even) {
+        flex-direction: row-reverse;
+      }
+    }
+  }
+  
+  &__content {
+    flex: 1;
+    
+    @include breakpoint-up("md") {
+      padding: 0 $space-xl;
+    }
+  }
+  
+  &__media {
+    margin-bottom: $space-lg;
+    
+    @include breakpoint-up("md") {
+      flex: 1;
+      margin-bottom: 0;
+    }
+  }
+  
+  &__title {
+    @include font-heading-3;
+    margin-bottom: $space-md;
+    color: $color-electric-cyan;
+  }
+  
+  &__description {
+    color: $color-text-secondary;
+    margin-bottom: $space-lg;
+    line-height: $line-height-loose;
+  }
+}

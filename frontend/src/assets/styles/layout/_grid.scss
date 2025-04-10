@@ -1,0 +1,175 @@
+// src/assets/styles/layout/_grid.scss
+// Grid layout system for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Basic grid layout
+.grid {
+  display: grid;
+  gap: $space-md;
+  
+  // Grid columns variants
+  &--cols-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  &--cols-2 {
+    grid-template-columns: repeat(1, 1fr);
+    
+    @include breakpoint-up("md") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  &--cols-3 {
+    grid-template-columns: repeat(1, 1fr);
+    
+    @include breakpoint-up("md") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include breakpoint-up("lg") {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  &--cols-4 {
+    grid-template-columns: repeat(1, 1fr);
+    
+    @include breakpoint-up("sm") {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include breakpoint-up("lg") {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  // Auto-fit grid for card layouts
+  &--auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  // Grid gap variants
+  &--gap-sm {
+    gap: $space-sm;
+  }
+  
+  &--gap-md {
+    gap: $space-md;
+  }
+  
+  &--gap-lg {
+    gap: $space-lg;
+  }
+  
+  &--gap-xl {
+    gap: $space-xl;
+  }
+  
+  // Special dashboard grid
+  &--dashboard {
+    grid-template-columns: 1fr;
+    
+    @include breakpoint-up("lg") {
+      grid-template-columns: 280px 1fr;
+    }
+  }
+  
+  // Audio waveform grid with asymmetric layout
+  &--waveform {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    
+    @include breakpoint-up("md") {
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto;
+    }
+  }
+  
+  // Artist-album grid
+  &--artist {
+    grid-template-columns: 1fr;
+    
+    @include breakpoint-up("md") {
+      grid-template-columns: 240px 1fr;
+    }
+  }
+  
+  // Track listing grid
+  &--tracks {
+    grid-template-columns: 1fr;
+    
+    @include breakpoint-up("md") {
+      grid-template-columns: 60px 1fr auto;
+      
+      &-item:nth-child(3n + 1) {
+        text-align: center;
+      }
+      
+      &-item:nth-child(3n) {
+        text-align: right;
+      }
+    }
+  }
+}
+
+// Responsive flex grid alternative
+.flex-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -$space-sm;
+  
+  &__item {
+    padding: $space-sm;
+    
+    &--half {
+      width: 100%;
+      
+      @include breakpoint-up("md") {
+        width: 50%;
+      }
+    }
+    
+    &--third {
+      width: 100%;
+      
+      @include breakpoint-up("sm") {
+        width: 50%;
+      }
+      
+      @include breakpoint-up("lg") {
+        width: 33.333%;
+      }
+    }
+    
+    &--quarter {
+      width: 50%;
+      
+      @include breakpoint-up("md") {
+        width: 25%;
+      }
+    }
+  }
+}
+
+// Audio frequency spectrum grid
+.frequency-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 2px;
+  height: 120px;
+  align-items: end;
+  
+  &__bar {
+    background: linear-gradient(to top, $color-electric-cyan, $color-magenta-pulse);
+    border-radius: $radius-sm $radius-sm 0 0;
+    width: 100%;
+    height: var(--bar-height, 20%);
+    transition: height 0.2s ease;
+    
+    &:hover {
+      filter: brightness(1.2);
+    }
+  }
+}

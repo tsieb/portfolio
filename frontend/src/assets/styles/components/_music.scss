@@ -1,0 +1,660 @@
+// src/assets/styles/components/_music.scss
+// Music-specific components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Currently playing display
+.currently-playing {
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  overflow: hidden;
+  transition: all $transition-normal $ease-out;
+  
+  &:hover {
+    border-color: $color-electric-cyan;
+    box-shadow: $shadow-lg;
+  }
+  
+  // Header section
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba($color-bg-tertiary, 0.5);
+  }
+  
+  &__status {
+    display: flex;
+    align-items: center;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    
+    &-icon {
+      color: $color-electric-cyan;
+      margin-right: $space-xs;
+      
+      &--playing {
+        animation: pulse-animation 2s infinite;
+      }
+    }
+  }
+  
+  &__service-icon {
+    color: $color-electric-cyan;
+    font-size: 1.5rem;
+  }
+  
+  // Content section
+  &__content {
+    padding: $space-lg;
+    display: flex;
+    
+    @include breakpoint-down("md") {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  
+  // Album artwork
+  &__artwork {
+    width: 180px;
+    height: 180px;
+    border-radius: $radius-lg;
+    overflow: hidden;
+    margin-right: $space-xl;
+    position: relative;
+    flex-shrink: 0;
+    
+    @include breakpoint-down("md") {
+      margin-right: 0;
+      margin-bottom: $space-lg;
+    }
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform $transition-normal;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    
+    &-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    &--placeholder {
+      background: linear-gradient(135deg, $color-bg-tertiary, $color-bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: $color-text-tertiary;
+    }
+  }
+  
+  // Equalizer animation
+  &__eq-animation {
+    display: flex;
+    align-items: flex-end;
+    height: 20px;
+    
+    span {
+      display: block;
+      width: 3px;
+      margin: 0 2px;
+      background-color: $color-electric-cyan;
+      border-radius: $radius-sm $radius-sm 0 0;
+      animation: eq-animation 1.2s ease-in-out infinite;
+      
+      &:nth-child(1) {
+        height: 60%;
+        animation-delay: 0.2s;
+      }
+      
+      &:nth-child(2) {
+        height: 100%;
+        animation-delay: 0.4s;
+      }
+      
+      &:nth-child(3) {
+        height: 75%;
+        animation-delay: 0.1s;
+      }
+      
+      &:nth-child(4) {
+        height: 40%;
+        animation-delay: 0.3s;
+      }
+    }
+  }
+  
+  // Track info
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    @include breakpoint-down("md") {
+      text-align: center;
+      width: 100%;
+    }
+  }
+  
+  &__track {
+    font-size: $font-size-xxl;
+    font-weight: $font-weight-bold;
+    margin: 0 0 $space-sm;
+    color: $color-text-primary;
+    
+    @include breakpoint-up("md") {
+      font-size: $font-size-xxxl;
+    }
+  }
+  
+  &__artist {
+    font-size: $font-size-lg;
+    color: $color-electric-cyan;
+    margin-bottom: $space-xs;
+  }
+  
+  &__album {
+    font-size: $font-size-md;
+    color: $color-text-secondary;
+    margin-bottom: $space-lg;
+  }
+  
+  // Track metadata
+  &__meta {
+    margin-top: auto;
+    
+    @include breakpoint-down("md") {
+      margin-top: $space-lg;
+    }
+  }
+  
+  // Progress bar
+  &__progress {
+    margin-bottom: $space-md;
+  }
+  
+  &__progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba($color-waveform-white, 0.1);
+    border-radius: $radius-full;
+    overflow: hidden;
+  }
+  
+  &__progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, $color-electric-cyan, $color-magenta-pulse);
+    border-radius: $radius-full;
+    width: var(--progress, 0%);
+    transition: width 1s linear;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%
+      );
+      animation: shine 2s infinite;
+    }
+  }
+  
+  &__times {
+    display: flex;
+    justify-content: space-between;
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    margin-top: $space-xs;
+  }
+  
+  // Link to track
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    padding: $space-xs $space-md;
+    border-radius: $radius-full;
+    color: $color-electric-cyan;
+    border: 1px solid $color-electric-cyan;
+    font-weight: $font-weight-medium;
+    font-size: $font-size-sm;
+    transition: all $transition-fast;
+    
+    @include breakpoint-down("md") {
+      margin: 0 auto;
+    }
+    
+    &:hover {
+      background-color: rgba($color-electric-cyan, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &-icon {
+      margin-right: $space-xs;
+    }
+  }
+  
+  // Not playing state
+  &__not-playing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $space-xl;
+    color: $color-text-tertiary;
+    
+    @include breakpoint-down("md") {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+  
+  &__icon {
+    font-size: 48px;
+    margin-right: $space-xl;
+    opacity: 0.7;
+    
+    @include breakpoint-down("md") {
+      margin-right: 0;
+      margin-bottom: $space-lg;
+    }
+  }
+  
+  &__empty-message {
+    h3 {
+      margin-top: 0;
+      margin-bottom: $space-xs;
+      color: $color-text-primary;
+    }
+    
+    p {
+      margin: 0;
+      color: $color-text-secondary;
+    }
+  }
+  
+  // Loading state
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: $color-text-secondary;
+    
+    .spinner {
+      margin-bottom: $space-md;
+    }
+  }
+  
+  // Track change animation
+  &.is-changing {
+    .currently-playing__track,
+    .currently-playing__artist,
+    .currently-playing__album {
+      animation: track-change 0.8s ease-in-out;
+    }
+  }
+  
+  // Hero variant
+  &--hero {
+    background: transparent;
+    border: none;
+    color: $color-waveform-white;
+    
+    .currently-playing {
+      &__track {
+        font-size: 4rem;
+        margin-bottom: $space-md;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        
+        @include breakpoint-down("lg") {
+          font-size: 3rem;
+        }
+      }
+      
+      &__artist {
+        font-size: 2rem;
+        color: $color-electric-cyan;
+        text-shadow: 0 0 10px rgba($color-electric-cyan, 0.5);
+      }
+      
+      &__album {
+        font-size: 1.25rem;
+      }
+    }
+  }
+  
+  // Mini variant
+  &--mini {
+    background: rgba($color-bg-secondary, 0.9);
+    backdrop-filter: blur($blur-md);
+    height: 60px;
+    border-radius: 0;
+    padding: 0 $space-lg;
+    display: flex;
+    align-items: center;
+    
+    .currently-playing {
+      &__artwork {
+        width: 40px;
+        height: 40px;
+        border-radius: $radius-sm;
+        margin-right: $space-md;
+      }
+      
+      &__info {
+        flex: 1;
+        margin-right: $space-md;
+      }
+      
+      &__track {
+        font-size: $font-size-md;
+        margin-bottom: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      &__artist {
+        font-size: $font-size-sm;
+        color: $color-text-secondary;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      &__progress {
+        flex: 1;
+        max-width: 200px;
+        margin-bottom: 0;
+      }
+      
+      &__controls {
+        display: flex;
+        gap: $space-sm;
+      }
+      
+      &__control-button {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba($color-bg-tertiary, 0.5);
+        color: $color-text-primary;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all $transition-fast;
+        border: none;
+        cursor: pointer;
+        
+        &:hover {
+          background: $color-electric-cyan;
+          color: $color-night-bass;
+        }
+      }
+    }
+  }
+}
+
+// Recently played tracks
+.recently-played {
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  overflow: hidden;
+  transition: all $transition-normal $ease-out;
+  
+  &:hover {
+    border-color: $color-border-hover;
+    box-shadow: $shadow-lg;
+  }
+  
+  // Header section
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba($color-bg-tertiary, 0.5);
+  }
+  
+  &__title {
+    display: flex;
+    align-items: center;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-text-primary;
+  }
+  
+  &__icon {
+    margin-right: $space-sm;
+    color: $color-electric-cyan;
+  }
+  
+  &__count {
+    font-size: $font-size-sm;
+    color: $color-text-tertiary;
+    background: rgba($color-electric-cyan, 0.1);
+    padding: 4px 8px;
+    border-radius: $radius-full;
+    border: 1px solid rgba($color-electric-cyan, 0.2);
+  }
+  
+  // Tracks list
+  &__list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  &__item {
+    display: flex;
+    align-items: center;
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border-light;
+    transition: all $transition-fast;
+    position: relative;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background-color: $color-bg-elevated;
+    }
+    
+    // Animation for new tracks
+    &--new {
+      animation: highlight-new 2s ease-out;
+    }
+  }
+  
+  &__image {
+    width: 50px;
+    height: 50px;
+    border-radius: $radius-md;
+    margin-right: $space-md;
+    object-fit: cover;
+    box-shadow: $shadow-sm;
+    transition: transform $transition-fast;
+    
+    .recently-played__item:hover & {
+      transform: scale(1.05);
+    }
+  }
+  
+  &__image-placeholder {
+    width: 50px;
+    height: 50px;
+    border-radius: $radius-md;
+    margin-right: $space-md;
+    background-color: $color-bg-tertiary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-tertiary;
+  }
+  
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  &__track {
+    font-weight: $font-weight-medium;
+    margin-bottom: $space-xs;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: $color-text-primary;
+  }
+  
+  &__artist {
+    font-size: $font-size-sm;
+    color: $color-electric-cyan;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  &__time {
+    display: flex;
+    align-items: center;
+    font-size: $font-size-xs;
+    color: $color-text-tertiary;
+    white-space: nowrap;
+    margin-left: $space-md;
+    padding: 4px 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: $radius-full;
+  }
+  
+  &__time-icon {
+    margin-right: 4px;
+    font-size: 10px;
+  }
+  
+  &__new-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: $color-electric-cyan;
+    color: black;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    box-shadow: 0 0 8px rgba($color-electric-cyan, 0.5);
+    animation: pulse-opacity 2s infinite;
+  }
+  
+  &__footer {
+    display: flex;
+    justify-content: center;
+    padding: $space-md;
+    border-top: 1px solid $color-border;
+    background-color: rgba(20, 20, 20, 0.5);
+  }
+  
+  &__refresh {
+    background-color: transparent;
+    border: 1px solid $color-border-light;
+    color: $color-text-secondary;
+    font-size: $font-size-sm;
+    padding: 6px 12px;
+    border-radius: $radius-full;
+    cursor: pointer;
+    transition: all $transition-fast;
+    
+    &:hover {
+      background-color: rgba($color-electric-cyan, 0.1);
+      border-color: $color-electric-cyan;
+      color: $color-electric-cyan;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  // Loading, error, and empty states
+  &__loading,
+  &__error,
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $space-xl;
+    color: $color-text-secondary;
+    text-align: center;
+    
+    .spinner {
+      margin-bottom: $space-md;
+    }
+  }
+}
+
+// User music summary
+.music-summary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-lg;
+  
+  @include breakpoint-up("md") {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  &__item {
+    background-color: $color-bg-secondary;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    overflow: hidden;
+    transition: all $transition-normal $ease-out;
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $shadow-lg;
+    }
+  }
+  
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.5);
+  }
+  
+  &__title {
+    display: flex;
+    align-items: center;
+    font-size: $font-

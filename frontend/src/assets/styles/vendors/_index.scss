@@ -1,0 +1,9 @@
+// src/assets/styles/vendors/_index.scss
+// Import third-party libraries and normalize them to fit the design system
+
+// Import normalize.css for cross-browser consistency
+@forward 'normalize';
+
+// Forward any overrides for third-party libraries
+@forward 'chart';
+@forward 'toastify';

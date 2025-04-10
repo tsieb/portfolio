@@ -1,0 +1,214 @@
+// src/assets/styles/layout/_footer.scss
+// Footer layout component for Wavelength platform
+
+@use "../abstracts" as *;
+
+.footer {
+  background-color: $color-bg-secondary;
+  padding: $space-xl 0 $space-lg;
+  position: relative;
+  border-top: 1px solid $color-border;
+  overflow: hidden;
+  
+  // Background decorative shapes
+  &__bg-shape {
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(
+      circle, 
+      rgba($color-electric-cyan, 0.1) 0%, 
+      rgba($color-magenta-pulse, 0.05) 50%,
+      rgba(0, 0, 0, 0) 70%
+    );
+    border-radius: 50%;
+    z-index: 0;
+    filter: blur(50px);
+  }
+  
+  // Position content above background
+  &__inner {
+    position: relative;
+    z-index: 1;
+  }
+  
+  // Footer top section with brand and links
+  &__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $space-xl;
+    margin-bottom: $space-xl;
+    
+    @include breakpoint-up("md") {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    @include breakpoint-up("lg") {
+      grid-template-columns: 1.5fr 2.5fr;
+    }
+  }
+  
+  // Brand section
+  &__brand {
+    max-width: 400px;
+  }
+  
+  &__logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: $space-md;
+  }
+  
+  &__logo-icon {
+    font-size: 28px;
+    color: $color-electric-cyan;
+    margin-right: $space-sm;
+  }
+  
+  &__logo-text {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-bold;
+    @include text-gradient;
+  }
+  
+  &__tagline {
+    color: $color-text-secondary;
+    margin-bottom: $space-lg;
+    line-height: $line-height-loose;
+  }
+  
+  &__social {
+    display: flex;
+    gap: $space-sm;
+    
+    &-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba($color-bg-tertiary, 0.5);
+      color: $color-text-secondary;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all $transition-fast;
+      
+      &:hover {
+        background: $color-electric-cyan;
+        color: $color-night-bass;
+        transform: translateY(-3px);
+      }
+    }
+  }
+  
+  // Links section
+  &__links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: $space-lg;
+  }
+  
+  &__links-title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    margin-bottom: $space-md;
+    color: $color-text-primary;
+    position: relative;
+    padding-bottom: $space-xs;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: $color-electric-cyan;
+      border-radius: $radius-full;
+    }
+  }
+  
+  &__links-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    color: $color-text-secondary;
+    text-decoration: none;
+    padding: $space-xs 0;
+    transition: all $transition-fast;
+    
+    &:hover {
+      color: $color-electric-cyan;
+      transform: translateX(5px);
+    }
+  }
+  
+  &__link-icon {
+    margin-right: $space-xs;
+  }
+  
+  // Footer bottom section
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: $space-lg;
+    border-top: 1px solid $color-border;
+    color: $color-text-tertiary;
+    font-size: $font-size-sm;
+    text-align: center;
+    
+    @include breakpoint-up("md") {
+      flex-direction: row;
+      text-align: left;
+    }
+  }
+  
+  &__copyright {
+    margin-bottom: $space-md;
+    
+    @include breakpoint-up("md") {
+      margin-bottom: 0;
+    }
+  }
+  
+  &__made-with {
+    display: flex;
+    align-items: center;
+    gap: $space-xs;
+  }
+  
+  &__heart {
+    color: $color-magenta-pulse;
+    animation: beat 1.5s infinite;
+  }
+  
+  // Footer divider wave
+  &__wave {
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    overflow: hidden;
+    
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      
+      path {
+        fill: $color-bg-primary;
+      }
+    }
+  }
+}

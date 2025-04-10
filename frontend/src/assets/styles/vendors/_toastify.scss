@@ -1,0 +1,108 @@
+// src/assets/styles/vendors/_toastify.scss
+// Customization for React-Toastify to match Wavelength design system
+
+@use "../abstracts" as *;
+
+.Toastify__toast-container {
+  width: 320px;
+  
+  @include breakpoint-down("sm") {
+    width: 90vw;
+    padding: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.Toastify__toast {
+  background-color: rgba($color-bg-secondary, 0.9);
+  backdrop-filter: blur($blur-md);
+  color: $color-text-primary;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  padding: $space-md;
+  margin-bottom: $space-md;
+  font-family: $font-family-primary;
+  border: 1px solid $color-border;
+  
+  &--success {
+    border-left: 4px solid $color-success;
+    
+    .Toastify__progress-bar {
+      background: $color-success;
+    }
+  }
+  
+  &--error {
+    border-left: 4px solid $color-error;
+    
+    .Toastify__progress-bar {
+      background: $color-error;
+    }
+  }
+  
+  &--warning {
+    border-left: 4px solid $color-warning;
+    
+    .Toastify__progress-bar {
+      background: $color-warning;
+    }
+  }
+  
+  &--info {
+    border-left: 4px solid $color-info;
+    
+    .Toastify__progress-bar {
+      background: $color-info;
+    }
+  }
+}
+
+.Toastify__toast-body {
+  padding: 0 $space-sm 0 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+.Toastify__close-button {
+  color: $color-text-tertiary;
+  opacity: 0.7;
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.Toastify__progress-bar {
+  height: 3px;
+  bottom: 0;
+  border-radius: 0 0 $radius-sm $radius-sm;
+}
+
+// Custom toast content styles
+.toast-content {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  
+  &__icon {
+    margin-right: $space-sm;
+    flex-shrink: 0;
+  }
+  
+  &__message {
+    flex: 1;
+    font-weight: $font-weight-medium;
+    
+    &-title {
+      font-weight: $font-weight-semibold;
+      margin-bottom: 2px;
+    }
+    
+    &-text {
+      color: $color-text-secondary;
+      font-size: $font-size-sm;
+      margin: 0;
+    }
+  }
+}

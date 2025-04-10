@@ -1,0 +1,67 @@
+// src/assets/styles/layout/_container.scss
+// Container layout component for Wavelength platform
+
+@use "../abstracts" as *;
+
+.container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $container-padding-sm;
+  padding-right: $container-padding-sm;
+  
+  @include breakpoint-up("lg") {
+    padding-left: $container-padding-lg;
+    padding-right: $container-padding-lg;
+  }
+
+  &--narrow {
+    max-width: 900px;
+  }
+
+  &--wide {
+    max-width: 1400px;
+  }
+
+  &--full {
+    max-width: none;
+  }
+}
+
+.inner-container {
+  padding: $space-xl;
+  
+  @include breakpoint-down("md") {
+    padding: $space-lg $space-md;
+  }
+}
+
+// Responsive container with margin
+.content-container {
+  margin-top: $space-xl;
+  margin-bottom: $space-xxl;
+  
+  @include breakpoint-up("md") {
+    margin-top: $space-xxl;
+  }
+}
+
+// Fixed aspect ratio container
+.aspect-container {
+  @include aspect-ratio(16, 9);
+  
+  &--square {
+    @include aspect-ratio(1, 1);
+  }
+  
+  &--music-card {
+    @include aspect-ratio(4, 3);
+  }
+}
+
+// Sticky container
+.sticky-container {
+  position: sticky;
+  top: 80px;
+}

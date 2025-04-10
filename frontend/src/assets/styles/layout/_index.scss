@@ -1,0 +1,9 @@
+// src/assets/styles/layout/_index.scss
+// Forward all layout files for easy importing
+
+@forward 'container';
+@forward 'header';
+@forward 'footer';
+@forward 'grid';
+@forward 'section';
+@forward 'sidebar';

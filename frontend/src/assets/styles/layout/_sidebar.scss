@@ -1,0 +1,237 @@
+// src/assets/styles/layout/_sidebar.scss
+// Sidebar layout components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Main sidebar
+.sidebar {
+  width: 280px;
+  background-color: $color-bg-secondary;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  overflow: hidden;
+  
+  // Sidebar header
+  &__header {
+    padding: $space-md $space-lg;
+    border-bottom: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.5);
+  }
+  
+  &__title {
+    font-size: $font-size-md;
+    font-weight: $font-weight-semibold;
+    margin: 0;
+    color: $color-text-primary;
+    display: flex;
+    align-items: center;
+    
+    &-icon {
+      margin-right: $space-sm;
+      color: $color-electric-cyan;
+    }
+  }
+  
+  // Sidebar content
+  &__content {
+    padding: $space-md 0;
+  }
+  
+  // Navigation menu
+  &__nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  &__nav-item {
+    position: relative;
+  }
+  
+  &__nav-link {
+    display: flex;
+    align-items: center;
+    padding: $space-sm $space-lg;
+    color: $color-text-secondary;
+    text-decoration: none;
+    transition: all $transition-fast;
+    
+    &:hover {
+      color: $color-electric-cyan;
+      background: rgba($color-waveform-white, 0.03);
+    }
+    
+    &.active {
+      color: $color-electric-cyan;
+      background: linear-gradient(
+        90deg, 
+        rgba($color-electric-cyan, 0.1), 
+        transparent
+      );
+      font-weight: $font-weight-medium;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: $color-electric-cyan;
+        border-radius: 0 $radius-full $radius-full 0;
+      }
+    }
+  }
+  
+  &__nav-icon {
+    margin-right: $space-md;
+    transition: transform $transition-fast;
+    
+    .sidebar__nav-link:hover & {
+      transform: translateX(3px);
+    }
+  }
+  
+  &__nav-badge {
+    margin-left: auto;
+    font-size: $font-size-xs;
+    padding: 2px 6px;
+    border-radius: $radius-full;
+    background-color: rgba($color-electric-cyan, 0.1);
+    color: $color-electric-cyan;
+  }
+  
+  // Divider
+  &__divider {
+    height: 1px;
+    margin: $space-xs $space-lg;
+    background: linear-gradient(
+      to right,
+      transparent,
+      $color-border,
+      transparent
+    );
+  }
+  
+  // Sidebar footer
+  &__footer {
+    padding: $space-md $space-lg;
+    border-top: 1px solid $color-border;
+    background-color: rgba($color-bg-tertiary, 0.3);
+  }
+  
+  // Admin sidebar variant
+  &--admin {
+    width: 250px;
+    height: 100vh;
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid $color-border;
+    
+    @include breakpoint-down("lg") {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: $z-fixed;
+      transform: translateX(-100%);
+      transition: transform $transition-normal;
+      
+      &.is-open {
+        transform: translateX(0);
+      }
+    }
+    
+    .sidebar__header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: $gradient-dark;
+    }
+    
+    .sidebar__title {
+      @include text-gradient;
+    }
+    
+    .sidebar__close {
+      background: none;
+      border: none;
+      color: $color-text-primary;
+      cursor: pointer;
+      font-size: $font-size-lg;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: $radius-sm;
+      
+      &:hover {
+        background: rgba($color-waveform-white, 0.1);
+      }
+      
+      @include breakpoint-up("lg") {
+        display: none;
+      }
+    }
+  }
+  
+  // User sidebar 
+  &--user {
+    position: sticky;
+    top: 90px;
+    
+    .sidebar__user {
+      padding: $space-lg;
+      text-align: center;
+      border-bottom: 1px solid $color-border;
+    }
+    
+    .sidebar__user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto $space-md;
+      background: $gradient-primary;
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    
+    .sidebar__user-name {
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      margin-bottom: $space-xs;
+    }
+    
+    .sidebar__user-username {
+      color: $color-text-secondary;
+      margin-bottom: $space-md;
+    }
+  }
+}
+
+// Mobile sidebar overlay
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba($color-night-bass, 0.7);
+  backdrop-filter: blur($blur-sm);
+  z-index: $z-dropdown;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity $transition-normal;
+  
+  &.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

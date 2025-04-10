@@ -1,0 +1,295 @@
+// src/assets/styles/components/_visualizer.scss
+// Music visualization components for Wavelength platform
+
+@use "../abstracts" as *;
+
+// Waveform visualizer for audio display
+.waveform-visualizer {
+  width: 100%;
+  height: 100px;
+  background-color: rgba($color-bg-tertiary, 0.5);
+  border-radius: $radius-md;
+  overflow: hidden;
+  position: relative;
+  
+  // SVG path styling
+  &__path {
+    stroke: $color-electric-cyan;
+    stroke-width: 2;
+    fill: none;
+    filter: drop-shadow(0 0 2px rgba($color-electric-cyan, 0.8));
+  }
+  
+  // Active and playing state
+  &--active &__path {
+    animation: waveform-pulse 2s infinite;
+  }
+  
+  &--playing &__path {
+    animation: waveform 5s infinite linear;
+  }
+  
+  // Spectrum analyzer variant
+  &--spectrum {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 $space-xs;
+    height: 60px;
+    
+    &-bar {
+      width: 3px;
+      background: linear-gradient(
+        to top,
+        $color-electric-cyan,
+        $color-magenta-pulse
+      );
+      border-radius: $radius-sm $radius-sm 0 0;
+      height: var(--bar-height, 20%);
+      transition: height 0.2s $ease-out;
+    }
+  }
+  
+  // Circular visualizer
+  &--circular {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(
+      circle,
+      rgba($color-night-bass, 0.8) 0%,
+      rgba($color-night-bass, 0.5) 50%,
+      rgba($color-night-bass, 0.3) 100%
+    );
+    
+    &-content {
+      position: relative;
+      width: 80%;
+      height: 80%;
+      border-radius: 50%;
+      overflow: hidden;
+      
+      &:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid rgba($color-electric-cyan, 0.3);
+        border-radius: 50%;
+      }
+    }
+    
+    &-waves {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      
+      circle {
+        fill: none;
+        stroke: $color-electric-cyan;
+        stroke-width: 1px;
+        opacity: 0;
+        transform-origin: center;
+        animation: circular-wave 4s infinite;
+        
+        &:nth-child(2) {
+          animation-delay: 1s;
+        }
+        
+        &:nth-child(3) {
+          animation-delay: 2s;
+        }
+        
+        &:nth-child(4) {
+          animation-delay: 3s;
+        }
+      }
+    }
+  }
+  
+  // Bars visualizer
+  &--bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 40px;
+    
+    span {
+      width: 3px;
+      margin: 0 2px;
+      background-color: $color-electric-cyan;
+      border-radius: $radius-full;
+      animation: eq-animation 1.2s ease infinite;
+      
+      &:nth-child(1) {
+        height: 40%;
+        animation-delay: 0.2s;
+      }
+      
+      &:nth-child(2) {
+        height: 60%;
+        animation-delay: 0.3s;
+      }
+      
+      &:nth-child(3) {
+        height: 80%;
+        animation-delay: 0.1s;
+      }
+      
+      &:nth-child(4) {
+        height: 70%;
+        animation-delay: 0.4s;
+      }
+      
+      &:nth-child(5) {
+        height: 30%;
+        animation-delay: 0.5s;
+      }
+    }
+  }
+}
+
+// Frequency pattern for user profiles
+.frequency-pattern {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  overflow: hidden;
+  
+  &__svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  &__path {
+    fill: none;
+    stroke: $color-electric-cyan;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 2px rgba($color-electric-cyan, 0.5));
+  }
+  
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba($color-night-bass, 0.8) 100%
+    );
+  }
+  
+  &--interactive {
+    .frequency-pattern__path {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      
+      &:hover {
+        stroke-width: 2.5;
+        filter: drop-shadow(0 0 4px rgba($color-electric-cyan, 0.8));
+      }
+    }
+  }
+}
+
+// Audio progress bar
+.audio-progress {
+  width: 100%;
+  margin: $space-md 0;
+  
+  &__bar {
+    height: 4px;
+    background-color: rgba($color-waveform-white, 0.1);
+    border-radius: $radius-full;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  &__fill {
+    height: 100%;
+    background: linear-gradient(to right, $color-electric-cyan, $color-magenta-pulse);
+    width: var(--progress, 0%);
+    transition: width 0.1s linear;
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%
+      );
+      animation: shine 2s infinite;
+    }
+  }
+  
+  &__thumb {
+    width: 12px;
+    height: 12px;
+    background-color: $color-waveform-white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: var(--progress, 0%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  &__bar:hover &__thumb {
+    opacity: 1;
+  }
+  
+  &__time {
+    display: flex;
+    justify-content: space-between;
+    color: $color-text-tertiary;
+    font-size: $font-size-xs;
+    margin-top: $space-xs;
+  }
+}
+
+// Music animation keyframes
+@keyframes circular-wave {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.5);
+    stroke-width: 3px;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+    stroke-width: 0.5px;
+  }
+}
+
+@keyframes waveform-pulse {
+  0%, 100% {
+    stroke-width: 2;
+    filter: drop-shadow(0 0 2px rgba($color-electric-cyan, 0.8));
+  }
+  50% {
+    stroke-width: 3;
+    filter: drop-shadow(0 0 5px rgba($color-electric-cyan, 1));
+  }
+}
